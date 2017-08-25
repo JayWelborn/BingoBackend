@@ -23,3 +23,6 @@ bingoenv/
 
 # local DB
 bingo.sqlite3
+
+# dev log
+.mysqlinfo
