@@ -1,0 +1,13 @@
+# bingo.gems generated gem export file. Note that any env variable settings will be missing. Append these after using a ';' field separator
+
+bigdecimal -v1.3.0
+ffi -v1.9.18
+io-console -v0.4.6
+json -v2.0.2
+openssl -v2.0.2
+psych -v2.2.2
+rb-fsevent -v0.10.2
+rb-inotify -v0.9.10
+rdoc -v5.0.0
+sass -v3.5.1
+sass-listen -v4.0.0
