@@ -1,4 +1,7 @@
 python 3.6.2
+python 3.6-dev
 rvm 1.29.2
 ruby-2.4.0
-Ruby dependencies listed in bingo.gems
+mysql  Ver 14.14 Distrib 5.7.19
+nodejs v8.4.0
+npm 5.3.0

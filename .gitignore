@@ -26,3 +26,6 @@ bingo.sqlite3
 
 # dev log
 .mysqlinfo
+
+# node packages
+node_modules/
