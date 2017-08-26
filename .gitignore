@@ -30,3 +30,4 @@ bingo.sqlite3
 # node packages
 node_modules/
 package-lock.json
+
