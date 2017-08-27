@@ -31,3 +31,5 @@ bingo.sqlite3
 node_modules/
 package-lock.json
 
+# secrets
+secrets/

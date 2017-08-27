@@ -12,14 +12,21 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
-from .private_settings import *
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+TEMPLATE_DIR = os.path.join(PROJECT_DIR, 'templates')
 
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
+SECRETS = os.path.join(PROJECT_DIR, 'secrets')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+with open(os.path.join(SECRETS, 'django-secret.key'), 'r') as f:
+            SECRET_KEY = f.readline().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -57,12 +65,13 @@ ROOT_URLCONF = 'bingo.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATE_DIR,],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.media',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -97,6 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {'min_length': 8,}
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -104,6 +114,17 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+# Password Hashers
+# https://docs.djangoproject.com/en/1.11/topics/auth/passwords/
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
 ]
 
 
@@ -125,3 +146,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Media files (images uploaded via admin page/authenticated users)
+# https://docs.djangoproject.com/en/1.11/ref/settings/#std:setting-MEDIA_URL
+
+MEDIA_URL = '/media/'
+
+# Add Email info
+# https://docs.djangoproject.com/en/1.11/topics/email/
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = 'jesse.welborn@gmail.com'
+EMAIL_HOST_USER = 'jesse.welborn@gmail.com'
+
+with open(os.path.join(SECRETS, 'email.password'), 'r') as f:
+            EMAIL_HOST_PASSWORD = f.readline().strip()
