@@ -45,9 +45,9 @@ class UserProfile(models.Model):
     private = models.BooleanField(
         default=False)
 
-    about_me = models.CharField(
+    about_me = models.TextField(
         max_length=140, 
-        blank=True)
+        blank=True,)
 
     def __str__(self):
         """

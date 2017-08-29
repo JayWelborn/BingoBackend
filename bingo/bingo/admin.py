@@ -4,6 +4,9 @@ from django.contrib.auth.models import User, Group
 from home.admin import ContactAdmin
 from home.models import Contact
 
+from auth_extension.admin import UserProfileAdmin
+from auth_extension.models import UserProfile
+
 class BingoAdmin(admin.sites.AdminSite):
     """Admin Site with customized header and title bar.
 
@@ -21,3 +24,4 @@ bingo_admin_site = BingoAdmin(name='admin')
 bingo_admin_site.register(User)
 bingo_admin_site.register(Group)
 bingo_admin_site.register(Contact, ContactAdmin)
+bingo_admin_site.register(UserProfile, UserProfileAdmin)
