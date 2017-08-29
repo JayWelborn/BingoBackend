@@ -5,8 +5,14 @@ from .models import Contact
 
 # Create your tests here.
 class ContactModelTest(TestCase):
-    """
-    Tests for Contact Model
+    """Tests for Contact Model
+
+    Methods:
+        setUp: Creates sample Contact object for running tests
+        test_str_method: Ensures __str__ method returns object's title
+
+    References:
+        * TODO-- link to Django docs testing url
     """
 
     def setUp(self):
