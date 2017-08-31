@@ -87,12 +87,15 @@ WSGI_APPLICATION = 'bingo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+with open(os.path.join(SECRETS, 'database.password'), 'r') as f:
+    DB_PASSWORD = f.readline().strip()
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bingo',
         'USER': 'bingouser',
-        'PASSWORD': 'Rce#A@7T;xBgWz2S',
+        'PASSWORD': DB_PASSWORD,
         'HOST': 'localhost',
         'PORT': '',
     }

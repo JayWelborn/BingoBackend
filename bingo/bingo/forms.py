@@ -1,6 +1,6 @@
 from django import forms
 
-from crispy_forms import FormHelper
+from crispy_forms.helper import FormHelper
 
 class CrispyBaseForm (forms.ModelForm):
     """Parent Class for app forms to inherit. Sets up a form with FormHelper
@@ -11,5 +11,5 @@ class CrispyBaseForm (forms.ModelForm):
 
     """
     def __init__(self, *args, **kwargs):
-        super(CrispyForm, self).__init__(*args, **kwargs)
+        super(CrispyBaseForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)

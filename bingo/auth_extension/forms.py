@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 
+from crispy_forms.layout import Submit
+
 from bingo.forms import CrispyBaseForm
 
 from .models import UserProfile
@@ -28,33 +30,40 @@ class RegistrationForm(CrispyBaseForm):
 
 
     def __init__(self, *args, **kwargs):
-        super(UserForm, self).__init__(*args, **kwargs)
-        self.helper.form_id = 'user_form'
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+        self.helper.form_id = 'registration_form'
         self.helper.form_method = 'post'
         self.helper.form_action = '.'
         self.helper.add_input(Submit('submit', 'Register'))
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'password_confirmation')
+        fields = ('username', 'email',)
 
     def save(self):
         """
         Here we override the parent class's 'save' method to create a 
         UserProfile instance matching the User in the form.
         """
-        user = User.objects.create(username=self.cleaned_data['username'],
-                                   email=self.cleaned_data['email'],
-            )
+        if self.is_valid():
+            user = User.objects.create(
+                    username=self.cleaned_data['username'],
+                    email=self.cleaned_data['email'],
+                )
 
-        password = self.cleaned_data['password']
-        password_confirmation = self.cleaned_data['password_confirmation']
+            password = self.cleaned_data['password']
+            password_confirmation = self.cleaned_data['password_confirmation']
 
-        # ensure password has been confirmed correctly before comitting user
-        if password and password_confirmation and password==password_confirmation:
-            user.set_password(self.cleaned_data['password'])
-            user.save()
+            if password and password_confirmation and password==password_confirmation:
+                user.set_password(self.cleaned_data['password'])
+                user.save()
 
-        profile = UserProfile.objects.create(user=user)
-        profile.save()
-        return self
+            else:
+                raise forms.ValidationError('Passwords Entered Do Not Match')
+
+            profile = UserProfile.objects.create(user=user)
+            profile.save()
+            return user
+
+        else:
+            return self.errors
