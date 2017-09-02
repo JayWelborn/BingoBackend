@@ -6,6 +6,7 @@ from django.template.defaultfilters import slugify
 from .models import UserProfile
 from .forms import RegistrationForm
 
+
 class UserProfileModelTests(TestCase):
     """Tests for Contact Model
 
@@ -15,7 +16,6 @@ class UserProfileModelTests(TestCase):
             linked as expected
         test_slugify_for_user_profile: Ensures username is correctly slugified
             when UserProfile instance is saved
-        
 
     References:
         * https://docs.djangoproject.com/en/1.11/topics/testing/
@@ -48,7 +48,8 @@ class UserProfileModelTests(TestCase):
         Test to ensure username slug is stored as expected when UserProfile
         instance is created
         """
-        self.assertEqual(self.test_profile.slug, slugify(self.test_user_one.username))
+        test_slug = slugify(self.test_user_one.username)
+        self.assertEqual(self.test_profile.slug, test_slug)
         self.assertEqual(self.test_profile.slug, 'test-one')
 
 
@@ -59,11 +60,10 @@ class RegistrationFormTests(TestCase):
         test_form_accepts_valid_data: Form accepts valid form data
         test_form_rejects_empty_fields: Form raises appropriat errors on
             empty fields
-        test_save_method_creates_profile_object: UserProfile object is created 
+        test_save_method_creates_profile_object: UserProfile object is created
             when form.save() is called
         test_save_method_links_profile_to_user: UserProfile is linked
             to User as expected
-        
 
     References:
         * https://docs.djangoproject.com/en/1.11/topics/testing/
@@ -81,7 +81,7 @@ class RegistrationFormTests(TestCase):
             'password': 'M0rty-!5-My-53Cre7-CR|_|5|-|',
             'password_confirmation': 'M0rty-!5-My-53Cre7-CR|_|5|-|',
             'email': 'plumbusdinglebop@gmail.com',
-            })
+        })
 
         user = form.save()
         self.assertTrue(user)

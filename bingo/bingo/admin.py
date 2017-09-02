@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib.admin import sites
 from django.contrib.auth.models import User, Group
 
 from home.admin import ContactAdmin
@@ -7,7 +7,8 @@ from home.models import Contact
 from auth_extension.admin import UserProfileAdmin
 from auth_extension.models import UserProfile
 
-class BingoAdmin(admin.sites.AdminSite):
+
+class BingoAdmin(sites.AdminSite):
     """Admin Site with customized header and title bar.
 
     References:

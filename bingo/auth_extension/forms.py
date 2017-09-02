@@ -17,17 +17,15 @@ class RegistrationForm(CrispyBaseForm):
         username: User's name. Will be slugified for URL upon form save
         email: User's email address
         password: Password. Hashed before storing in the database.
-        
 
     References:
         * https://docs.djangoproject.com/en/1.11/topics/forms/modelforms/#modelform
-        
+
     """
 
     # specify widget for password input
     password = forms.CharField(widget=forms.PasswordInput())
     password_confirmation = forms.CharField(widget=forms.PasswordInput())
-
 
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
@@ -42,19 +40,19 @@ class RegistrationForm(CrispyBaseForm):
 
     def save(self):
         """
-        Here we override the parent class's 'save' method to create a 
+        Here we override the parent class's 'save' method to create a
         UserProfile instance matching the User in the form.
         """
         if self.is_valid():
             user = User.objects.create(
-                    username=self.cleaned_data['username'],
-                    email=self.cleaned_data['email'],
-                )
+                username=self.cleaned_data['username'],
+                email=self.cleaned_data['email'],
+            )
 
             password = self.cleaned_data['password']
             password_confirmation = self.cleaned_data['password_confirmation']
 
-            if password and password_confirmation and password==password_confirmation:
+            if password == password_confirmation and password.exists():
                 user.set_password(self.cleaned_data['password'])
                 user.save()
 

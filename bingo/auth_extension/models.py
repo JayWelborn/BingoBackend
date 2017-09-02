@@ -21,13 +21,13 @@ class UserProfile(models.Model):
         * https://docs.djangoproject.com/en/1.11/ref/contrib/auth/#django.contrib.auth.models.User
 
     """
-    
+
     class Meta:
         verbose_name = 'Profile'
         verbose_name_plural = 'Profiles'
 
     user = models.OneToOneField(
-        User, 
+        User,
         related_name='profile')
 
     created_date = models.DateField(
@@ -36,7 +36,7 @@ class UserProfile(models.Model):
     slug = models.SlugField()
 
     picture = models.ImageField(
-        upload_to='profile_images', 
+        upload_to='profile_images',
         blank=True)
 
     website = models.URLField(
@@ -46,7 +46,7 @@ class UserProfile(models.Model):
         default=False)
 
     about_me = models.TextField(
-        max_length=140, 
+        max_length=140,
         blank=True,)
 
     def __str__(self):

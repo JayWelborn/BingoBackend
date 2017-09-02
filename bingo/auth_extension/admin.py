@@ -1,6 +1,5 @@
-from django.forms import widgets
 from django.contrib import admin
-from django.db import models
+
 
 # Register your models here.
 class UserProfileAdmin(admin.ModelAdmin):
@@ -21,12 +20,11 @@ class UserProfileAdmin(admin.ModelAdmin):
     """
 
     fieldsets = [
-        ('User', {'fields': ['user',]}),
-        ('Optional Profil Information', {'fields': ['picture', 'website', 
-                                                    'about_me',]}),
+        ('User', {'fields': ['user']}),
+        ('Optional Profil Information', {'fields': ['picture', 'website',
+                                                    'about_me']}),
         ('Control Info', {'fields': ['created_date', 'private']})
     ]
 
     list_display = ['user', 'created_date', 'private']
     list_filter = ['created_date']
-
