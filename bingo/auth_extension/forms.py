@@ -52,7 +52,7 @@ class RegistrationForm(CrispyBaseForm):
             password = self.cleaned_data['password']
             password_confirmation = self.cleaned_data['password_confirmation']
 
-            if password == password_confirmation and password.exists():
+            if password and password == password_confirmation:
                 user.set_password(self.cleaned_data['password'])
                 user.save()
 
