@@ -65,3 +65,31 @@ class RegistrationForm(CrispyBaseForm):
 
         else:
             return self.errors
+
+
+class ProfileForm(CrispyBaseForm):
+    """Form for editing authenticated user's profile.
+    On success, will redirect to update DetailView for
+    user's profile.
+
+    Fields:
+        picture: User's profile picture
+        website: User's website url
+        about: User's bio
+        private: Boolean. Determines whether User's profile will be visible
+            to the public.
+
+    References:
+        * https://docs.djangoproject.com/en/1.11/topics/forms/modelforms/#modelform
+
+    """
+    class Meta:
+        model = UserProfile
+        fields = ('picture', 'website', 'private', 'about_me')
+
+    def __init__(self, *args, **kwargs):
+        super(ProfileForm, self).__init__(*args, **kwargs)
+        self.helper.form_id = 'profile_form'
+        self.helper.form_method = 'post'
+        self.helper.form_action = '.'
+        self.helper.add_input(Submit('submit', 'Edit Profile'))

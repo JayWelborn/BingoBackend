@@ -11,6 +11,7 @@ class CrispyBaseForm(forms.ModelForm):
         * http://django-crispy-forms.readthedocs.io/en/latest/form_helper.html#formhelper
 
     """
+
     def __init__(self, *args, **kwargs):
         super(CrispyBaseForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)

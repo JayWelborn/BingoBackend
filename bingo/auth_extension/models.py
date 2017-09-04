@@ -28,7 +28,7 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(
         User,
-        related_name='profile')
+        related_name='profile',)
 
     created_date = models.DateField(
         default=timezone.now)
