@@ -28,26 +28,34 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(
         User,
-        related_name='profile',)
+        related_name='profile',
+        # TODO - test on_delete
+        on_delete=models.CASCADE,
+    )
 
     created_date = models.DateField(
-        default=timezone.now)
+        default=timezone.now
+    )
 
     slug = models.SlugField()
 
     picture = models.ImageField(
         upload_to='profile_images',
-        blank=True)
+        blank=True
+    )
 
     website = models.URLField(
-        blank=True)
+        blank=True
+    )
 
     private = models.BooleanField(
-        default=False)
+        default=False
+    )
 
     about_me = models.TextField(
         max_length=140,
-        blank=True,)
+        blank=True,
+    )
 
     def __str__(self):
         """

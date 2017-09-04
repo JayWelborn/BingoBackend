@@ -24,27 +24,32 @@ class Contact(models.Model):
         verbose_name_plural = 'Contact'
 
     title = models.CharField(
-        'Title to display on browser tab header', 
-        max_length=30)
-    
+        'Title to display on browser tab header',
+        max_length=30
+    )
+
     facebook = models.URLField(
         'URL for Facebook Page',
-        blank=True)
-    
+        blank=True
+    )
+
     github = models.URLField(
         'URL for GitHub Profile',
-        blank=True)
-    
+        blank=True
+    )
+
     linkedin = models.URLField(
         'URL for LinkedIn profile',
-        blank=True)
-    
+        blank=True
+    )
+
     twitter = models.URLField(
         'URL for Twitter Profile',
-        blank=True)
-    
+        blank=True
+    )
+
     email = models.EmailField()
-    
+
     contact_date = models.DateField(default=timezone.now)
 
     def __str__(self):
