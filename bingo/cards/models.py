@@ -88,8 +88,8 @@ class BingoCardSquare(models.Model):
     """
 
     class Meta:
-        verbose_name='Bingo Square'
-        verbose_name_plural='Bingo Squares'
+        verbose_name = 'Bingo Square'
+        verbose_name_plural = 'Bingo Squares'
 
     text = models.CharField(
         'Text will be shown in a square of your Bingo Card',
@@ -100,4 +100,8 @@ class BingoCardSquare(models.Model):
         BingoCard,
         related_name='squares',
         on_delete=models.CASCADE,
+    )
+
+    created_date = models.DateField(
+        default=timezone.now,
     )
