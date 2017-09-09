@@ -22,7 +22,7 @@ from .admin import bingo_admin_site
 urlpatterns = [
     url(r'^admin/', bingo_admin_site.urls),
     # url(r'^auth/', include('auth_extension.urls')),
-    url(r'^', include('home.urls')),
+    # url(r'^', include('home.urls')),
 ]
 
 if settings.DEBUG:
