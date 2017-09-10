@@ -14,7 +14,6 @@ class UserProfileAdmin(admin.ModelAdmin):
         about_me: Users can write a short bio of themselves for display
 
     References:
-
         * https://docs.djangoproject.com/en/1.11/ref/contrib/auth/#django.contrib.auth.models.User
 
     """

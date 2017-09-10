@@ -105,3 +105,10 @@ class BingoCardSquare(models.Model):
     created_date = models.DateField(
         default=timezone.now,
     )
+
+    def __str__(self):
+        """
+        Calling __str__ will return something legible.
+        """
+        string = '{}: {}'.format(self.card.title, self.text)
+        return string
