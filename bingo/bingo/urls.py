@@ -22,9 +22,11 @@ from .admin import bingo_admin_site
 urlpatterns = [
     url(r'^admin/', bingo_admin_site.urls),
     # url(r'^auth/', include('auth_extension.urls')),
-    # url(r'^', include('home.urls')),
+    url(r'^', include('home.urls')),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL,
+                          document_root=settings.STATIC_ROOT)

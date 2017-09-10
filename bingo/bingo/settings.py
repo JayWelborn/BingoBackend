@@ -36,9 +36,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ]
 
-
-# Application definition
-
+# Application definitions
 INSTALLED_APPS = [
     'home',
     'auth_extension',
@@ -150,12 +148,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-
 STATIC_URL = '/static/'
 
 # Media files (images uploaded via admin page/authenticated users)
 # https://docs.djangoproject.com/en/1.11/ref/settings/#std:setting-MEDIA_URL
-
 MEDIA_URL = '/media/'
 
 # Add Email info
