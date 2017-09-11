@@ -7,7 +7,7 @@ from .models import BingoCard, BingoCardSquare
 
 # Create your tests here.
 class BingoCardModelTests(TestCase):
-    """Tests for BingoCard Model
+    """Tests for BingoCard Model.
 
     Methods:
         setUp: Creates BingoCard to test against

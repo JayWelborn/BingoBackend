@@ -1,7 +1,8 @@
 from django.test import TestCase
 from django.utils import timezone
 
-from .models import Contact
+from home.models import Contact
+
 
 # Create your tests here.
 class ContactModelTest(TestCase):
@@ -12,7 +13,7 @@ class ContactModelTest(TestCase):
         test_str_method: Ensures __str__ method returns object's title
 
     References:
-        * TODO-- link to Django docs testing url
+        * https://docs.djangoproject.com/en/1.11/topics/testing/
     """
 
     def setUp(self):
