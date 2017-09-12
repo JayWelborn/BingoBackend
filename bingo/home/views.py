@@ -32,8 +32,8 @@ class IndexView(generic.ListView):
         """
         Returns 5 most recent cards, filtered by privacy setting.
         """
-        if self.request.user.is_authenticated:
-            return BingoCard.objects.distinct().order_by('-creation_date')[:5]
+        if self.request.user.is_authenticated():
+            return BingoCard.objects.distinct().order_by('-created_date')[:5]
         else:
             cards = BingoCard.objects.filter(private=False)
-            return cards.order_by('-creation_date')[:5]
+            return cards.order_by('-created_date')[:5]

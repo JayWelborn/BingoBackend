@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.urls import reverse
 
 from cards.models import BingoCard
 
@@ -38,14 +39,64 @@ class IndexViewTests(TestCase):
 
         self.users = [self.private_user, self.public_user]
 
-        # create public and private cards for each user
+        # create private cards for each user
         self.cards = []
         for user in self.users:
-            title = user.username
-            new_card = create_card(title, user, True)
+            title1 = user.username
+            new_card = create_card(title1, user, True)
             self.cards.append(new_card)
 
+        # create public cards for each user
         for user in self.users:
             title = user.username
             new_card = create_card(title, user, False)
             self.cards.append(new_card)
+
+    def test_response_code(self):
+        """
+        Response code should be 200
+        """
+        response = self.client.get(reverse('home:index'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_context_object_name(self):
+        """
+        Context Object should be called `card_list`
+        """
+        response = self.client.get(reverse('home:index'))
+        self.assertEqual(True, 'card_list' in response.context)
+
+    def test_authenticated_visitor(self):
+        """
+        Authenticated visitor should receive 5 most recent cards, including
+        private cards. Should receive all if less than 5 in DB.
+        """
+        self.client.login(username='private', password='fleerdygort')
+        response = self.client.get(reverse('home:index'))
+
+        # there should be 4 cards as we created 4 cards earlier
+        self.assertEqual(len(response.context['card_list']), 4)
+
+        # ensure Queryset contains correct cards
+        cards = BingoCard.objects.distinct()
+        qs = response.context['card_list']
+
+        for card in cards:
+            self.assertEqual(card in qs, True)
+
+    def test_unauthenticated_visitor(self):
+        """
+        Unauthenticated visitor should receive Queryset containing only public
+        cards. In this case, should be 2 cards.
+        """
+        response = self.client.get(reverse('home:index'))
+
+        # there should only be 2 cards in context['card_list']
+        self.assertEqual(len(response.context['card_list']), 2)
+
+        # ensure Queryset contains correct cards
+        cards = BingoCard.objects.filter(private=False)
+        qs = response.context['card_list']
+
+        for card in cards:
+            self.assertEqual(card in qs, True)
