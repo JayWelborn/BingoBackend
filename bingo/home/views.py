@@ -1,11 +1,18 @@
+# django imports
 from django.views import generic
+from django.contrib.messages.views import SuccessMessageMixin
 
+# app imports
 from cards.models import BingoCard
+
+# relative imports
+from .models import Contact
+from .forms import ContactForm
 
 
 # Create your views here.
 class IndexView(generic.ListView):
-    """ Home Page View.
+    """Home Page View.
 
     Displays a list of 5 Bingo Cards sorted by creation date: most recent cards
     first. If user is authenticated, this will include private cards. If not,
@@ -37,3 +44,49 @@ class IndexView(generic.ListView):
         else:
             cards = BingoCard.objects.filter(private=False)
             return cards.order_by('-created_date')[:5]
+
+
+class ContactView(SuccessMessageMixin, generic.FormView):
+    """Contact Page View
+
+    Displays social media links and email form for users to get in touch
+    with the developer (me). View should contain the Contact form from
+    forms.py and should include the most recent contact info from database.
+
+    Attributes:
+        template_name: template to be rendered
+        form_class: form that will be rendered
+        success_url: where user will be redirected upon successful form
+            submission
+        success_message: message to be displayed upon successful form
+            submission
+
+    Methods:
+        get_context_data: add most recent Contact object to context
+        form_valid: override default behavior to use send_email method from
+            from forms.py
+
+    References:
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-editing/#formview
+
+    """
+
+    template_name = 'home/contact.html'
+    form_class = ContactForm
+    success_url = '/contact/'
+    success_message = 'Thanks for the Email!'
+
+    def get_context_data(self, **kwargs):
+        """
+        Get list of info from Contact Model to be passed to template
+        """
+        context = super(ContactView, self).get_context_data(**kwargs)
+        context['contact'] = Contact.objects.latest('contact_date')
+        return context
+
+    def form_valid(self, form):
+        """
+        Calls form.send_email() when form is submitted.
+        """
+        form.send_email()
+        return super(ContactView, self).form_valid(form)

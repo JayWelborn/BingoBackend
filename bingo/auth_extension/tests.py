@@ -69,7 +69,6 @@ class RegistrationFormTests(TestCase):
         test_new_form_has_helper_with_appropriate_attributes: Form has helper
             from crispy_forms app
 
-
     References:
         * https://docs.djangoproject.com/en/1.11/topics/testing/
         * https://docs.djangoproject.com/en/1.11/topics/forms/modelforms/#the-save-method
@@ -140,7 +139,6 @@ class ProfileFormTests(TestCase):
 
     Methods:
         test_form_has_helper: Form has helper from crispy_forms app
-
 
     References:
         * https://docs.djangoproject.com/en/1.11/topics/testing/

@@ -3,12 +3,12 @@ from django.contrib.auth.models import User
 
 from crispy_forms.layout import Submit
 
-from bingo.forms import CrispyBaseForm
+from bingo.forms import CrispyBaseModelForm
 
 from .models import UserProfile
 
 
-class RegistrationForm(CrispyBaseForm):
+class RegistrationForm(CrispyBaseModelForm):
     """Form for registering new users. Only contains fields required
     for user objects. Redirect will take users to page where they can
     edit their profiles.
@@ -67,7 +67,7 @@ class RegistrationForm(CrispyBaseForm):
             return self.errors
 
 
-class ProfileForm(CrispyBaseForm):
+class ProfileForm(CrispyBaseModelForm):
     """Form for editing authenticated user's profile.
     On success, will redirect to update DetailView for
     user's profile.
