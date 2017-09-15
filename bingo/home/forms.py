@@ -37,23 +37,27 @@ class ContactForm(CrispyBaseForm):
         """
         Send email with information given via form.
         """
+        if self.is_valid():
 
-        # instantiates EmailMessage class with data from form
-        contact_email = EmailMessage(
-            subject=self.cleaned_data['subject'],
-            to=['jesse.welborn@gmail.com'],
-            body='Sender Name: {} \nSender Email: {}\n\n {}'.format(
-                self.cleaned_data['name'],
-                self.cleaned_data['email'],
-                self.cleaned_data['message']
+            # instantiates EmailMessage class with data from form
+            contact_email = EmailMessage(
+                subject=self.cleaned_data['subject'],
+                to=['jesse.welborn@gmail.com'],
+                body='Sender Name: {} \nSender Email: {}\n\n {}'.format(
+                    self.cleaned_data['name'],
+                    self.cleaned_data['email'],
+                    self.cleaned_data['message']
+                )
             )
-        )
 
-        # adds cc line if applicable
-        cc_myself = self.cleaned_data['cc_myself']
-        if cc_myself:
-            contact_email.cc = [self.cleaned_data['email']]
+            # adds cc line if applicable
+            cc_myself = self.cleaned_data['cc_myself']
+            if cc_myself:
+                contact_email.cc = [self.cleaned_data['email']]
 
-        # send email
-        contact_email.send()
-        return contact_email
+            # send email
+            contact_email.send()
+            return contact_email
+
+        else:
+            return self.errors

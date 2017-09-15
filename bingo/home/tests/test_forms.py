@@ -12,9 +12,11 @@ class TestEmailForm(TestCase):
     Methods:
         setUp: Create form instances for testing. One CC'd, the other not.
         test_contents_of_form: Form objects should have expected data
-        test_send_email_sends_correctly: EmailMessage object should be created
+        test_send_cc_email_sends_correctly: EmailMessage object should be created
             and returned. The subject, to, body, and cc should match expected
             values based on contents of the ContactForm.
+        test_no_cc_email_sends_correctly: Same as above, but there should be no
+            cc recipients
 
     References:
         * https://docs.djangoproject.com/en/1.11/topics/testing/
@@ -74,10 +76,43 @@ class TestEmailForm(TestCase):
         self.assertEqual(no_cc_data['subject'], 'no_cc_subject')
         self.assertEqual(no_cc_data['message'], message)
 
-    def test_send_email_sends_correctly(self):
+    def test_send_cc_email_sends_correctly(self):
         """
-        Form's `send email` method sends email
+        Form's `send email` method sends email with cc
         """
 
+        # send email and check objects for equality
         cc_message = self.cc_form.send_email()
-        self.assertEqual(len(mail.outbox))
+        self.assertEqual(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.assertEqual(cc_message, message)
+
+        # ensure sent email has expected values
+        cc_recipients = ['jesse.welborn@gmail.com', 'useremail@textiles.com']
+        body = 'Sender Name: User \nSender Email: useremail@textiles.com\n\n'
+        body += ' Hello. I hope you are having a great day.'
+
+        self.assertEqual(message.recipients(), cc_recipients)
+        self.assertEqual(message.to, ['jesse.welborn@gmail.com'])
+        self.assertEqual(message.subject, 'cc_subject')
+        self.assertEqual(message.cc, ['useremail@textiles.com'])
+
+    def test_send_email_sends_correctly(self):
+        """
+        Form's `send email` method words correctly without cc
+        """
+        # send email and check objects for equality
+        no_cc_message = self.no_cc_form.send_email()
+        self.assertEqual(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.assertEqual(message, no_cc_message)
+
+        # ensure sent email has expected values
+        recipients = ['jesse.welborn@gmail.com']
+        body = 'Sender Name: User2 \nSender Email: user2email@textiles.com\n\n'
+        body += ' Hello. I hope you are having a great day.'
+
+        self.assertEqual(message.recipients(), recipients)
+        self.assertEqual(message.to, ['jesse.welborn@gmail.com'])
+        self.assertEqual(message.subject, 'no_cc_subject')
+        self.assertFalse(message.cc)
