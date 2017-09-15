@@ -26,6 +26,7 @@ class ContactForm(CrispyBaseForm):
         send_email: combines data form form into EmailMessage object and sends.
             * TODO - get `to` address from settings
     """
+
     name = forms.CharField(max_length=100, required=True)
     email = forms.EmailField(max_length=50, required=True)
     subject = forms.CharField(max_length=100, required=True)
@@ -55,3 +56,4 @@ class ContactForm(CrispyBaseForm):
 
         # send email
         contact_email.send()
+        return contact_email
