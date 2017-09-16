@@ -27,6 +27,5 @@ class CrispyBaseModelForm(forms.ModelForm):
     """
 
     def __init__(self, *args, **kwargs):
-        super(CrispyBaseForm, self).__init__(*args, **kwargs)
+        super(CrispyBaseModelForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
-

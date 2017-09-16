@@ -1,6 +1,10 @@
 # django Imports
 from django import forms
+from django.conf import settings
 from django.core.mail import EmailMessage
+
+# third party imports
+from crispy_forms.layout import Submit
 
 # app imports
 from bingo.forms import CrispyBaseForm
@@ -24,7 +28,6 @@ class ContactForm(CrispyBaseForm):
     Methods:
         __init__: add helper attributes for crispy form rendering
         send_email: combines data form form into EmailMessage object and sends.
-            * TODO - get `to` address from settings
     """
 
     name = forms.CharField(max_length=100, required=True)
@@ -32,6 +35,16 @@ class ContactForm(CrispyBaseForm):
     subject = forms.CharField(max_length=100, required=True)
     message = forms.CharField(widget=forms.Textarea, required=True)
     cc_myself = forms.BooleanField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        """
+        Adds form helper attributes for rendering with crispy template tag.
+        """
+        super(ContactForm, self).__init__(*args, **kwargs)
+        self.helper.form_id = 'contact_form'
+        self.helper.form_method = 'post'
+        self.helper.form_action = '.'
+        self.helper.add_input(Submit('submit', 'Contact Me'))
 
     def send_email(self):
         """
@@ -42,7 +55,7 @@ class ContactForm(CrispyBaseForm):
             # instantiates EmailMessage class with data from form
             contact_email = EmailMessage(
                 subject=self.cleaned_data['subject'],
-                to=['jesse.welborn@gmail.com'],
+                to=[settings.EMAIL_HOST_USER],
                 body='Sender Name: {} \nSender Email: {}\n\n {}'.format(
                     self.cleaned_data['name'],
                     self.cleaned_data['email'],

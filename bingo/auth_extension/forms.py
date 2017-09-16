@@ -1,10 +1,14 @@
+# django imports
 from django import forms
 from django.contrib.auth.models import User
 
+# third party imports
 from crispy_forms.layout import Submit
 
+# app imports
 from bingo.forms import CrispyBaseModelForm
 
+# relative imports
 from .models import UserProfile
 
 

@@ -63,11 +63,14 @@ class ContactView(SuccessMessageMixin, generic.FormView):
 
     Methods:
         get_context_data: add most recent Contact object to context
+        get_initial: set initial value for `name` field to authenticated user's
+            username if a user is authenticated
         form_valid: override default behavior to use send_email method from
             from forms.py
 
     References:
         * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-editing/#formview
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/mixins-editing/#django.views.generic.edit.FormMixin.get_initial
 
     """
 
@@ -83,6 +86,18 @@ class ContactView(SuccessMessageMixin, generic.FormView):
         context = super(ContactView, self).get_context_data(**kwargs)
         context['contact'] = Contact.objects.latest('contact_date')
         return context
+
+    def get_initial(self):
+        """
+        Sets initial value for name field to authenticated user's username
+        """
+        initial = super(ContactView, self).get_initial()
+
+        if self.request.user.is_authenticated():
+            user = self.request.user
+            initial['name'] = user.username
+
+        return initial
 
     def form_valid(self, form):
         """

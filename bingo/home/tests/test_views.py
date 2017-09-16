@@ -1,3 +1,6 @@
+# debugging
+import pdb
+
 # python imports
 from datetime import timedelta
 
@@ -5,6 +8,7 @@ from datetime import timedelta
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 # app imports
 from cards.models import BingoCard
@@ -90,7 +94,7 @@ class IndexViewTests(TestCase):
         qs = response.context['card_list']
 
         for card in cards:
-            self.assertEqual(card in qs, True)
+            self.assertTrue(card in qs)
 
     def test_unauthenticated_visitor(self):
         """
@@ -114,12 +118,16 @@ class ContactViewTests(TestCase):
     """Tests for Contact View.
 
     Methods:
-        setUp: Creates 2 contact objects for testing
+        setUp: Creates 2 contact objects, and one User for testing
         test_response_code: View should respond with code 200 (all good, baby)
-        test_contact_object_exists: View's context should contain a contact object
+        test_contact_object_exists: View's context should contain a contact
+            object
         test_contact_is_most_recent: View should only return most recent
             contact information
-
+        test_contact_form_unauthenticated_visitor: Form should have no initial
+            values if no user.
+        test_contact_form_authenticated_visitor: Initial should have `name`
+        mapped to user's username if a user is authenticated.
 
     References:
 
@@ -131,7 +139,10 @@ class ContactViewTests(TestCase):
     def setUp(self):
         """
         Create two contact views with different publication dates for testing.
+        Create one User to check form initial data populates correctly
         """
+
+        # Create "old" contact info
         self.past_contact = Contact.objects.get_or_create(
             title='title1',
             facebook='https://www.facebook.com',
@@ -142,6 +153,7 @@ class ContactViewTests(TestCase):
             contact_date=timezone.now() + timedelta(days=-30)
         )[0]
 
+        # create "new" contact info
         self.current_contact = Contact.objects.get_or_create(
             title='title2',
             facebook='https://www.facebook.com/jwelb',
@@ -152,8 +164,22 @@ class ContactViewTests(TestCase):
             contact_date=timezone.now().date(),
         )[0]
 
+        # ensure both items made it to DB
         contact_list = Contact.objects.distinct()
         self.assertEqual(len(contact_list), 2)
+
+        # Create user
+        self.user = User.objects.create(
+            username='testing',
+            email='testing@gmail.com',
+        )
+        password = 'logmeinplease'
+        self.user.set_password(password)
+        self.user.save()
+
+        # Make sure user saved properly
+        check_user = User.objects.get(username='testing')
+        self.assertEqual(self.user, check_user)
 
     def test_response_code(self):
         """
@@ -167,7 +193,8 @@ class ContactViewTests(TestCase):
         Response should have a contact object in its context
         """
         response = self.client.get(reverse('home:contact'))
-        self.assertEqual('contact' in response.context, True)
+        self.assertTrue('contact' in response.context)
+        self.assertTrue('form' in response.context)
 
     def test_contact_is_most_recent(self):
         """
@@ -189,3 +216,38 @@ class ContactViewTests(TestCase):
                          self.current_contact.email)
         self.assertEqual(response_contact.contact_date,
                          self.current_contact.contact_date)
+
+    def test_contact_form_unauthenticated_visitor(self):
+        """
+        Dictionary `initial` should be empty if no user.
+        """
+
+        # get response when no user logged in
+        response = self.client.get(reverse('home:contact'))
+        self.assertTrue('form' in response.context)
+
+        # ensure form has no initial data
+        self.assertNotContains(response, 'value=testing')
+
+    def test_contact_form_authenticated_visitor(self):
+        """
+        Initial should have `name` mapped to user's username if a
+        user is authenticated.
+        """
+
+        # log user in
+        self.client.login(
+            username='testing',
+            password='logmeinplease'
+        )
+
+        # get response
+        response = self.client.get(reverse('home:contact'))
+        self.assertTrue('form' in response.context)
+
+        form = response.context['form']
+        initial = form.initial
+        expected_statement = self.user.username
+        self.assertTrue(initial)
+        self.assertEqual(initial['name'], expected_statement)
+        self.assertTrue('value="{}"'.format(expected_statement) in str(form))
