@@ -105,3 +105,17 @@ class ContactView(SuccessMessageMixin, generic.FormView):
         """
         form.send_email()
         return super(ContactView, self).form_valid(form)
+
+
+class AboutView(generic.TemplateView):
+    """View for About Page.
+
+    Attributes:
+        template_name: template to render
+
+    References:
+        * https://docs.djangoproject.com/en/1.11/topics/class-based-views/generic-display/
+
+    """
+
+    template_name = 'home/about.html'

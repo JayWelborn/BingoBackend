@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url
 
-from .views import IndexView, ContactView
+from .views import IndexView, ContactView, AboutView
 
 app_name = 'home'
 urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
-    url(r'^contact/', ContactView.as_view(), name='contact')
+    url(r'^contact/', ContactView.as_view(), name='contact'),
+    url(r'^about/', AboutView.as_view(), name='about'),
 ]

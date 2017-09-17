@@ -248,3 +248,16 @@ class ContactViewTests(TestCase):
         self.assertTrue(initial)
         self.assertEqual(initial['name'], expected_statement)
         self.assertTrue('value="{}"'.format(expected_statement) in str(form))
+
+
+class AboutViewTests(TestCase):
+    """Tests for About View.
+
+    Methods:
+        test_response: test response contains html from correct template
+
+    """
+
+    def test_response(self):
+        response = self.client.get(reverse('home:about'))
+        self.assertContains(response, 'About</title>')
