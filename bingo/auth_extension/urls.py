@@ -19,6 +19,17 @@ from . import views as v
 
 app_name = 'auth_extension'
 urlpatterns = [
-    url(r'^$', v.LoginRedirectView.as_view(), name='login_redirect'),
-    url(r'^login/$', v.LoginView.as_view(), name='login'),
+    url(r'^$',
+        v.LoginRedirectView.as_view(),
+        name='login_redirect'),
+
+    url(r'^login/$',
+        v.LoginView.as_view(),
+        name='login'),
+
+    # url(r'^profile/(?P<pk>\d+/$)', v.ProfileView.as_view(), name='profile'),
+
+    url(r'^profile/(?P<pk>\d+)/edit/$',
+        v.ProfileEditView,
+        name='profile_edit'),
 ]

@@ -73,7 +73,7 @@ class IndexViewTests(TestCase):
         Context Object should be called `card_list`
         """
         response = self.client.get(reverse('home:index'))
-        self.assertEqual(True, 'card_list' in response.context)
+        self.assertTrue('card_list' in response.context)
 
     def test_authenticated_visitor(self):
         """
