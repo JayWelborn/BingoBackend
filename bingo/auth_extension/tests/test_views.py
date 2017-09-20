@@ -2,10 +2,12 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
+import pdb
+
 
 class LoginRedirectViewTests(TestCase):
     """Tests for RedirectView
-    
+
     Methods:
         setUp: create User instance for tests
         test_unauthenticated_redirect: redirect without user logged in should
@@ -22,12 +24,14 @@ class LoginRedirectViewTests(TestCase):
         """
         Create User for testing
         """
-        self.user = User.objects.get_or_create(
+        user = User.objects.get_or_create(
             username='jimbobtheuser',
             email='jimbob@aol.net'
         )[0]
-        self.user.set_password('ladybug234!')
-        self.user.save()
+        user.set_password('ladybug234!')
+        user.save()
+
+        self.user = User.objects.get(username='jimbobtheuser')
 
     def test_unauthenticated_user(self):
         """
@@ -49,7 +53,10 @@ class LoginRedirectViewTests(TestCase):
             password='ladybug234!'
         )
 
-        response = self.client.get(reverse('auth_extension:login_redirect'))
+        response = self.client.get(reverse(
+            'auth_extension:login_redirect',
+        ))
+
         self.assertRedirects(
             response=response,
             expected_url=reverse(

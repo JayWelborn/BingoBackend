@@ -30,6 +30,6 @@ urlpatterns = [
     # url(r'^profile/(?P<pk>\d+/$)', v.ProfileView.as_view(), name='profile'),
 
     url(r'^profile/(?P<pk>\d+)/edit/$',
-        v.ProfileEditView,
+        v.ProfileEditView.as_view(),
         name='profile_edit'),
 ]

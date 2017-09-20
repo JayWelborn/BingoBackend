@@ -1,7 +1,7 @@
 from django.views import generic
 from django.urls import reverse
 
-import pdb
+from .models import UserProfile
 
 
 # Create your views here.
@@ -26,16 +26,15 @@ class LoginRedirectView(generic.RedirectView):
         Send User to profile edit page if authenticated. Else send visitor
         to login page.
         """
+        url = 'auth_extension:login'
         pk = False
 
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             url = 'auth_extension:profile_edit'
             pk = self.request.user.pk
-        else:
-            url = 'auth_extension:login'
 
         if pk:
-            return reverse(url, kwargs={'pk': pk})
+            return reverse(url, args=[pk])
         else:
             return reverse(url)
 
@@ -69,7 +68,7 @@ class LoginView(generic.TemplateView):
 # class ProfileView
 
 
-class ProfileEditView(generic.TemplateView):
+class ProfileEditView(generic.DetailView):
     """Allow Users to edit their profiles.
 
     Attributes:
@@ -80,4 +79,5 @@ class ProfileEditView(generic.TemplateView):
 
     """
 
+    model = UserProfile
     template_name = 'auth_extension/profile_edit.html'
