@@ -27,7 +27,9 @@ urlpatterns = [
         v.LoginView.as_view(),
         name='login'),
 
-    # url(r'^profile/(?P<pk>\d+/$)', v.ProfileView.as_view(), name='profile'),
+    url(r'^profile/(?P<pk>\d+)/$',
+        v.ProfileView.as_view(),
+        name='profile'),
 
     url(r'^profile/(?P<pk>\d+)/edit/$',
         v.ProfileEditView.as_view(),

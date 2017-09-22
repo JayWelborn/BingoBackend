@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.test import TestCase
+from django.urls import reverse
 
 # Create your tests here.
 from auth_extension.models import UserProfile
@@ -15,6 +16,7 @@ class UserProfileModelTests(TestCase):
             linked as expected
         test_slugify_for_user_profile: Ensures username is correctly slugified
             when UserProfile instance is saved
+        test_get_absolute_url: define url for viewing object instances
 
     References:
         * https://docs.djangoproject.com/en/1.11/topics/testing/
@@ -50,3 +52,12 @@ class UserProfileModelTests(TestCase):
         test_slug = slugify(self.test_user_one.username)
         self.assertEqual(self.test_profile.slug, test_slug)
         self.assertEqual(self.test_profile.slug, 'test-one')
+
+    def test_get_absolute_url(self):
+        """
+        Absolute url should match the regex pattern from app-level urlconf
+        """
+        pk = self.test_profile.pk
+        reversed_url = reverse('auth_extension:profile', args=[pk])
+        expected_url = '/auth/profile/{}/'.format(pk)
+        self.assertEqual(reversed_url, expected_url)

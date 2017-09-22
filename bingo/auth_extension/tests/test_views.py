@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
+from auth_extension.models import UserProfile
+
 import pdb
 
 
@@ -32,6 +34,7 @@ class LoginRedirectViewTests(TestCase):
         user.save()
 
         self.user = User.objects.get(username='jimbobtheuser')
+        self.profile = UserProfile.objects.get_or_create(user=self.user)[0]
 
     def test_unauthenticated_user(self):
         """
@@ -61,7 +64,7 @@ class LoginRedirectViewTests(TestCase):
             response=response,
             expected_url=reverse(
                 'auth_extension:profile_edit',
-                args=[self.user.pk]
+                args=[self.profile.pk]
             ),
             status_code=301
         )

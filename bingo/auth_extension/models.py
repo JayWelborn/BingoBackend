@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from django.utils import timezone
 
 
@@ -69,3 +70,9 @@ class UserProfile(models.Model):
         """
         self.slug = slugify(self.user.username)
         super(UserProfile, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        """
+        Return url for viewing a specific profile
+        """
+        return reverse('auth_extension:profile', args=[self.pk])

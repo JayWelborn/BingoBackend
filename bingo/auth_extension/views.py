@@ -31,7 +31,7 @@ class LoginRedirectView(generic.RedirectView):
 
         if self.request.user.is_authenticated:
             url = 'auth_extension:profile_edit'
-            pk = self.request.user.pk
+            pk = self.request.user.profile.pk
 
         if pk:
             return reverse(url, args=[pk])
@@ -39,6 +39,7 @@ class LoginRedirectView(generic.RedirectView):
             return reverse(url)
 
 
+# TODO - add django authentication redux to get rid of this view
 class LoginView(generic.TemplateView):
     """Allow visitors to log in.
 
@@ -65,7 +66,19 @@ class LoginView(generic.TemplateView):
 #     """
 
 
-# class ProfileView
+class ProfileView(generic.DetailView):
+    """Allow visitors to view user's profiles
+
+    Attributes:
+
+    Methods:
+
+    References:
+
+    """
+
+    model = UserProfile
+    template_name = 'auth_extension/profile_view.html'
 
 
 class ProfileEditView(generic.DetailView):
