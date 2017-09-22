@@ -23,15 +23,11 @@ urlpatterns = [
         v.LoginRedirectView.as_view(),
         name='login_redirect'),
 
-    url(r'^login/$',
-        v.LoginView.as_view(),
-        name='login'),
-
-    url(r'^profile/(?P<pk>\d+)/$',
+    url(r'^(?P<pk>\d+)/$',
         v.ProfileView.as_view(),
         name='profile'),
 
-    url(r'^profile/(?P<pk>\d+)/edit/$',
+    url(r'^(?P<pk>\d+)/edit/$',
         v.ProfileEditView.as_view(),
         name='profile_edit'),
 ]

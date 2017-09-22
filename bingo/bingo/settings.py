@@ -38,11 +38,13 @@ ALLOWED_HOSTS = [
 
 # Application definitions
 INSTALLED_APPS = [
+    'django.contrib.sites',
+    'registration',
+    'django.contrib.auth',
     'home',
     'auth_extension',
     'cards',
     'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -156,7 +158,6 @@ MEDIA_URL = '/media/'
 
 # Add Email info
 # https://docs.djangoproject.com/en/1.11/topics/email/
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
@@ -166,3 +167,11 @@ EMAIL_HOST_USER = 'jesse.welborn@gmail.com'
 
 with open(os.path.join(SECRETS, 'email.password'), 'r') as f:
             EMAIL_HOST_PASSWORD = f.readline().strip()
+
+# Registration Redux Settings
+SITE_ID = 1
+ACCOUNT_ACTIVATION_DAYS = 7
+REGISTRATION_AUTO_LOGIN = True
+REGISTRATION_OPEN = True
+LOGIN_REDIRECT_URL = '/profile/'
+LOGIN_URL = '/accounts/login/'

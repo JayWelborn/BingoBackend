@@ -4,8 +4,6 @@ from django.urls import reverse
 
 from auth_extension.models import UserProfile
 
-import pdb
-
 
 class LoginRedirectViewTests(TestCase):
     """Tests for RedirectView
@@ -40,10 +38,13 @@ class LoginRedirectViewTests(TestCase):
         """
         View should redirect to login page with status code of 301
         """
+
+        self.client.logout()
+
         response = self.client.get(reverse('auth_extension:login_redirect'))
         self.assertRedirects(
             response=response,
-            expected_url=reverse('auth_extension:login'),
+            expected_url=reverse('registration:auth_login'),
             status_code=301
         )
 

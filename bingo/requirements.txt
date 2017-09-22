@@ -8,6 +8,7 @@ chardet==3.0.4
 coverage==4.4.1
 Django==1.11.4
 django-crispy-forms==1.6.1
+django-registration-redux==1.7
 django-rest-framework==0.1.0
 djangorestframework==3.6.4
 docutils==0.14

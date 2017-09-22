@@ -59,5 +59,5 @@ class UserProfileModelTests(TestCase):
         """
         pk = self.test_profile.pk
         reversed_url = reverse('auth_extension:profile', args=[pk])
-        expected_url = '/auth/profile/{}/'.format(pk)
+        expected_url = '/profile/{}/'.format(pk)
         self.assertEqual(reversed_url, expected_url)

@@ -27,8 +27,15 @@
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
   <!-- end stylesheets -->
 
+  <!-- social media tags -->
   {% block social %}
   {% endblock %}
+  <!-- end social -->
+
+  {# required by django-authentication-redux #}
+  {% block meta %}
+  {% endblock %}
+  
 </head>
 <body>
   <!-- navbar -->
