@@ -35,10 +35,12 @@ class LoginRedirectView(generic.RedirectView):
 
         if current_user.is_authenticated:
             url = 'auth_extension:profile_edit'
-            if current_user.profile:
+
+            try:
                 pk = current_user.profile.pk
-            else:
-                new_profile = UserProfile.objects.crate(user=current_user)
+
+            except UserProfile.DoesNotExist:
+                new_profile = UserProfile.objects.create(user=current_user)
                 new_profile.save()
                 pk = new_profile.pk
 

@@ -48,7 +48,7 @@ class LoginRedirectViewTests(TestCase):
             status_code=301
         )
 
-    def test_authenticated_user(self):
+    def test_authenticated_user_(self):
         """
         View should redirect to profile edit page for authenticated user
         """
@@ -66,6 +66,46 @@ class LoginRedirectViewTests(TestCase):
             expected_url=reverse(
                 'auth_extension:profile_edit',
                 args=[self.profile.pk]
+            ),
+            status_code=301
+        )
+
+    def test_authenticated_user_no_profile(self):
+        """
+        If a user somehow exists without a matching profile, logging in
+        should create a profile associated with said user
+        """
+
+        # Create and Authenticate new user with no profile
+        new_user = User.objects.get_or_create(
+            username='billy',
+            email='billy@bill.net'
+        )[0]
+
+        new_user.set_password('hamandjam2929!@#$')
+        new_user.save()
+
+        self.client.login(
+            username='billy',
+            password='hamandjam2929!@#$'
+        )
+
+        # Ensure new user logged in successfully
+        self.assertIn('_auth_user_id', self.client.session)
+
+        # Check that redirect response created profile associated with user
+        response = self.client.get(
+            reverse('auth_extension:login_redirect')
+        )
+
+        new_profile = UserProfile.objects.get(user=new_user)
+        self.assertTrue(new_profile)
+        self.assertEqual(new_profile.user, new_user)
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse(
+                'auth_extension:profile_edit',
+                args=[new_profile.pk]
             ),
             status_code=301
         )
