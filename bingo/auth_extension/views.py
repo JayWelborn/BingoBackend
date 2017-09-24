@@ -54,14 +54,24 @@ class RegistrationView(generic.FormView):
     """Allow visitors to create and account
 
     Attributes:
+        form_class: Form to be rendered. RegistrationForm allows new users to
+            create accounts.
+        template_name: Template to render the form
+        success_url: URL where users are redirected upon successful account
+            creation. In this case, they go to the base view of the
+            auth_extnsion app, which acts as a filter redirecting users based
+            on various criteria.
 
     Methods:
+        form_valid: calls form.save(), then authenticates new user before
+            sending them to success_url
 
     References:
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-editing/#formview
 
     """
-    template_name = 'registration/registration_form.html'
     form_class = RegistrationForm
+    template_name = 'registration/registration_form.html'
     success_url = '/profile'
 
     def form_valid(self, form):
@@ -80,10 +90,12 @@ class ProfileView(generic.DetailView):
     """Allow visitors to view user's profiles
 
     Attributes:
-
-    Methods:
+        model: UserProfile from auth_extension.models. This object will be
+            retrieved by PK lookup for page generation
+        template_name: Template to use to render data from UserProfile instance
 
     References:
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-display/#detailview
 
     """
 
