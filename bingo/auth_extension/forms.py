@@ -71,7 +71,7 @@ class RegistrationForm(CrispyBaseModelForm):
             return self.errors
 
 
-class ProfileForm(CrispyBaseModelForm):
+class ProfileEditForm(CrispyBaseModelForm):
     """Form for editing authenticated user's profile.
     On success, will redirect to update DetailView for
     user's profile.

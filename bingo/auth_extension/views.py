@@ -1,9 +1,10 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.messages.views import SuccessMessageMixin
 from django.views import generic
 from django.urls import reverse
 
 from .models import UserProfile
-from .forms import RegistrationForm
+from .forms import RegistrationForm, ProfileEditForm
 
 
 # Create your views here.
@@ -50,7 +51,7 @@ class LoginRedirectView(generic.RedirectView):
             return reverse(url)
 
 
-class RegistrationView(generic.FormView):
+class RegistrationView(SuccessMessageMixin, generic.FormView):
     """Allow visitors to create and account
 
     Attributes:
@@ -61,6 +62,8 @@ class RegistrationView(generic.FormView):
             creation. In this case, they go to the base view of the
             auth_extnsion app, which acts as a filter redirecting users based
             on various criteria.
+        success_message: message to be displayed upon successful form
+            submission
 
     Methods:
         form_valid: calls form.save(), then authenticates new user before
@@ -73,6 +76,8 @@ class RegistrationView(generic.FormView):
     form_class = RegistrationForm
     template_name = 'registration/registration_form.html'
     success_url = '/profile'
+    success_message = 'Your account has been created successfully. Please' + \
+        'take a moment to share a bit more about yourself.'
 
     def form_valid(self, form):
         """
@@ -103,7 +108,7 @@ class ProfileView(generic.DetailView):
     template_name = 'auth_extension/profile_view.html'
 
 
-class ProfileEditView(generic.DetailView):
+class ProfileEditView(SuccessMessageMixin, generic.FormView):
     """Allow Users to edit their profiles.
 
     Attributes:
@@ -111,8 +116,11 @@ class ProfileEditView(generic.DetailView):
     Methods:
 
     References:
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-editing/#formview
 
     """
 
-    model = UserProfile
+    form_class = ProfileEditForm
     template_name = 'auth_extension/profile_edit.html'
+    success_url = '/profile'
+    success_message = 'Profile Updated Successfully!'
