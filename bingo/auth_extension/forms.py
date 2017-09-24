@@ -65,7 +65,7 @@ class RegistrationForm(CrispyBaseModelForm):
 
             profile = UserProfile.objects.create(user=user)
             profile.save()
-            return user
+            return self
 
         else:
             return self.errors

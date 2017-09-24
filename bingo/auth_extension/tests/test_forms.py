@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 from django.test import TestCase
 
 from auth_extension.forms import RegistrationForm, ProfileForm
@@ -38,7 +39,10 @@ class RegistrationFormTests(TestCase):
             'email': 'plumbusdinglebop@gmail.com',
         })
 
-        user = form.save()
+        form.save()
+
+        user = User.objects.get(username='RickSanchez')
+
         self.assertTrue(user)
         self.assertTrue(user.password)
         self.assertEqual(user.username, 'RickSanchez')
