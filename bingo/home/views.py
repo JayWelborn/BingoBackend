@@ -93,7 +93,7 @@ class ContactView(SuccessMessageMixin, generic.FormView):
         """
         initial = super(ContactView, self).get_initial()
 
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             user = self.request.user
             initial['name'] = user.username
 

@@ -109,3 +109,22 @@ class LoginRedirectViewTests(TestCase):
             ),
             status_code=301
         )
+
+
+class RegistrationViewTests(TestCase):
+    """ Tests for Registration View
+
+    Methods:
+        test_form_valid_creates_and_authenticates_user: Calling form_valid()
+            should save form with current data and log new user in.
+
+    References:
+
+    """
+
+    def test_form_valid_creates_and_authenticates_user(self):
+        """
+        View's form_valid() method should create and authenticate new user
+        """
+        user_count = User.objects.count()
+        

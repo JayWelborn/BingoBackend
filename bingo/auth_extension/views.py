@@ -1,7 +1,9 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views import generic
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 
 from .models import UserProfile
 from .forms import RegistrationForm, ProfileEditForm
@@ -91,6 +93,7 @@ class RegistrationView(SuccessMessageMixin, generic.FormView):
         return super(RegistrationView, self).form_valid(form)
 
 
+@method_decorator(login_required, name='dispatch')
 class ProfileView(generic.DetailView):
     """Allow visitors to view user's profiles
 
@@ -108,12 +111,24 @@ class ProfileView(generic.DetailView):
     template_name = 'auth_extension/profile_view.html'
 
 
+
+@method_decorator(login_required, name='dispatch')
 class ProfileEditView(SuccessMessageMixin, generic.FormView):
     """Allow Users to edit their profiles.
 
     Attributes:
+        form_class: Form to render in template
+        template_name: Template to use for form rendering
+        success_url: Redirect url after successful form completion
+        success_message: Message to be displayed after successful form
+            completion
+        pk: Primary key for currently authenticated user. Passed to form.save()
+            method so method can reference current user.
 
     Methods:
+        __init__: add authenticated user's pk as an instance-level variable
+        get_initial: set initial value for fields to authenticated user's
+            profile data if said data is populated.
 
     References:
         * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-editing/#formview
@@ -124,3 +139,27 @@ class ProfileEditView(SuccessMessageMixin, generic.FormView):
     template_name = 'auth_extension/profile_edit.html'
     success_url = '/profile'
     success_message = 'Profile Updated Successfully!'
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Get pk of authenticated user for use in the form
+        """
+        self.user_pk = request.user.pk
+        return super(ProfileEditView, self).dispatch(request, *args, **kwargs)
+
+    def get_initial(self):
+        """
+        Populate form with data from currently authenticate User's profile.
+        """
+        initial = super(ProfileEditView, self).get_initial()
+
+        if self.request.user.profile:
+            profile = self.request.user.profile
+            initial['picture'] = profile.picture
+            initial['website'] = profile.website
+            initial['private'] = profile.private
+            initial['about_me'] = profile.about_me
+
+        return initial
+
+    # def form_valid(self):
