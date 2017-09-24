@@ -92,8 +92,55 @@ class ProfileEditForm(CrispyBaseModelForm):
         fields = ('picture', 'website', 'private', 'about_me')
 
     def __init__(self, *args, **kwargs):
-        super(ProfileForm, self).__init__(*args, **kwargs)
+        super(ProfileEditForm, self).__init__(*args, **kwargs)
         self.helper.form_id = 'profile_form'
         self.helper.form_method = 'post'
         self.helper.form_action = '.'
         self.helper.add_input(Submit('submit', 'Edit Profile'))
+
+    def save(self, pk):
+        """ Updates UserProfile if it exists, creates new instance if it
+            doesn't.
+
+        Args:
+            self: instance of ProfileEditForm
+            pk: Primary Key attribute of UserProfile's related User instance
+
+        Returns:
+            self: instance of ProfileEditForm after saving
+
+        """
+
+        # validate form and get cleaned data
+        if self.is_valid():
+            picture = self.cleaned_data['picture']
+            website = self.cleaned_data['website']
+            private = self.cleaned_data['private']
+            about_me = self.cleaned_data['about_me']
+
+        else:
+            return self.errors
+
+        # get user and profile for editing
+        user = User.objects.get(pk=pk)
+        profile = UserProfile.objects.get_or_create(user=user)[0]
+
+        # assign form values to related fields in profile
+        if picture:
+            profile.picture = picture
+
+        if website:
+            profile.website = website
+
+        if private:
+            profile.private = private
+
+        if not private:
+            profile.private = False
+
+        if about_me:
+            profile.about_me = about_me
+
+        profile.save()
+
+        return self

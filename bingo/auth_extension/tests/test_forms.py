@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from auth_extension.forms import RegistrationForm, ProfileForm
+from auth_extension.forms import RegistrationForm, ProfileEditForm
 from auth_extension.models import UserProfile
 
 
@@ -114,22 +114,110 @@ class RegistrationFormTests(TestCase):
         self.assertEqual(profile.user, user)
 
 
-class ProfileFormTests(TestCase):
-    """Tests for ProfileForm
+class ProfileEditFormTests(TestCase):
+    """Tests for ProfileEditForm
 
     Methods:
+        setUp: Create test user for testing form.save()
         test_form_has_helper: Form has helper from crispy_forms app
+        test_form_accepts_valid_data: Form should accept valid values for
+            each field and form.is_valid() should return True
+        test_form_saves_new_profile: Form should save new profile if one
+            doesn't already exist
 
     References:
         * https://docs.djangoproject.com/en/1.11/topics/testing/
         * http://django-crispy-forms.readthedocs.io/en/latest/crispy_tag_forms.html
 
     """
+    def setUp(self):
+        """
+        Create user for testing form.save() method.
+        """
+        self.user = User.objects.get_or_create(
+            username='RickSanchez',
+            email='plumbusdinglebop@gmail.com'
+        )[0]
+        self.user.set_password('M0rty-!5-My-53Cre7-CR|_|5|-|')
+        self.user.save()
 
     def test_form_has_helper(self):
-        form = ProfileForm()
+        """
+        Form has helper with appropriate attributes
+        """
+        form = ProfileEditForm()
         self.assertEqual(form.helper.form_id, 'profile_form')
         self.assertEqual(form.helper.form_method, 'post')
         self.assertEqual(form.helper.form_action, '.')
 
+    def test_form_accepts_valid_data(self):
+        """
+        Calling form.is_valid() returns true when form is presented valid data.
+        """
+        form = ProfileEditForm({
+            'picture': None,
+            'website': 'www.google.com',
+            'private': False,
+            'about_me': 'This is my bio. It is very short'
+        })
 
+        self.assertTrue(form.is_valid())
+
+    def test_form_saves_new_profile(self):
+        """
+        Calling form.save() with pk of user without associated profile should
+        create new profile associated with that user.
+        """
+        pk = self.user.pk
+
+        form = ProfileEditForm({
+            'picture': None,
+            'website': 'www.google.com',
+            'private': False,
+            'about_me': 'This is my bio. It is very short'
+        })
+
+        form.save(pk)
+
+        new_profile = UserProfile.objects.get(user=self.user)
+
+        self.assertTrue(new_profile)
+        self.assertEqual(new_profile.user, self.user)
+        self.assertEqual(new_profile, self.user.profile)
+
+    def test_form_updates_existing_profile(self):
+        """
+        Calling form.save() with pk of user already having profile should
+        update said profile.
+        """
+
+        pk = self.user.pk
+        form = ProfileEditForm({
+            'picture': None,
+            'website': 'www.google.com',
+            'private': False,
+            'about_me': 'This is my bio. It is very short.'
+        })
+        new_profile = UserProfile.objects.get_or_create(
+            user=self.user,
+            picture=None,
+            website='www.youtube.com',
+            private=True,
+            about_me='I don\'t have a bio yet'
+        )[0]
+        new_profile.save()
+
+        self.assertTrue(new_profile)
+        self.assertEqual(new_profile.website, 'www.youtube.com')
+        self.assertTrue(new_profile.private)
+        self.assertEqual(new_profile.about_me, 'I don\'t have a bio yet')
+
+        form.save(pk)
+
+        profile = UserProfile.objects.get(user=self.user)
+        self.assertTrue(profile)
+        self.assertEqual(profile, self.user.profile)
+        self.assertEqual(profile.user, self.user)
+        self.assertEqual(profile.website, 'http://www.google.com')
+        self.assertFalse(profile.private)
+        self.assertEqual(profile.about_me, 'This is my bio. It is very short.')
