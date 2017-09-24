@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 from auth_extension.forms import RegistrationForm, ProfileForm
+from auth_extension.models import UserProfile
 
 
 class RegistrationFormTests(TestCase):
@@ -78,7 +79,7 @@ class RegistrationFormTests(TestCase):
         attributes
         """
         form = RegistrationForm({
-            'username': 'Rick Sanchez',
+            'username': 'RickSanchez',
             'password': 'M0rty-!5-My-53Cre7-CR|_|5|-|',
             'password_confirmation': 'M0rty-!5-My-53Cre7-CR|_|5|-|',
             'email': 'plumbusdinglebop@gmail.com',
@@ -86,6 +87,31 @@ class RegistrationFormTests(TestCase):
         self.assertEqual(form.helper.form_id, 'registration_form')
         self.assertEqual(form.helper.form_method, 'post')
         self.assertEqual(form.helper.form_action, '.')
+
+    def test_valid_form_creates_profile(self):
+        """
+        Calling form.save() should create and instance of UserProfile linked
+        to the new User.
+        """
+
+        # create form instance
+        form = RegistrationForm({
+            'username': 'RickSanchez',
+            'password': 'M0rty-!5-My-53Cre7-CR|_|5|-|',
+            'password_confirmation': 'M0rty-!5-My-53Cre7-CR|_|5|-|',
+            'email': 'plumbusdinglebop@gmail.com',
+        })
+        self.assertTrue(form.is_valid())
+        form.save()
+
+        # retrive user and profile and verify that they exist
+        user = User.objects.get(username='RickSanchez')
+        profile = UserProfile.objects.get(user=user)
+        self.assertTrue(user)
+        self.assertTrue(profile)
+
+        # verify that profile matches user
+        self.assertEqual(profile.user, user)
 
 
 class ProfileFormTests(TestCase):
@@ -105,3 +131,5 @@ class ProfileFormTests(TestCase):
         self.assertEqual(form.helper.form_id, 'profile_form')
         self.assertEqual(form.helper.form_method, 'post')
         self.assertEqual(form.helper.form_action, '.')
+
+
