@@ -71,7 +71,7 @@ class RegistrationFormTests(TestCase):
             'password_confirmation': 'password2',
             'email': 'plumbusdinglebop@gmail.com',
         })
-        self.assertRaises(forms.ValidationError, form.save)
+        self.assertRaises(forms.ValidationError, form.clean)
 
     def test_new_form_has_helper_with_appropriate_attributes(self):
         """

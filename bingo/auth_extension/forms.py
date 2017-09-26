@@ -1,6 +1,8 @@
 # django imports
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
+from django.utils.translation import ugettext as _
 
 # third party imports
 from crispy_forms.layout import Submit
@@ -22,6 +24,11 @@ class RegistrationForm(CrispyBaseModelForm):
         email: User's email address
         password: Password. Hashed before storing in the database.
 
+    Methods:
+        clean: perform normal clean operations. Additionally ensure passwords
+            match and are valid
+        save: save both user and matching profile
+
     References:
         * https://docs.djangoproject.com/en/1.11/topics/forms/modelforms/#modelform
 
@@ -42,6 +49,24 @@ class RegistrationForm(CrispyBaseModelForm):
         model = User
         fields = ('username', 'email',)
 
+    def clean(self):
+        """
+        Perform default clean behavior, then ensure passwords match and are
+        validated by AUTH_PASSWORD_VALIDATORS.
+        """
+        self.is_valid()
+        cleaned_data = super(RegistrationForm, self).clean()
+        password = cleaned_data['password']
+        password_confirmation = cleaned_data['password_confirmation']
+
+        if password != password_confirmation:
+            raise forms.ValidationError(
+                _('Passwords entered do not match.'),
+                code='invalid'
+            )
+
+        validate_password(password=password)
+
     def save(self):
         """
         Here we override the parent class's 'save' method to create a
@@ -61,7 +86,7 @@ class RegistrationForm(CrispyBaseModelForm):
                 user.save()
 
             else:
-                raise forms.ValidationError('Passwords Entered Do Not Match')
+                raise forms.ValidationError('Passwords entered do not match.')
 
             profile = UserProfile.objects.create(user=user)
             profile.save()

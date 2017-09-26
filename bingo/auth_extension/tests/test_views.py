@@ -4,6 +4,8 @@ from django.urls import reverse
 
 from auth_extension.models import UserProfile
 
+import pdb
+
 
 class LoginRedirectViewTests(TestCase):
     """Tests for RedirectView
@@ -115,16 +117,124 @@ class RegistrationViewTests(TestCase):
     """ Tests for Registration View
 
     Methods:
-        test_form_valid_creates_and_authenticates_user: Calling form_valid()
-            should save form with current data and log new user in.
+        test_url_uses_correct_template: GET request to view returns status code
+             200 and uses the correct template.
+        test_view_rejects_invalid_username: View should reject data sent via
+            invalid username and render appropriate error message.
+        test_view_rejects_invalid_email: View should reject data sent via
+            invalid email and render appropriate error message.
+        test_view_rejects_invalid_password: View should reject data sent via
+            invalid password and render appropriate error message.
 
     References:
 
     """
 
-    def test_form_valid_creates_and_authenticates_user(self):
+    def test_url_uses_correct_template(self):
         """
-        View's form_valid() method should create and authenticate new user
+        GET requested routed to this view should return a status code of 200
+        and use registration/registration_form.html for rendering.
+        """
+        response = self.client.get(reverse('registration_register'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response,
+            'registration/registration_form.html'
+        )
+
+    def test_view_rejects_invalid_username(self):
+        """
+        Submitting invalid username should result in form error, and not
+        create a new user.
+        """
+        count_users = User.objects.count()
+
+        # test invalid username
+        post_data = {
+            'username': 'Invalid Username',
+            'email': 'validemail@gmail.com',
+            'password': 'thisisavalidone123',
+            'password_confirmation': 'thisisavalidone123'
+        }
+
+        response = self.client.post(
+            reverse('registration_register'),
+            post_data
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'errorlist')
+        self.assertContains(response, 'Enter a valid username.')
+        self.assertEqual(count_users, User.objects.count())
+
+    def test_view_rejects_invalid_email(self):
+        """
+        View should reject invalid email and render template with appropriate
+        error message.
+        """
+
+        user_count = User.objects.count()
+
+        post_data = {
+            'username': 'Invalid Username',
+            'email': 'invalidemail',
+            'password': 'thisisavalidone123',
+            'password_confirmation': 'thisisavalidone123'
+        }
+
+        response = self.client.post(
+            reverse('registration_register'),
+            post_data
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'errorlist')
+        self.assertContains(response, 'Enter a valid email address.')
+        self.assertEqual(user_count, User.objects.count())
+
+    def test_view_rejects_mismatched_password(self):
+        """
+        View should reject invalid password and render template with
+        appropriate error message.
         """
         user_count = User.objects.count()
-        
+
+        post_data = {
+            'username': 'validusername',
+            'email': 'validemail@gmail.com',
+            'password': 'thisisavalidone123',
+            'password_confirmation': 'thisisavalidone1234'
+        }
+
+        response = self.client.post(
+            reverse('registration_register'),
+            post_data
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'errorlist')
+        self.assertContains(response, 'Passwords entered do not match.')
+        self.assertEqual(user_count, User.objects.count())
+
+    def test_view_rejects_common_password(self):
+        """
+        View rejects common password and renders appropriate error code
+        """
+        user_count = User.objects.count()
+
+        post_data = {
+            'username': 'validusername',
+            'email': 'validemail@gmail.com',
+            'password': 'password',
+            'password_confirmation': 'password'
+        }
+
+        response = self.client.post(
+            reverse('registration_register'),
+            post_data
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'errorlist')
+        self.assertContains(response, 'This password is too common.')
+        self.assertEqual(user_count, User.objects.count())
