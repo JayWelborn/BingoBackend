@@ -119,12 +119,13 @@ class RegistrationViewTests(TestCase):
     Methods:
         test_url_uses_correct_template: GET request to view returns status code
              200 and uses the correct template.
-        test_view_rejects_invalid_username: View should reject data sent via
-            invalid username and render appropriate error message.
-        test_view_rejects_invalid_email: View should reject data sent via
-            invalid email and render appropriate error message.
-        test_view_rejects_invalid_password: View should reject data sent via
-            invalid password and render appropriate error message.
+        test_view_rejects_invalid_username: View should reject invalid username
+            and render appropriate error message.
+        test_view_rejects_invalid_email: View should reject invalid email and
+            render appropriate error message.
+        test_view_rejects_invalid_password: View should reject invalid password
+            and render appropriate error message.
+        test_view_rejects_common_password: View should reject P
 
     References:
 

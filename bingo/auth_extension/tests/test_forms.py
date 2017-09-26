@@ -11,15 +11,17 @@ class RegistrationFormTests(TestCase):
 
     Methods:
         test_form_accepts_valid_data: Form accepts valid form data, and saves
-            UserProfile and User objets linked appropriately
+            UserProfile and User objets linked appropriately.
         test_form_rejects_invalid_username: Form rejects username with invalid
-            character
+            character.
         test_form_rejects_mismatched_password_confirmation: Form rejects
-            mismatched entries for password and password_confirmation
+            mismatched entries for password and password_confirmation.
+        test_form_rejects_common_password: Form rejects passwords that are too
+            common.
         test_save_method_links_profile_to_user: UserProfile is linked
-            to User as expected
+            to User as expected.
         test_new_form_has_helper_with_appropriate_attributes: Form has helper
-            from crispy_forms app
+            from crispy_forms app.
 
     References:
         * https://docs.djangoproject.com/en/1.11/topics/testing/
@@ -31,7 +33,7 @@ class RegistrationFormTests(TestCase):
 
     def test_form_accepts_valid_data(self):
         """
-        Form should accept valid data
+        Form should accept valid data.
         """
         form = RegistrationForm({
             'username': 'RickSanchez',
@@ -51,7 +53,7 @@ class RegistrationFormTests(TestCase):
 
     def test_form_rejects_invalid_username(self):
         """
-        Form should reject invalid username
+        Form should reject invalid username.
         """
         form = RegistrationForm({
             'username': 'Rick Sanchez',
@@ -63,12 +65,24 @@ class RegistrationFormTests(TestCase):
 
     def test_form_rejects_mismatched_password_confirmation(self):
         """
-        Form should reject common passwords
+        Form should reject mismatched passwords.
         """
         form = RegistrationForm({
             'username': 'RickSanchez',
             'password': 'password',
             'password_confirmation': 'password2',
+            'email': 'plumbusdinglebop@gmail.com',
+        })
+        self.assertRaises(forms.ValidationError, form.clean)
+
+    def test_form_rejects_common_passwords(self):
+        """
+        Form should reject common passwords.
+        """
+        form = RegistrationForm({
+            'username': 'RickSanchez',
+            'password': 'password',
+            'password_confirmation': 'password',
             'email': 'plumbusdinglebop@gmail.com',
         })
         self.assertRaises(forms.ValidationError, form.clean)
