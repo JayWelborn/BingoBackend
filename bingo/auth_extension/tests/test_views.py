@@ -276,3 +276,52 @@ class RegistrationViewTests(TestCase):
                 args=[user.profile.pk]),
             status_code=302
         )
+
+
+class ProfileViewTests(TestCase):
+    """Tests for Profile View.
+
+    Methods:
+        setUp: Create public and profiles for tests.
+        test_request_from_unauthenticated_visitor: Requests from
+            unauthenticated visitors should be re-routed.
+        test_request_for_public_profile: Requests for public profile should
+            display that profile if visitor is authenticated.
+        test_request_for_private_profile: Requests for private profile should
+            be denied.
+
+    References:
+
+
+    """
+
+    def setUp(self):
+        """
+        Create public and private profiles.
+        """
+
+        # public profile
+        public_user = User.objects.get_or_create(
+            username='public_user',
+            email='public@gmail.com'
+        )[0]
+        public_user.set_password('publicuserp@55word')
+        public_user.save()
+        self.public_profile = UserProfile.objects.get_or_create(
+            user=public_user
+        )[0]
+
+        # private profile
+        private_user = User.objects.get_or_create(
+            username='private_user',
+            email='private@gmail.com'
+        )[0]
+        private_user.set_password('privateuserp@55word')
+        private_user.save()
+        self.private_profile = UserProfile.objects.get_or_create(
+            user=private_user,
+            private=True
+        )[0]
+
+        self.assertFalse(self.public_profile.private)
+        self.assertTrue(self.private_profile.private)

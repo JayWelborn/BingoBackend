@@ -75,6 +75,8 @@ class RegistrationView(SuccessMessageMixin, generic.FormView):
 
     References:
         * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-editing/#formview
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/mixins-editing/#django.views.generic.edit.FormMixin.get_success_url
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/mixins-editing/#django.views.generic.edit.FormMixin.form_valid
 
     """
     form_class = RegistrationForm
@@ -121,7 +123,6 @@ class ProfileView(generic.DetailView):
 
     model = UserProfile
     template_name = 'auth_extension/profile_view.html'
-
 
 
 @method_decorator(login_required, name='dispatch')
@@ -176,3 +177,6 @@ class ProfileEditView(SuccessMessageMixin, generic.FormView):
         return initial
 
     # def form_valid(self):
+
+
+# TODO *** ProfileListView ***
