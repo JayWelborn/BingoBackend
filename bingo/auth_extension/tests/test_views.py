@@ -125,9 +125,14 @@ class RegistrationViewTests(TestCase):
             render appropriate error message.
         test_view_rejects_invalid_password: View should reject invalid password
             and render appropriate error message.
-        test_view_rejects_common_password: View should reject P
+        test_view_rejects_common_password: View should reject Passwords that
+            commonly cause security problems and render appropriate error
+            message
+        test_view_accepts_valid_data_and_redirects: View should accept valid
+            data, create new User, and redirect to LoginRedirectView.
 
     References:
+        * http://www.obeythetestinggoat.com/testing-django-class-based-generic-views.html
 
     """
 
@@ -239,3 +244,35 @@ class RegistrationViewTests(TestCase):
         self.assertContains(response, 'errorlist')
         self.assertContains(response, 'This password is too common.')
         self.assertEqual(user_count, User.objects.count())
+
+    def test_view_accepts_valid_data_and_redirects(self):
+        """
+        View should accept valid POST data, create User object, and redirect
+        through LoginRedirectView after authenticating the user.
+        """
+        user_count = User.objects.count()
+
+        post_data = {
+            'username': 'validusername',
+            'email': 'validemail@gmail.com',
+            'password': 'validone1234',
+            'password_confirmation': 'validone1234'
+        }
+
+        response = self.client.post(
+            reverse('registration_register'),
+            post_data
+        )
+
+        user = User.objects.get(username='validusername')
+
+        self.assertEqual(user_count + 1, User.objects.count())
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(user)
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse(
+                'auth_extension:profile_edit',
+                args=[user.profile.pk]),
+            status_code=302
+        )

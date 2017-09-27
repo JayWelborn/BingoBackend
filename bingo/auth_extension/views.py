@@ -70,6 +70,8 @@ class RegistrationView(SuccessMessageMixin, generic.FormView):
     Methods:
         form_valid: calls form.save(), then authenticates new user before
             sending them to success_url
+        get_success_url: overrides success_url with url for EditProfile view
+            of profile associated with authenticated user.
 
     References:
         * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-editing/#formview
@@ -91,6 +93,16 @@ class RegistrationView(SuccessMessageMixin, generic.FormView):
         new_user = authenticate(username=username, password=password)
         login(self.request, new_user)
         return super(RegistrationView, self).form_valid(form)
+
+    def get_success_url(self, **kwargs):
+        """
+        Get url for ProfileEditView for authenticated user
+        """
+        current_user = self.request.user
+        return reverse(
+            'auth_extension:profile_edit',
+            args=[current_user.profile.pk]
+        )
 
 
 @method_decorator(login_required, name='dispatch')
@@ -127,6 +139,7 @@ class ProfileEditView(SuccessMessageMixin, generic.FormView):
 
     Methods:
         __init__: add authenticated user's pk as an instance-level variable
+        dispatch: add user_pk to self for use in get_initial
         get_initial: set initial value for fields to authenticated user's
             profile data if said data is populated.
 
