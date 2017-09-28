@@ -287,8 +287,10 @@ class ProfileViewTests(TestCase):
             unauthenticated visitors should be re-routed.
         test_request_for_public_profile: Requests for public profile should
             display that profile if visitor is authenticated.
-        test_request_for_private_profile: Requests for private profile should
-            be denied.
+        test_request_for_private_profile_from_public: Requests for private 
+            profile should be denied.
+        test_request_for_private_from_private: Requests from private profiles
+            to view their own details should be allowed.
 
     References:
         * https://docs.djangoproject.com/en/1.11/topics/testing/tools/#django.test.Client.get
@@ -372,3 +374,54 @@ class ProfileViewTests(TestCase):
 
         self.assertEqual(profile.pk, self.public_profile.pk)
         self.assertEqual(profile.user, self.public_profile.user)
+
+    def test_request_for_private_profile_from_public(self):
+        """
+        Requests for private profiles should be denied and redirected to
+        PermissionDenied.
+        """
+
+        self.client.login(
+            username='public_user',
+            password='publicuserp@55word'
+        )
+        self.assertIn('_auth_user_id', self.client.session)
+
+        response = self.client.get(
+            reverse(
+                'auth_extension:profile',
+                args=[self.private_profile.pk]
+            )
+        )
+
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse('auth_extension:permission_denied')
+        )
+
+    def test_request_for_private_from_self(self):
+        """
+        Users with Private Profiles should be able to view their own profiles.
+        """
+
+        self.client.logout()
+        self.client.login(
+            username='private_user',
+            password='privateuserp@55word'
+        )
+        self.assertIn('_auth_user_id', self.client.session)
+
+        response = self.client.get(
+            reverse(
+                'auth_extension:profile',
+                args=[self.private_profile.pk]
+            )
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('profile', response.context)
+
+        profile = response.context['profile']
+
+        self.assertEqual(profile.pk, self.private_profile.pk)
+        self.assertEqual(profile.user, self.private_profile.user)

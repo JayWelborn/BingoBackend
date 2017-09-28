@@ -9,6 +9,8 @@ from django.utils.decorators import method_decorator
 from .models import UserProfile
 from .forms import RegistrationForm, ProfileEditForm
 
+import pdb
+
 
 # Create your views here.
 class LoginRedirectView(generic.RedirectView):
@@ -116,6 +118,8 @@ class ProfileView(LoginRequiredMixin, generic.DetailView):
             retrieved by PK lookup for page generation
         template_name: Template to use to render data from UserProfile instance
         login_url: redirect users if not authenticated
+        get_object: redirects visitor if they requested a private_profile other
+            than their own.
 
     References:
         * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-display/#detailview
@@ -129,6 +133,10 @@ class ProfileView(LoginRequiredMixin, generic.DetailView):
 
     # using reverse causes circular import
     login_url = '/profile/unauthorized/'
+
+    def get(self, request, *args, **kwargs):
+        pdb.set_trace()
+        super(ProfileView, self).get()
 
 
 @method_decorator(login_required, name='dispatch')
@@ -198,3 +206,16 @@ class Unauthorized(generic.TemplateView):
 
     """
     template_name = 'auth_extension/login_required.html'
+
+
+class PermissionDenied(generic.TemplateView):
+    """View to let inform users they have attempted to view a private object.
+
+    Attributes:
+        template_name: template to render
+
+    References:
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/base/#templateview
+
+    """
+    template_name = 'auth_extension/permission_denied.html'

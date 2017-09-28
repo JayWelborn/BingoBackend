@@ -34,4 +34,8 @@ urlpatterns = [
     url(r'^unauthorized/$',
         v.Unauthorized.as_view(),
         name='unauthorized'),
+
+    url(r'^permission-denied/$',
+        v.PermissionDenied.as_view(),
+        name='permission_denied')
 ]
