@@ -291,7 +291,7 @@ class ProfileViewTests(TestCase):
             be denied.
 
     References:
-
+        * https://docs.djangoproject.com/en/1.11/topics/testing/tools/#django.test.Client.get
 
     """
 
@@ -325,3 +325,50 @@ class ProfileViewTests(TestCase):
 
         self.assertFalse(self.public_profile.private)
         self.assertTrue(self.private_profile.private)
+
+    def test_request_from_unauthenticated_visitor(self):
+        """
+        Unauthenticated users should be redirected to LoginRequired.
+        """
+
+        self.client.logout()
+
+        response = self.client.get(
+            reverse(
+                'auth_extension:profile',
+                args=[self.public_profile.pk]
+            ),
+            follow=True
+        )
+
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse('auth_extension:unauthorized'),
+        )
+
+    def test_request_for_public_profile(self):
+        """
+        Requesting public profile should return response of 200 and render page
+        for all authenticated users.
+        """
+
+        self.client.login(
+            username='public_user',
+            password='publicuserp@55word'
+        )
+        self.assertIn('_auth_user_id', self.client.session)
+
+        response = self.client.get(
+            reverse(
+                'auth_extension:profile',
+                args=[self.public_profile.pk]
+            )
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('profile', response.context)
+
+        profile = response.context['profile']
+
+        self.assertEqual(profile.pk, self.public_profile.pk)
+        self.assertEqual(profile.user, self.public_profile.user)

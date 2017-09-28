@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views import generic
 from django.urls import reverse
@@ -107,14 +108,14 @@ class RegistrationView(SuccessMessageMixin, generic.FormView):
         )
 
 
-@method_decorator(login_required, name='dispatch')
-class ProfileView(generic.DetailView):
+class ProfileView(LoginRequiredMixin, generic.DetailView):
     """Allow visitors to view user's profiles
 
     Attributes:
         model: UserProfile from auth_extension.models. This object will be
             retrieved by PK lookup for page generation
         template_name: Template to use to render data from UserProfile instance
+        login_url: redirect users if not authenticated
 
     References:
         * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-display/#detailview
@@ -123,6 +124,11 @@ class ProfileView(generic.DetailView):
 
     model = UserProfile
     template_name = 'auth_extension/profile_view.html'
+    redirect_field_name = None
+    context_object_name = 'profile'
+
+    # using reverse causes circular import
+    login_url = '/profile/unauthorized/'
 
 
 @method_decorator(login_required, name='dispatch')
@@ -139,7 +145,6 @@ class ProfileEditView(SuccessMessageMixin, generic.FormView):
             method so method can reference current user.
 
     Methods:
-        __init__: add authenticated user's pk as an instance-level variable
         dispatch: add user_pk to self for use in get_initial
         get_initial: set initial value for fields to authenticated user's
             profile data if said data is populated.
@@ -180,3 +185,16 @@ class ProfileEditView(SuccessMessageMixin, generic.FormView):
 
 
 # TODO *** ProfileListView ***
+
+
+class Unauthorized(generic.TemplateView):
+    """View to let unauthenticated users know they need to log in.
+
+    Attributes:
+        template_name: template to render
+
+    References:
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/base/#templateview
+
+    """
+    template_name = 'auth_extension/login_required.html'

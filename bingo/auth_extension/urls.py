@@ -30,4 +30,8 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/edit/$',
         v.ProfileEditView.as_view(),
         name='profile_edit'),
+
+    url(r'^unauthorized/$',
+        v.Unauthorized.as_view(),
+        name='unauthorized'),
 ]
