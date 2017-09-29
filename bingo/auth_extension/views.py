@@ -1,10 +1,8 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin as LRM
 from django.contrib.messages.views import SuccessMessageMixin
-from django.views import generic
+from django.views import generic as g
 from django.urls import reverse
-from django.utils.decorators import method_decorator
 
 from .models import UserProfile
 from .forms import RegistrationForm, ProfileEditForm
@@ -13,7 +11,7 @@ import pdb
 
 
 # Create your views here.
-class LoginRedirectView(generic.RedirectView):
+class LoginRedirectView(g.RedirectView):
     """Redirect visitors to appropriate authentication page.
 
     Attributes:
@@ -57,7 +55,7 @@ class LoginRedirectView(generic.RedirectView):
             return reverse(url)
 
 
-class ProfileRedirectView(LoginRequiredMixin, generic.RedirectView):
+class ProfileRedirectView(LRM, g.RedirectView):
     """Redirect visitors away from private profiles.
 
     Attributes:
@@ -106,7 +104,7 @@ class ProfileRedirectView(LoginRequiredMixin, generic.RedirectView):
             return reverse('auth_extension:permission_denied')
 
 
-class RegistrationView(SuccessMessageMixin, generic.FormView):
+class RegistrationView(SuccessMessageMixin, g.FormView):
     """Allow visitors to create and account
 
     Attributes:
@@ -127,9 +125,9 @@ class RegistrationView(SuccessMessageMixin, generic.FormView):
             of profile associated with authenticated user.
 
     References:
-        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-editing/#formview
-        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/mixins-editing/#django.views.generic.edit.FormMixin.get_success_url
-        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/mixins-editing/#django.views.generic.edit.FormMixin.form_valid
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/g-editing/#formview
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/mixins-editing/#django.views.g.edit.FormMixin.get_success_url
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/mixins-editing/#django.views.g.edit.FormMixin.form_valid
 
     """
     form_class = RegistrationForm
@@ -160,7 +158,7 @@ class RegistrationView(SuccessMessageMixin, generic.FormView):
         )
 
 
-class ProfileView(LoginRequiredMixin, generic.DetailView):
+class ProfileView(LRM, g.DetailView):
     """Allow visitors to view user's profiles
 
     Attributes:
@@ -172,7 +170,7 @@ class ProfileView(LoginRequiredMixin, generic.DetailView):
             than their own.
 
     References:
-        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-display/#detailview
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/g-display/#detailview
 
     """
 
@@ -185,8 +183,7 @@ class ProfileView(LoginRequiredMixin, generic.DetailView):
     login_url = '/profile/login-required/'
 
 
-@method_decorator(login_required, name='dispatch')
-class ProfileEditView(SuccessMessageMixin, generic.FormView):
+class ProfileEditView(LRM, SuccessMessageMixin, g.FormView):
     """Allow Users to edit their profiles.
 
     Attributes:
@@ -197,6 +194,9 @@ class ProfileEditView(SuccessMessageMixin, generic.FormView):
             completion
         pk: Primary key for currently authenticated user. Passed to form.save()
             method so method can reference current user.
+        redirect_field_name: removes querystring applied on redirect for
+            unauthenticated users
+        login_url: redirect url for unauthenticated users
 
     Methods:
         dispatch: add user_pk to self for use in get_initial
@@ -204,7 +204,7 @@ class ProfileEditView(SuccessMessageMixin, generic.FormView):
             profile data if said data is populated.
 
     References:
-        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-editing/#formview
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/g-editing/#formview
 
     """
 
@@ -212,6 +212,8 @@ class ProfileEditView(SuccessMessageMixin, generic.FormView):
     template_name = 'auth_extension/profile_edit.html'
     success_url = '/profile/'
     success_message = 'Profile Updated Successfully!'
+    redirect_field_name = None
+    login_url = '/profile/login-required/'
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -241,7 +243,7 @@ class ProfileEditView(SuccessMessageMixin, generic.FormView):
 # TODO *** ProfileListView ***
 
 
-class Unauthorized(generic.TemplateView):
+class Unauthorized(g.TemplateView):
     """View to let unauthenticated users know they need to log in.
 
     Attributes:
@@ -254,7 +256,7 @@ class Unauthorized(generic.TemplateView):
     template_name = 'auth_extension/login_required.html'
 
 
-class PermissionDenied(generic.TemplateView):
+class PermissionDenied(g.TemplateView):
     """View to let inform users they have attempted to view a private object.
 
     Attributes:
