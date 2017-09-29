@@ -278,8 +278,8 @@ class RegistrationViewTests(TestCase):
         )
 
 
-class ProfileViewTests(TestCase):
-    """Tests for Profile View.
+class ProfileRedirectViewTests(TestCase):
+    """Tests for Profile Redirect View.
 
     Methods:
         setUp: Create public and profiles for tests.
@@ -287,7 +287,7 @@ class ProfileViewTests(TestCase):
             unauthenticated visitors should be re-routed.
         test_request_for_public_profile: Requests for public profile should
             display that profile if visitor is authenticated.
-        test_request_for_private_profile_from_public: Requests for private 
+        test_request_for_private_profile_from_public: Requests for private
             profile should be denied.
         test_request_for_private_from_private: Requests from private profiles
             to view their own details should be allowed.
@@ -340,7 +340,6 @@ class ProfileViewTests(TestCase):
                 'auth_extension:profile',
                 args=[self.public_profile.pk]
             ),
-            follow=True
         )
 
         self.assertRedirects(
@@ -367,13 +366,19 @@ class ProfileViewTests(TestCase):
             )
         )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('profile', response.context)
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse(
+                'auth_extension:profile_view',
+                args=[self.public_profile.pk]
+            ),
+            status_code=301
+        )
 
-        profile = response.context['profile']
+        # profile = response.context['profile']
 
-        self.assertEqual(profile.pk, self.public_profile.pk)
-        self.assertEqual(profile.user, self.public_profile.user)
+        # self.assertEqual(profile.pk, self.public_profile.pk)
+        # self.assertEqual(profile.user, self.public_profile.user)
 
     def test_request_for_private_profile_from_public(self):
         """
@@ -396,7 +401,8 @@ class ProfileViewTests(TestCase):
 
         self.assertRedirects(
             response=response,
-            expected_url=reverse('auth_extension:permission_denied')
+            expected_url=reverse('auth_extension:permission_denied'),
+            status_code=301
         )
 
     def test_request_for_private_from_self(self):
@@ -418,10 +424,11 @@ class ProfileViewTests(TestCase):
             )
         )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('profile', response.context)
-
-        profile = response.context['profile']
-
-        self.assertEqual(profile.pk, self.private_profile.pk)
-        self.assertEqual(profile.user, self.private_profile.user)
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse(
+                'auth_extension:profile_view',
+                args=[self.private_profile.pk]
+            ),
+            status_code=301
+        )

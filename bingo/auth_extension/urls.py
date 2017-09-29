@@ -24,14 +24,18 @@ urlpatterns = [
         name='login_redirect'),
 
     url(r'^(?P<pk>\d+)/$',
-        v.ProfileView.as_view(),
+        v.ProfileRedirectView.as_view(),
         name='profile'),
+
+    url(r'^(?P<pk>\d+)/view/$',
+        v.ProfileView.as_view(),
+        name='profile_view'),
 
     url(r'^(?P<pk>\d+)/edit/$',
         v.ProfileEditView.as_view(),
         name='profile_edit'),
 
-    url(r'^unauthorized/$',
+    url(r'^login-required/$',
         v.Unauthorized.as_view(),
         name='unauthorized'),
 
