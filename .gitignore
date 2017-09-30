@@ -37,3 +37,4 @@ secrets/
 # coverage stuff
 htmlcov/
 .coverage
+.coveragec

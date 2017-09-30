@@ -95,7 +95,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bingo',
-        'USER': 'bingouser',
+        'USER': 'bingo',
         'PASSWORD': DB_PASSWORD,
         'HOST': 'localhost',
         'PORT': '',
