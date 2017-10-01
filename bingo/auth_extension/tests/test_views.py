@@ -113,6 +113,162 @@ class LoginRedirectViewTests(TestCase):
         )
 
 
+class ProfileRedirectViewTests(TestCase):
+    """Tests for Profile Redirect View.
+
+    Methods:
+        setUp: Create public and profiles for tests.
+        test_request_from_unauthenticated_visitor: Requests from
+            unauthenticated visitors should be re-routed.
+        test_request_for_public_profile: Requests for public profile should
+            display that profile if visitor is authenticated.
+        test_request_for_private_profile_from_public: Requests for private
+            profile should be denied.
+        test_request_for_private_from_private: Requests from private profiles
+            to view their own details should be allowed.
+
+    References:
+        * https://docs.djangoproject.com/en/1.11/topics/testing/tools/#django.test.Client.get
+
+    """
+
+    def setUp(self):
+        """
+        Create public and private profiles.
+        """
+
+        # public profile
+        public_user = User.objects.get_or_create(
+            username='public_user',
+            email='public@gmail.com'
+        )[0]
+        public_user.set_password('publicuserp@55word')
+        public_user.save()
+        self.public_profile = UserProfile.objects.get_or_create(
+            user=public_user
+        )[0]
+
+        # private profile
+        private_user = User.objects.get_or_create(
+            username='private_user',
+            email='private@gmail.com'
+        )[0]
+        private_user.set_password('privateuserp@55word')
+        private_user.save()
+        self.private_profile = UserProfile.objects.get_or_create(
+            user=private_user,
+            private=True
+        )[0]
+
+        self.assertFalse(self.public_profile.private)
+        self.assertTrue(self.private_profile.private)
+
+    def test_request_from_unauthenticated_visitor(self):
+        """
+        Unauthenticated users should be redirected to LoginRequired.
+        """
+
+        self.client.logout()
+
+        response = self.client.get(
+            reverse(
+                'auth_extension:profile',
+                args=[self.public_profile.pk]
+            ),
+        )
+
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse('auth_extension:unauthorized'),
+        )
+
+    def test_request_for_public_profile(self):
+        """
+        Requesting public profile should return response of 200 and render page
+        for all authenticated users.
+        """
+
+        self.client.login(
+            username='public_user',
+            password='publicuserp@55word'
+        )
+        self.assertIn('_auth_user_id', self.client.session)
+
+        response = self.client.get(
+            reverse(
+                'auth_extension:profile',
+                args=[self.public_profile.pk]
+            )
+        )
+
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse(
+                'auth_extension:profile_view',
+                args=[self.public_profile.pk]
+            ),
+            status_code=301
+        )
+
+        # profile = response.context['profile']
+
+        # self.assertEqual(profile.pk, self.public_profile.pk)
+        # self.assertEqual(profile.user, self.public_profile.user)
+
+    def test_request_for_private_profile_from_public(self):
+        """
+        Requests for private profiles should be denied and redirected to
+        PermissionDenied.
+        """
+
+        self.client.login(
+            username='public_user',
+            password='publicuserp@55word'
+        )
+        self.assertIn('_auth_user_id', self.client.session)
+
+        response = self.client.get(
+            reverse(
+                'auth_extension:profile',
+                args=[self.private_profile.pk]
+            )
+        )
+
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse('auth_extension:permission_denied'),
+            status_code=301
+        )
+
+    def test_request_for_private_from_self(self):
+        """
+        Users with Private Profiles should be able to view their own profiles.
+        """
+
+        self.client.logout()
+        self.client.login(
+            username='private_user',
+            password='privateuserp@55word'
+        )
+        self.assertIn('_auth_user_id', self.client.session)
+
+        response = self.client.get(
+            reverse(
+                'auth_extension:profile',
+                args=[self.private_profile.pk]
+            )
+        )
+
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse(
+                'auth_extension:profile_view',
+                args=[self.private_profile.pk]
+            ),
+            status_code=301
+        )
+
+
 class RegistrationViewTests(TestCase):
     """ Tests for Registration View
 
@@ -278,157 +434,105 @@ class RegistrationViewTests(TestCase):
         )
 
 
-class ProfileRedirectViewTests(TestCase):
-    """Tests for Profile Redirect View.
+class ProfileViewTests(TestCase):
+    """Tests for ProfileView.
 
     Methods:
-        setUp: Create public and profiles for tests.
-        test_request_from_unauthenticated_visitor: Requests from
-            unauthenticated visitors should be re-routed.
-        test_request_for_public_profile: Requests for public profile should
-            display that profile if visitor is authenticated.
-        test_request_for_private_profile_from_public: Requests for private
-            profile should be denied.
-        test_request_for_private_from_private: Requests from private profiles
-            to view their own details should be allowed.
+        setUp: Create profiles to view
+        test_unauthenticated_redirects: unauthenticated visitors should be
+            sent to login-required url.
+        test_correct_template_used: View should use profile_view.html.
+        test_correct_profile_in_context: response's context data should contain
+            Profile matching pk sent via URL.
 
     References:
-        * https://docs.djangoproject.com/en/1.11/topics/testing/tools/#django.test.Client.get
-
+         * https://docs.djangoproject.com/en/1.11/topics/testing
     """
 
     def setUp(self):
         """
-        Create public and private profiles.
+        Create profile to view in tests.
         """
 
-        # public profile
-        public_user = User.objects.get_or_create(
-            username='public_user',
-            email='public@gmail.com'
+        self.user = User.objects.get_or_create(
+            username='profile-view-test',
+            email='profile-view@gmail.com'
         )[0]
-        public_user.set_password('publicuserp@55word')
-        public_user.save()
-        self.public_profile = UserProfile.objects.get_or_create(
-            user=public_user
-        )[0]
+        self.user.set_password('ProfileViewTests')
+        self.user.save()
 
-        # private profile
-        private_user = User.objects.get_or_create(
-            username='private_user',
-            email='private@gmail.com'
+        self.profile = UserProfile.objects.get_or_create(
+            user=self.user,
+            website='http://www.test-profile-view.com'
         )[0]
-        private_user.set_password('privateuserp@55word')
-        private_user.save()
-        self.private_profile = UserProfile.objects.get_or_create(
-            user=private_user,
-            private=True
+        self.profile.save()
+
+        self.viewer = User.objects.get_or_create(
+            username='testviewer',
+            email='testviewer@gmail.com'
         )[0]
+        self.viewer.set_password('Testing123')
+        self.viewer.save()
 
-        self.assertFalse(self.public_profile.private)
-        self.assertTrue(self.private_profile.private)
-
-    def test_request_from_unauthenticated_visitor(self):
+    def test_unauthenticated_redirects(self):
         """
-        Unauthenticated users should be redirected to LoginRequired.
+        Attempts to view profiles by unauthenticated users should redirect to
+        login-required page.
         """
 
         self.client.logout()
 
         response = self.client.get(
-            reverse(
-                'auth_extension:profile',
-                args=[self.public_profile.pk]
-            ),
+            reverse('auth_extension:profile_view', args=[self.profile.pk])
         )
 
         self.assertRedirects(
             response=response,
-            expected_url=reverse('auth_extension:unauthorized'),
+            expected_url='/profile/login-required/',
         )
 
-    def test_request_for_public_profile(self):
+    def test_correct_template_used(self):
         """
-        Requesting public profile should return response of 200 and render page
-        for all authenticated users.
+        View should use profile_view.html
         """
 
         self.client.login(
-            username='public_user',
-            password='publicuserp@55word'
+            username=self.viewer.username,
+            password='Testing123'
         )
-        self.assertIn('_auth_user_id', self.client.session)
 
         response = self.client.get(
             reverse(
-                'auth_extension:profile',
-                args=[self.public_profile.pk]
-            )
-        )
-
-        self.assertRedirects(
-            response=response,
-            expected_url=reverse(
                 'auth_extension:profile_view',
-                args=[self.public_profile.pk]
-            ),
-            status_code=301
-        )
-
-        # profile = response.context['profile']
-
-        # self.assertEqual(profile.pk, self.public_profile.pk)
-        # self.assertEqual(profile.user, self.public_profile.user)
-
-    def test_request_for_private_profile_from_public(self):
-        """
-        Requests for private profiles should be denied and redirected to
-        PermissionDenied.
-        """
-
-        self.client.login(
-            username='public_user',
-            password='publicuserp@55word'
-        )
-        self.assertIn('_auth_user_id', self.client.session)
-
-        response = self.client.get(
-            reverse(
-                'auth_extension:profile',
-                args=[self.private_profile.pk]
+                args=[self.profile.pk]
             )
         )
 
-        self.assertRedirects(
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
             response=response,
-            expected_url=reverse('auth_extension:permission_denied'),
-            status_code=301
+            template_name='auth_extension/profile_view.html'
         )
 
-    def test_request_for_private_from_self(self):
+    def test_correct_profile_in_context(self):
         """
-        Users with Private Profiles should be able to view their own profiles.
+        Assert that correct user's information was retrieved and passed in 
+        context.
         """
 
-        self.client.logout()
         self.client.login(
-            username='private_user',
-            password='privateuserp@55word'
+            username=self.viewer.username,
+            password='Testing123'
         )
-        self.assertIn('_auth_user_id', self.client.session)
 
         response = self.client.get(
             reverse(
-                'auth_extension:profile',
-                args=[self.private_profile.pk]
-            )
-        )
-
-        self.assertRedirects(
-            response=response,
-            expected_url=reverse(
                 'auth_extension:profile_view',
-                args=[self.private_profile.pk]
-            ),
-            status_code=301
+                args=[self.profile.pk]
+            )
         )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context)
+        self.assertIn('profile', response.context)
+        self.assertEqual(response.context['profile'], self.profile)
