@@ -536,3 +536,52 @@ class ProfileViewTests(TestCase):
         self.assertTrue(response.context)
         self.assertIn('profile', response.context)
         self.assertEqual(response.context['profile'], self.profile)
+
+
+# class ProfileEditViewTests(TestCase):
+
+
+class UnauthorizedTests(TestCase):
+    """Tests for Unauthorized Template View
+
+    Methods:
+        test_template_used: test correct template is rendered.
+
+    References:
+        * https://docs.djangoproject.com/en/1.11/topics/testing
+
+    """
+
+    def test_template_used(self):
+        response = self.client.get(
+            reverse('auth_extension:unauthorized')
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response=response,
+            template_name='auth_extension/login_required.html'
+        )
+
+
+class PermissionDeniedTests(TestCase):
+    """Tests for Permission Denied Template View
+
+    Methods:
+        test_template_used: test correct template is rendered.
+
+    References:
+        * https://docs.djangoproject.com/en/1.11/topics/testing
+
+    """
+
+    def test_template_used(self):
+        response = self.client.get(
+            reverse('auth_extension:permission_denied')
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response=response,
+            template_name='auth_extension/permission_denied.html'
+        )

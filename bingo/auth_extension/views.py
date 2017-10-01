@@ -166,8 +166,11 @@ class ProfileView(LRM, g.DetailView):
             retrieved by PK lookup for page generation
         template_name: Template to use to render data from UserProfile instance
         login_url: redirect users if not authenticated
-        get_object: redirects visitor if they requested a private_profile other
-            than their own.
+        redirect_field_name: Stops Django from appending redirect source as
+            querystring.
+        context_object_name: Name used as key in context dictionary.
+        permanent: Sets login redirect as permanent.
+        login_url: URL for redirecting unauthenticated users.
 
     References:
         * https://docs.djangoproject.com/en/1.11/ref/class-based-views/g-display/#detailview
@@ -178,6 +181,7 @@ class ProfileView(LRM, g.DetailView):
     template_name = 'auth_extension/profile_view.html'
     redirect_field_name = None
     context_object_name = 'profile'
+    permanent = True
 
     # using reverse causes circular import
     login_url = '/profile/login-required/'
