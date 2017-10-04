@@ -516,7 +516,7 @@ class ProfileViewTests(TestCase):
 
     def test_correct_profile_in_context(self):
         """
-        Assert that correct user's information was retrieved and passed in 
+        Assert that correct user's information was retrieved and passed in
         context.
         """
 
@@ -538,7 +538,152 @@ class ProfileViewTests(TestCase):
         self.assertEqual(response.context['profile'], self.profile)
 
 
-# class ProfileEditViewTests(TestCase):
+class ProfileEditViewTests(TestCase):
+    """Tests for Profile Edit View.
+
+    Methods:
+        setUp: create User, Profile, and dictionary of form data for testing.
+        test_correct_template_used: View should render
+            `auth_extension/profile_edit.html`.
+        test_initial_form_data: Form should populate data with current user's
+            profile info.
+        test_view_accepts_valid_data: if form data is valid, view should not
+            return any errors.
+        test_profile_created_successfully: When presented valid data, view
+            should create a new profile if needed.
+        test_existing_profile_updated: When presented valid data, view should
+            update a profile if it already exists.
+        test_no_duplicate_profiles: After form has been run many times
+            successfuly, each User should still only have one associated
+            Profile.
+        test_view_redirects_on_success: View should redirect to success_url
+            upon completion.
+        test_success_message_present: Success message should be present in
+            context after successful form submission.
+        test_redirect_unauthenticated_user: View should redirect
+            unauthenticated users to `/profile/login-required`.
+
+    References:
+        * https://docs.djangoproject.com/en/1.11/topics/testing
+
+    """
+
+    def setUp(self):
+        """
+        Create Users, Profiles, and form data dictionary for testing.
+        """
+
+        # Create User With Profile
+        user_with_profile = User.objects.get_or_create(
+            username='ihaveaprofile',
+            email='hasprofile@gmail.com'
+        )[0]
+        user_with_profile.set_password('w1thpr0F!le')
+        user_with_profile.save()
+        self.user_with_profile = user_with_profile
+
+        self.assertTrue(self.user_with_profile),
+        self.assertEqual(
+            self.user_with_profile.username,
+            'ihaveaprofile'
+        )
+        self.assertEqual(
+            self.user_with_profile.email,
+            'hasprofile@gmail.com'
+        )
+
+        # Create user without Profile
+        user_without_profile = User.objects.get_or_create(
+            username='ihavenoprofile',
+            email='noprofile@gmail.com'
+        )[0]
+        user_without_profile.set_password('n0proF!le')
+        user_without_profile.save()
+        self.user_without_profile = user_without_profile
+
+        self.assertTrue(self.user_without_profile),
+        self.assertEqual(
+            self.user_without_profile.username,
+            'ihavenoprofile'
+        )
+        self.assertEqual(
+            self.user_without_profile.email,
+            'noprofile@gmail.com'
+        )
+
+        # Create Profile for first User
+        first_profile = UserProfile.objects.get_or_create(
+            user=self.user_with_profile,
+            website='www.example.com',
+            about_me='I had a profile originally'
+        )[0]
+        self.first_profile = first_profile
+
+        self.assertTrue(self.first_profile)
+        self.assertEqual(
+            self.first_profile.user,
+            self.user_with_profile,
+        )
+        self.assertEqual(
+            self.first_profile.website,
+            'www.example.com'
+        )
+        self.assertEqual(
+            self.first_profile.about_me,
+            'I had a profile originally'
+        )
+
+    def test_correct_template_used(self):
+        """
+        View should render `auth_extension/profile_edit.html`.
+        """
+
+        self.client.login(
+            username='ihaveaprofile',
+            password='w1thpr0F!le'
+        )
+
+        response = self.client.get(
+            reverse(
+                'auth_extension:profile_edit',
+                args=[self.first_profile.pk])
+        )
+
+        self.assertTemplateUsed(
+            response=response,
+            template_name='auth_extension/profile_edit.html'
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.client.logout()
+
+    def test_initial_form_data(self):
+        """
+        Form's initial data should be populated with data from profile.
+        """
+
+        self.client.login(
+            username='ihaveaprofile',
+            password='w1thpr0F!le'
+        )
+
+        response = self.client.get(
+            reverse(
+                'auth_extension:profile_edit',
+                args=[self.first_profile.pk])
+        )
+
+        # get initial values for form fields
+        initial = response.context['form'].initial
+
+        self.assertEqual(
+            initial['website'],
+            self.first_profile.website
+        )
+        self.assertEqual(
+            initial['about_me'],
+            self.first_profile.about_me
+        )
 
 
 class UnauthorizedTests(TestCase):
