@@ -206,6 +206,7 @@ class ProfileEditView(LRM, SuccessMessageMixin, g.FormView):
         dispatch: add user_pk to self for use in get_initial
         get_initial: set initial value for fields to authenticated user's
             profile data if said data is populated.
+        form_valid: save form
 
     References:
         * https://docs.djangoproject.com/en/1.11/ref/class-based-views/g-editing/#formview
@@ -241,7 +242,12 @@ class ProfileEditView(LRM, SuccessMessageMixin, g.FormView):
 
         return initial
 
-    # def form_valid(self):
+    def form_valid(self, form):
+        """
+        Save form.
+        """
+        form.save(self.user_pk)
+        return super(ProfileEditView, self).form_valid(form)
 
 
 # TODO *** ProfileListView ***

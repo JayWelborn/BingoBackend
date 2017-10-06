@@ -549,8 +549,6 @@ class ProfileEditViewTests(TestCase):
             profile info.
         test_view_accepts_valid_data: if form data is valid, view should not
             return any errors.
-        test_profile_created_successfully: When presented valid data, view
-            should create a new profile if needed.
         test_existing_profile_updated: When presented valid data, view should
             update a profile if it already exists.
         test_no_duplicate_profiles: After form has been run many times
@@ -633,6 +631,13 @@ class ProfileEditViewTests(TestCase):
             'I had a profile originally'
         )
 
+        self.form_data = {
+            'picture': None,
+            'website': 'http://www.testform.com',
+            'private': False,
+            'about_me': 'Test Form Data'
+        }
+
     def test_correct_template_used(self):
         """
         View should render `auth_extension/profile_edit.html`.
@@ -684,6 +689,35 @@ class ProfileEditViewTests(TestCase):
             initial['about_me'],
             self.first_profile.about_me
         )
+
+    def test_view_accepts_valid_data(self):
+        """
+        When given valid data, form should edit Profile object associated with
+        authenticated user.
+        """
+
+        self.client.login(
+            username='ihaveaprofile',
+            password='w1thpr0F!le'
+        )
+
+        response = self.client.post(
+            reverse(
+                'auth_extension:profile_edit',
+                args=[self.first_profile.pk]),
+            self.form_data
+        )
+
+        profile = UserProfile.objects.get(pk=self.first_profile.pk)
+
+        self.assertEqual(
+            profile.website,
+            self.form_data['website'])
+        self.assertEqual(
+            profile.about_me,
+            self.form_data['about_me'])
+        self.assertEqual(response.status_code, 302)
+        
 
 
 class UnauthorizedTests(TestCase):
