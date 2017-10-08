@@ -103,14 +103,6 @@ DATABASES = {
     }
 }
 
-# use sqlite for tests for speed
-if 'test' in sys.argv:
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'mydatabase'
-    }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
@@ -183,3 +175,13 @@ REGISTRATION_AUTO_LOGIN = True
 REGISTRATION_OPEN = True
 LOGIN_REDIRECT_URL = '/profile/'
 LOGIN_URL = '/accounts/login/'
+
+
+# Test Specific Settings
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase'
+    }
+
+    CACHE_MIDDLEWARE_SECONDS = 0

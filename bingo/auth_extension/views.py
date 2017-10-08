@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin as LRM
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views import generic as g
 from django.urls import reverse

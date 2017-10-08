@@ -554,10 +554,6 @@ class ProfileEditViewTests(TestCase):
         test_no_duplicate_profiles: After form has been run many times
             successfuly, each User should still only have one associated
             Profile.
-        test_view_redirects_on_success: View should redirect to success_url
-            upon completion.
-        test_success_message_present: Success message should be present in
-            context after successful form submission.
         test_redirect_unauthenticated_user: View should redirect
             unauthenticated users to `/profile/login-required`.
 
@@ -780,6 +776,49 @@ class ProfileEditViewTests(TestCase):
         self.assertEqual(
             profiles[0].website,
             self.form_data['website']
+        )
+
+        self.client.logout()
+
+    # def test_success_message_present(self):
+    #     """
+    #     Successful Posting should result in success message.
+    #     """
+    #     self.client.login(
+    #         username='ihaveaprofile',
+    #         password='w1thpr0F!le'
+    #     )
+
+    #     self.form_data['website'] = 'http://www.updatedyetagain.com'
+    #     self.form_data['about_me'] = 'Seriously. Another Test'
+
+    #     response = self.client.post(
+    #         reverse(
+    #             'auth_extension:profile_edit',
+    #             args=[self.first_profile.pk]),
+    #         self.form_data
+    #     )
+
+    #     message = list(response.context['messages'])[0]
+    #     self.assertEqual(message.tags, "success")
+    #     self.assertTrue("success text" in message.message)
+
+    def test_redirect_unauthenticated_user(self):
+        """
+        Unauthenticated user should not be allowed to view ProfileEdit View.
+        """
+
+        self.client.logout()
+
+        response = self.client.get(reverse(
+            'auth_extension:profile_edit',
+            args=[self.first_profile.pk]
+        ))
+
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse('auth_extension:unauthorized'),
+            status_code=302
         )
 
 
