@@ -749,6 +749,39 @@ class ProfileEditViewTests(TestCase):
             self.form_data['about_me'])
         self.assertEqual(response.status_code, 302)
 
+        self.client.logout()
+
+    def test_no_duplicate_profiles(self):
+        """
+        Submitting data to ProfileEdit view should replace current user's
+        profile data; it should not create a new profile.
+        """
+
+        self.client.login(
+            username='ihaveaprofile',
+            password='w1thpr0F!le'
+        )
+
+        self.form_data['website'] = 'http://www.updated.com'
+        self.form_data['about_me'] = 'I have updated my profile again omg.'
+
+        response = self.client.post(
+            reverse(
+                'auth_extension:profile_edit',
+                args=[self.first_profile.pk]),
+            self.form_data
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+        profiles = UserProfile.objects.filter(user=self.user_with_profile)
+
+        self.assertEqual(len(profiles), 1)
+        self.assertEqual(
+            profiles[0].website,
+            self.form_data['website']
+        )
+
 
 class UnauthorizedTests(TestCase):
     """Tests for Unauthorized Template View
