@@ -718,6 +718,37 @@ class ProfileEditViewTests(TestCase):
             self.form_data['about_me'])
         self.assertEqual(response.status_code, 302)
 
+        self.client.logout()
+
+    def test_existing_profile_updated(self):
+        """
+        If user submits valid form, their profile should be updated.
+        """
+        self.client.login(
+            username='ihaveaprofile',
+            password='w1thpr0F!le'
+        )
+
+        self.form_data['website'] = 'http://www.example2.com'
+        self.form_data['about_me'] = 'I have updated my profile'
+
+        response = self.client.post(
+            reverse(
+                'auth_extension:profile_edit',
+                args=[self.first_profile.pk]),
+            self.form_data
+        )
+
+        profile = UserProfile.objects.get(pk=self.first_profile.pk)
+
+        self.assertEqual(
+            profile.website,
+            self.form_data['website'])
+        self.assertEqual(
+            profile.about_me,
+            self.form_data['about_me'])
+        self.assertEqual(response.status_code, 302)
+
 
 class UnauthorizedTests(TestCase):
     """Tests for Unauthorized Template View
