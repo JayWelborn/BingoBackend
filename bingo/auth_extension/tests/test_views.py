@@ -717,7 +717,6 @@ class ProfileEditViewTests(TestCase):
             profile.about_me,
             self.form_data['about_me'])
         self.assertEqual(response.status_code, 302)
-        
 
 
 class UnauthorizedTests(TestCase):
