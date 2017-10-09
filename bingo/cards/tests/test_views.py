@@ -40,6 +40,8 @@ class CardListViewTests(TestCase):
 
         # Create bingocards
         self.cards = []
+        self.private_cards = []
+
         for i in range(10):
             card = BingoCard.objects.create(
                 title='card # {}'.format(i),
@@ -49,7 +51,17 @@ class CardListViewTests(TestCase):
             card.save()
             self.cards.append(card)
 
+            private_card = BingoCard.objects.create(
+                title='card # {}'.format(i),
+                created_date=timezone.now() - timedelta(days=i),
+                creator=self.user,
+                private=True
+            )
+            private_card.save()
+            self.private_cards.append(private_card)
+
         self.assertEqual(len(self.cards), 10)
+        self.assertEqual(len(self.private_cards), 10)
 
     def test_template_used(self):
         """

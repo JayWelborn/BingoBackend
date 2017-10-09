@@ -15,6 +15,7 @@ class CardListView(g.ListView):
         template_name: Template used to render list
 
     Methods:
+        get_queryset: Filter out private cards if user is not authenticated
 
     References:
         * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-display/#listview
@@ -26,3 +27,15 @@ class CardListView(g.ListView):
     queryset = BingoCard.objects.order_by('-created_date')
     paginate_by = 8
     template_name = 'cards/card_list.html'
+
+    def get_queryset(self):
+        """
+        Filter private cards out if user is not authenticated
+        """
+        queryset = super(CardListView, self).get_queryset()
+
+        if self.request.user.is_authenticated:
+            return queryset
+
+        else:
+            return queryset.filter(private=False)
