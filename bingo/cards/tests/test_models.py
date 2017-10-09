@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.test import TestCase
 
-from .models import BingoCard, BingoCardSquare
+from cards.models import BingoCard, BingoCardSquare
 
 
 # Create your tests here.

@@ -4,8 +4,6 @@ from django.urls import reverse
 
 from auth_extension.models import UserProfile
 
-import pdb
-
 
 class LoginRedirectViewTests(TestCase):
     """Tests for RedirectView

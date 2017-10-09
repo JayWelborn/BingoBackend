@@ -8,8 +8,6 @@ from django.urls import reverse
 from .models import UserProfile
 from .forms import RegistrationForm, ProfileEditForm
 
-import pdb
-
 
 # Create your views here.
 class LoginRedirectView(g.RedirectView):

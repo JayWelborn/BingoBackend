@@ -35,6 +35,8 @@ urlpatterns = [
 
     url(r'^profile/', include('auth_extension.urls')),
 
+    url(r'^cards/', include('cards.urls')),
+
     url(r'^', include('home.urls')),
 ]
 
