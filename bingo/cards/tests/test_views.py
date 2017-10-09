@@ -63,6 +63,12 @@ class CardListViewTests(TestCase):
         self.assertEqual(len(self.cards), 10)
         self.assertEqual(len(self.private_cards), 10)
 
+        for card in self.private_cards:
+            self.assertTrue(card.private)
+
+        for card in self.cards:
+            self.assertFalse(card.private)
+
     def test_template_used(self):
         """
         View shoud use `cards/card_list.html`.
