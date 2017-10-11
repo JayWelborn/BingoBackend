@@ -7,6 +7,8 @@ from django.utils import timezone
 
 from cards.models import BingoCard, BingoCardSquare
 
+import pdb
+
 
 class CardListViewTests(TestCase):
     """Tests for CardListView class
@@ -18,6 +20,8 @@ class CardListViewTests(TestCase):
         test_context_object_name: List of cards should be in
             context['bingocards']
         test_cards_sorted_correctly: Cards should be sorted most recent first
+        test_cards_filtered_by_privacy: Private cards should only disply for
+            authenticated users
 
     References:
         * https://www.obeythetestinggoat.com/book/appendix_Django_Class-Based_Views.html
@@ -88,5 +92,28 @@ class CardListViewTests(TestCase):
         """
 
         response = self.client.get(reverse('cards:card_list'))
-
         self.assertIn('bingocards', response.context)
+
+    def test_cards_sorted_correctly(self):
+        """
+        Cards should be sorted by date.
+        """
+
+        response = self.client.get(reverse('cards:card_list'))
+        self.assertEqual(response.status_code, 200)
+        cards = response.context['bingocards']
+
+        for i in range(1, len(cards)):
+            current = cards[1]
+            previous = cards[0]
+            self.assertTrue(current.created_date < previous.created_date)
+
+    def test_cards_filtered_by_privacy(self):
+        """
+        Private cards should not display for unauthenticated visitors
+        """
+
+        response = self.client.get(reverse('cards:card_list'))
+        cards = response.context['bingocards']
+        for card in cards:
+            self.assertFalse(card.private)
