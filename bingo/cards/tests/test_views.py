@@ -81,3 +81,12 @@ class CardListViewTests(TestCase):
             response,
             'cards/card_list.html'
         )
+
+    def test_context_object_name(self):
+        """
+        View should render with cards stored in context['bingocards'].
+        """
+
+        response = self.client.get(reverse('cards:card_list'))
+
+        self.assertIn('bingocards', response.context)
