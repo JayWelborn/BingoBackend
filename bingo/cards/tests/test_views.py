@@ -33,6 +33,7 @@ class CardListViewTests(TestCase):
         Create objects for testing
         """
 
+        # Create User
         self.user = User.objects.create(
             username='cardviewtests',
             email='cardviewtest@gmail.com'
@@ -47,6 +48,7 @@ class CardListViewTests(TestCase):
         self.private_cards = []
 
         for i in range(10):
+            # Public Cards
             card = BingoCard.objects.create(
                 title='card # {}'.format(i),
                 created_date=timezone.now() - timedelta(days=i),
@@ -55,6 +57,7 @@ class CardListViewTests(TestCase):
             card.save()
             self.cards.append(card)
 
+            # Private Cards
             private_card = BingoCard.objects.create(
                 title='card # {}'.format(i),
                 created_date=timezone.now() - timedelta(days=i),
@@ -113,7 +116,33 @@ class CardListViewTests(TestCase):
         Private cards should not display for unauthenticated visitors
         """
 
+        self.client.logout()
+
         response = self.client.get(reverse('cards:card_list'))
         cards = response.context['bingocards']
         for card in cards:
             self.assertFalse(card.private)
+
+    def test_authenticated_user_can_see_private_cards(self):
+        """
+        Authenticated Users should be able to see private cards.
+        """
+
+        self.client.login(
+            username='cardviewtests',
+            password='c@RdviewTe5t5'
+        )
+
+        # Ensure user is logged in
+        self.assertIn('_auth_user_id', self.client.session)
+
+        response = self.client.get(reverse('cards:card_list'))
+        cards = list(response.context['bingocards'])
+
+        for index, card in enumerate(cards):
+            if not card.private:
+                cards.pop(index)
+
+        self.assertTrue(cards)
+        for card in cards:
+            self.assertTrue(card.private)
