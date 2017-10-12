@@ -22,6 +22,8 @@ class CardListViewTests(TestCase):
         test_cards_sorted_correctly: Cards should be sorted most recent first
         test_cards_filtered_by_privacy: Private cards should only disply for
             authenticated users
+        test_authenticated_user_can_see_private_cards: Authenticated users
+            should be able to see private cards in list.
 
     References:
         * https://www.obeythetestinggoat.com/book/appendix_Django_Class-Based_Views.html
