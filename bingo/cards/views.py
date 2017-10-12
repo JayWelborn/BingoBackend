@@ -1,4 +1,6 @@
+from django.shortcuts import redirect
 from django.views import generic as g
+from django.urls import reverse
 
 from .models import BingoCard
 
@@ -39,3 +41,37 @@ class CardListView(g.ListView):
 
         else:
             return queryset.filter(private=False)
+
+
+class CardDetailView(g.DetailView):
+    """Display full Bingo Card to play.
+
+    Attributes:
+        model: The model that will be rendered by the view.
+        context_object_name: Name of object to be passed to template
+        template_name: HTML template that will render data.
+
+    Methods:
+        get: redirect to login-required view if unauthenticated user attempts
+            to access private card.
+
+    References:
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-display/#detailview
+
+    """
+
+    model = BingoCard
+    context_object_name = 'card'
+    template_name = 'cards/card_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        """
+        Redirect if unauthenticated user attempts to view private card.
+        """
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+        card = context['card']
+        if card.private and not self.user.is_authenticated:
+            return redirect(reverse('auth_extension:unauthorized'))
+        else:
+            return self.render_to_response(context)

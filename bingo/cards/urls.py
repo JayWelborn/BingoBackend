@@ -19,5 +19,8 @@ from . import views as v
 
 app_name = 'cards'
 urlpatterns = [
+
+    url(r'^(?P<pk>\d+)/$', v.CardDetailView.as_view(), name='card_detail'),
+
     url(r'^/', v.CardListView.as_view(), name='card_list'),
 ]

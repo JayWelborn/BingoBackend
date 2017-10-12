@@ -148,3 +148,73 @@ class CardListViewTests(TestCase):
         self.assertTrue(cards)
         for card in cards:
             self.assertTrue(card.private)
+
+
+class CardDetailViewTests(TestCase):
+    """Tests for Card Detail View.
+
+    Methods:
+        setUp: create card for testing
+        test_context_object_name: Card should be stored at context['card'].
+        test_template_used: View shoud use `cards/card_detail.html`
+        test_public_card_viewable_by_all: Users should be able to view a public
+            card even if they aren't authenticated.
+        test_private_card_only_authenticated: Only authenticated users should
+            be able to see private cards
+
+    References:
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-display/#detailview
+
+    """
+
+    def setUp(self):
+        """
+        Create objects for testing.
+        """
+
+        # Create User
+        self.user = User.objects.create(
+            username='detailtests',
+            email='detail@gmail.com'
+        )
+        self.user.set_password('detail123')
+        self.user.save()
+
+        # Create public card
+        self.public_card = BingoCard.objects.create(
+            title='Public Card',
+            free_space='Public Free Space',
+            creator=self.user
+        )
+        self.public_card.save()
+
+        # Create private card
+        self.private_card = BingoCard.objects.create(
+            title='Private Card',
+            free_space='Private Free Space',
+            creator=self.user,
+            private=True
+        )
+
+    def test_context_object_name(self):
+        """
+        Card should be accest at context['card']
+        """
+
+        response = self.client.get(
+            reverse('cards:card_detail', args=[self.public_card.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('card', response.context)
+
+    def test_template_used(self):
+        """
+        View should render template `cards/card_detail.html.
+        """
+
+        response = self.client.get(
+            reverse('cards:card_detail', args=[self.public_card.pk])
+        )
+
+        self.assertTemplateUsed(response, 'cards/card_detail.html')
