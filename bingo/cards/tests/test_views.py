@@ -218,3 +218,33 @@ class CardDetailViewTests(TestCase):
         )
 
         self.assertTemplateUsed(response, 'cards/card_detail.html')
+
+    def test_public_card_viewable_by_all(self):
+        """
+        Public card should be viewable by everyone.
+        """
+
+        # Test unauthenticated user
+        self.client.logout()
+        response = self.client.get(
+            reverse('cards:card_detail', args=[self.public_card.pk])
+        )
+        self.assertEqual(response.status_code, 200)
+        card = response.context['card']
+        self.assertEqual(card, self.public_card)
+
+        # Test authenticated user
+        self.client.login(
+            username='detailtests',
+            password='detail123'
+        )
+
+        # Ensure user is logged in
+        self.assertIn('_auth_user_id', self.client.session)
+
+        response = self.client.get(
+            reverse('cards:card_detail', args=[self.public_card.pk])
+        )
+        self.assertEqual(response.status_code, 200)
+        card = response.context['card']
+        self.assertEqual(card, self.public_card)
