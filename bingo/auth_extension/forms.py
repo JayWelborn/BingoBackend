@@ -25,6 +25,7 @@ class RegistrationForm(CrispyBaseModelForm):
         password: Password. Hashed before storing in the database.
 
     Methods:
+        __init__: Give form id, method, and action for crispy rendering
         clean: perform normal clean operations. Additionally ensure passwords
             match and are valid
         save: save both user and matching profile
