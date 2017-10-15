@@ -248,3 +248,34 @@ class CardDetailViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         card = response.context['card']
         self.assertEqual(card, self.public_card)
+
+    def test_private_card_only_authenticated(self):
+        """
+        Private card should only be viewable vy authenticated users.
+        """
+
+        # Test unauthenticated user
+        self.client.logout()
+        response = self.client.get(
+            reverse('cards:card_detail', args=[self.private_card.pk])
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse('auth_extension:unauthorized'),
+        )
+
+        # Test authenticated user
+        self.client.login(
+            username='detailtests',
+            password='detail123'
+        )
+        response = self.client.get(
+            reverse('cards:card_detail', args=[self.private_card.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('card', response.context)
+        card = response.context['card']
+        self.assertEqual(card, self.private_card)

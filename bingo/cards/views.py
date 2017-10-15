@@ -71,7 +71,7 @@ class CardDetailView(g.DetailView):
         self.object = self.get_object()
         context = self.get_context_data(object=self.object)
         card = context['card']
-        if card.private and not self.user.is_authenticated:
+        if card.private and not request.user.is_authenticated:
             return redirect(reverse('auth_extension:unauthorized'))
         else:
             return self.render_to_response(context)
