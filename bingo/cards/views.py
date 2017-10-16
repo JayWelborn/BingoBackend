@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import redirect
 from django.views import generic as g
 from django.urls import reverse
@@ -87,6 +88,8 @@ class CardCreateView(g.CreateView):
 
     Methods:
         get_context_data: Add bingoCardFormset to view's context
+        form_valid: Save the formset as well as the form so cards get created
+            with squares
 
     References:
 
@@ -111,3 +114,21 @@ class CardCreateView(g.CreateView):
             context['square_formset'] = BingoSquareFormset()
 
         return context
+
+    def form_valid(self, form):
+        """
+        Add saving the formset to normal form handling process.
+        """
+
+        context = self.get_context_data()
+        square_formset = context['square_formset']
+
+        with transaction.atomic():
+            # get card instance
+            self.object = form.save()
+            if square_formset.is_valid():
+                # name instance for formset to relate to via ForeignKey
+                square_formset.instance = self.object
+                square_formset.save()
+
+        return super(CardCreateView, self).form_valid(form)
