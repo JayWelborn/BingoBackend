@@ -1,9 +1,11 @@
 # django imports
-from django import forms
+from django.forms.models import inlineformset_factory
 
 # app imports
 from bingo.forms import CrispyBaseModelForm
-from .models import BingoCard
+
+# relative imports
+from .models import BingoCard, BingoCardSquare
 
 
 class BingoCardForm(CrispyBaseModelForm):
@@ -11,14 +13,14 @@ class BingoCardForm(CrispyBaseModelForm):
 
     Fields:
         Meta:
-            Model: Declares model for ModelForm
+            model: Declares model for ModelForm
             fields: Tuple containing attributes form BingoCard model
 
     Methods:
         __init__: Give form id, method, and action for crispy rendering.
 
     References:
-        * * https://docs.djangoproject.com/en/1.11/topics/forms/modelforms/#modelform
+        * https://docs.djangoproject.com/en/1.11/topics/forms/modelforms/#modelform
 
     """
 
@@ -34,3 +36,31 @@ class BingoCardForm(CrispyBaseModelForm):
     class Meta:
         model = BingoCard
         fields = ('title', 'free_space', 'creator', 'private')
+
+
+class BingoSquareForm(CrispyBaseModelForm):
+    """Form for creating BingoCardSquares.
+
+    Fields:
+        Meta:
+            model: declares model for ModelForm
+
+    References:
+        * https://docs.djangoproject.com/en/1.11/topics/forms/modelforms/#modelform
+
+    """
+
+    class Meta:
+        model = BingoCardSquare
+
+
+# https://docs.djangoproject.com/en/1.11/ref/forms/models/#inlineformset-factory
+BingoCardFormset = inlineformset_factory(
+    BingoCard,
+    BingoCardSquare,
+    form=BingoSquareForm,
+    min_num=24,
+    validate_min=True,
+    max_num=24,
+    validate_max=True
+)

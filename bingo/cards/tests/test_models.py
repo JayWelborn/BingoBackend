@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.test import TestCase
+from django.urls import reverse
 
 from cards.models import BingoCard, BingoCardSquare
 
@@ -19,6 +20,8 @@ class BingoCardModelTests(TestCase):
             BingoCard.creator
         test_user_accessible_from_square: User should be accessible from square
             at square.card.creator
+        test_get_absolute_url: BingoCard.get_absolute_url should return URL for
+            the card's DetailView
 
     References:
         * https://docs.djangoproject.com/en/1.11/topics/testing/
@@ -71,6 +74,15 @@ class BingoCardModelTests(TestCase):
         """
         square = BingoCardSquare.objects.latest('created_date')
         self.assertEqual(self.test_user, square.card.creator)
+
+    def test_get_absolute_url(self):
+        """
+        Get_absolute_url should return url for CardDetailView for that card.
+        """
+
+        url = self.public_bingo_card.get_absolute_url()
+        pk = self.public_bingo_card.pk
+        self.assertEqual(url, reverse('cards:card_detail', args=[pk]))
 
 
 class BingoCardSquareModelTests(TestCase):

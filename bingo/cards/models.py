@@ -72,6 +72,14 @@ class BingoCard(models.Model):
         self.slug = slugify(self.title)
         super(BingoCard, self).save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        """
+        Get url to view card.
+        """
+
+        from django.urls import reverse
+        return reverse('cards:card_detail', args=[self.pk])
+
 
 class BingoCardSquare(models.Model):
     """Model to store text for Bingo Card Squares.
