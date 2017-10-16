@@ -3,6 +3,7 @@ from django.views import generic as g
 from django.urls import reverse
 
 from .models import BingoCard
+from .forms import BingoSquareFormset
 
 
 # Create your views here.
@@ -75,3 +76,38 @@ class CardDetailView(g.DetailView):
             return redirect(reverse('auth_extension:unauthorized'))
         else:
             return self.render_to_response(context)
+
+
+class CardCreateView(g.CreateView):
+    """Create a new Bingo Card.
+
+    Attributes:
+        model: Model associated with view
+        fields: fields to display on the page
+
+    Methods:
+        get_context_data: Add bingoCardFormset to view's context
+
+    References:
+
+    """
+
+    model = BingoCard
+    fields = ['title', 'free_space', 'creator', 'private']
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Add formset to context.
+        """
+
+        context = super(CardCreateView, self).get_context_data(*args, **kwargs)
+
+        # instantiate formset with data for saving on POST
+        if self.request.POST:
+            context['square_formset'] = BingoSquareFormset(self.request.POST)
+
+        # instantiate empty formset on GET
+        else:
+            context['square_formset'] = BingoSquareFormset()
+
+        return context

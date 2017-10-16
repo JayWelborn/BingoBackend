@@ -45,17 +45,29 @@ class BingoSquareForm(CrispyBaseModelForm):
         Meta:
             model: declares model for ModelForm
 
+    Methods:
+        __init__: add helper attributes for crispy rendering
+
     References:
         * https://docs.djangoproject.com/en/1.11/topics/forms/modelforms/#modelform
 
     """
+
+    def __init__(self, *args, **kwargs):
+        """
+        Make form crispy
+        """
+        super(BingoSquareForm, self).__init__(*args, **kwargs)
+        self.helper.form_id = 'bingo_square_form'
+        self.helper.form_method = 'post'
+        self.helper.form_action = '.'
 
     class Meta:
         model = BingoCardSquare
 
 
 # https://docs.djangoproject.com/en/1.11/ref/forms/models/#inlineformset-factory
-BingoCardFormset = inlineformset_factory(
+BingoSquareFormset = inlineformset_factory(
     BingoCard,
     BingoCardSquare,
     form=BingoSquareForm,
