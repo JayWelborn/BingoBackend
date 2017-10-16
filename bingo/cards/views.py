@@ -92,11 +92,15 @@ class CardCreateView(g.CreateView):
             with squares
 
     References:
+    * https://docs.djangoproject.com/en/1.10/ref/class-based-views/flattened-index/#CreateView
+    * https://medium.com/@adandan01/django-inline-formsets-example-mybook-420cc4b6225d
+    * https://docs.djangoproject.com/en/1.11/topics/db/transactions/#django.db.transaction.atomic
 
     """
 
     model = BingoCard
     fields = ['title', 'free_space', 'creator', 'private']
+    template_name = 'cards/card_create.html'
 
     def get_context_data(self, *args, **kwargs):
         """

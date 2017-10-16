@@ -1,4 +1,3 @@
-# django imports
 from django.forms.models import inlineformset_factory
 
 # app imports
@@ -64,6 +63,7 @@ class BingoSquareForm(CrispyBaseModelForm):
 
     class Meta:
         model = BingoCardSquare
+        exclude = ('created_date',)
 
 
 # https://docs.djangoproject.com/en/1.11/ref/forms/models/#inlineformset-factory

@@ -22,5 +22,7 @@ urlpatterns = [
 
     url(r'^(?P<pk>\d+)/$', v.CardDetailView.as_view(), name='card_detail'),
 
-    url(r'^/', v.CardListView.as_view(), name='card_list'),
+    url(r'^create/$', v.CardCreateView.as_view(), name='card_create'),
+
+    url(r'^', v.CardListView.as_view(), name='card_list'),
 ]
