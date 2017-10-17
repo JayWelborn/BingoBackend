@@ -2,6 +2,9 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 from cards.forms import BingoCardForm
+from cards.models import BingoCard
+
+import pdb
 
 
 class BingoCardFormtests(TestCase):
@@ -37,7 +40,7 @@ class BingoCardFormtests(TestCase):
         self.data = {
             'title': 'FormTestTitle',
             'free_space': 'FormTestFreeSpace',
-            'creator': self.user,
+            'creator': str(self.user.id),
             'private': False
         }
 
@@ -47,4 +50,32 @@ class BingoCardFormtests(TestCase):
         """
 
         form = BingoCardForm()
+
         self.assertTrue(form.helper)
+        self.assertEqual(form.helper.form_id, 'bingo_card_form')
+        self.assertEqual(form.helper.form_method, 'post')
+        self.assertEqual(form.helper.form_action, '.')
+
+    def test_form_accepts_valid_data(self):
+        """
+        Form should accept and process valid data.
+        """
+        form = BingoCardForm(self.data)
+
+        self.assertTrue(form.is_valid())
+
+    def test_card_created_correctly(self):
+        """
+        Form should create new BingoCard properly.
+        """
+
+        # instantiate form, and save it
+        form = BingoCardForm(self.data)
+        if form.is_valid():
+            test_card = form.save()
+
+        # check card in DB against card returned by form
+        card = BingoCard.objects.get(title='FormTestTitle')
+        self.assertTrue(card)
+        self.assertEqual(card, test_card)
+        self.assertEqual(card.creator, self.user)

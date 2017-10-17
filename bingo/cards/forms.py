@@ -23,7 +23,7 @@ class BingoCardForm(CrispyBaseModelForm):
 
     """
 
-    def __init(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """
         Give form crispy attributes.
         """
