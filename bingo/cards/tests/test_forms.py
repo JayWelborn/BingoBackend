@@ -197,13 +197,12 @@ class BingoSquareFormsetTests(TestCase):
 
         # Formset data
         self.data = {
-            'form-TOTAL_FORMS': '24',
-            'form-INITIAL_FORMS': '0',
-            'form-MAX_NUM_FORMS': '24',
-            'form-MIN_NUM_FORMS': '0'
+            'form-TOTAL_FORMS': 24,
+            'form-INITIAL_FORMS': 0,
+            'form-MAX_NUM_FORMS': 24,
         }
 
-       # iteratively add squares to data dict
+        # iteratively add squares to data dict
         for i in range(24):
             text_key = 'form-{}-text'.format(i)
             text_value = 'square {}'.format(i)
@@ -216,5 +215,4 @@ class BingoSquareFormsetTests(TestCase):
 
         formset = BingoSquareFormset(self.data)
         formset.instance = self.card
-        pdb.set_trace()
         self.assertTrue(formset.is_valid())
