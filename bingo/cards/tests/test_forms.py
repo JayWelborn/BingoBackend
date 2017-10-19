@@ -1,13 +1,13 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from cards.forms import BingoCardForm, BingoSquareForm
+from cards.forms import BingoCardForm, BingoSquareForm, BingoSquareFormset
 from cards.models import BingoCard, BingoCardSquare
 
 import pdb
 
 
-class BingoCardFormtests(TestCase):
+class BingoCardFormTests(TestCase):
     """Tests for BingoCardForm
 
     Methods:
@@ -81,8 +81,8 @@ class BingoCardFormtests(TestCase):
         self.assertEqual(card.creator, self.user)
 
 
-class BingoSquareFormtests(TestCase):
-    """Tests for BingoCardForm
+class BingoSquareFormTests(TestCase):
+    """Tests for BingoSquareForm
 
     Methods:
         setUp: Create test data for form
@@ -92,8 +92,7 @@ class BingoSquareFormtests(TestCase):
         data from form, and defaults for attributes not included in the form.
 
     References:
-
-    * http://test-driven-django-development.readthedocs.io/en/latest/05-forms.html
+        * http://test-driven-django-development.readthedocs.io/en/latest/05-forms.html
 
     """
 
@@ -156,3 +155,66 @@ class BingoSquareFormtests(TestCase):
         self.assertEqual(square, test_square)
         self.assertEqual(square.card, self.card)
         self.assertEqual(square.card.creator, self.user)
+
+
+class BingoSquareFormsetTests(TestCase):
+    """Tests for BingoSquareFormset
+
+    Methods
+        setUp: Create test data for formset
+        test_helper: test that formset can access form's helper
+        test_formset_accepts_valid_data: Formset should accept valid data
+        test_squares_created_correctly: Formset should create squares all
+            associated with a parent card set as formset.instance
+
+    References:
+        * http://schinckel.net/2016/04/30/%28directly%29-testing-django-formsets/
+        * http://whoisnicoleharris.com/2015/01/06/implementing-django-formsets.html#test-the-formset
+        * https://docs.djangoproject.com/en/1.11/topics/forms/modelforms/#inline-formsets
+        * https://docs.djangoproject.com/en/1.11/ref/forms/models/#django.forms.models.inlineformset_factory
+
+    """
+
+    def setUp(self):
+        """
+        Create test data
+        """
+
+        # Create user
+        self.user = User.objects.get_or_create(
+            username='FormsetTestUser',
+            email='something@yahoo.org'
+        )[0]
+        self.user.set_password('bingo')
+        self.user.save()
+
+        # Create card
+        self.card = BingoCard.objects.get_or_create(
+            title='FormsetTest',
+            free_space='free_space',
+            creator=self.user,
+        )
+
+        # Formset data
+        self.data = {
+            'form-TOTAL_FORMS': '24',
+            'form-INITIAL_FORMS': '0',
+            'form-MAX_NUM_FORMS': '24',
+            'form-MIN_NUM_FORMS': '0'
+        }
+
+       # iteratively add squares to data dict
+        for i in range(24):
+            text_key = 'form-{}-text'.format(i)
+            text_value = 'square {}'.format(i)
+            self.data[text_key] = text_value
+
+    def test_formset_accepts_valid_data(self):
+        """
+        Formset should have access to helper for crispy rendering.
+        """
+
+        formset = BingoSquareFormset(self.data)
+        formset.instance = self.card
+        pdb.set_trace()
+        self.assertTrue(formset.is_valid())
