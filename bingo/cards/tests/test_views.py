@@ -289,7 +289,8 @@ class CardCreateViewTests(TestCase):
         test_login_redirect: Unauthenticated users should be sent to Permission
             Denied view as there will be no link to create a card visible to
             unauthenticated users.
-        test_form_valid:
+        test_form_valid: View should create BingoCard and BingoCardSquare upon
+            valid POST request.
 
     References:
         * https://docs.djangoproject.com/en/1.10/ref/class-based-views/flattened-index/#CreateView
@@ -355,3 +356,37 @@ class CardCreateViewTests(TestCase):
             expected_url=reverse('auth_extension:permission_denied'),
             status_code=302
         )
+
+    # def test_form_valid(self):
+    #     """
+    #     Valid data should create new BingoCard and associated BingoCardSquares
+    #     when POSTed.
+    #     """
+
+    #     # Log user in
+    #     self.client.login(username='testuser', password='password2323')
+
+    #     # Form and FormsetManager data
+    #     post_data = {
+    #         'title': 'Test Card Title',
+    #         'free_space': 'Test Free Space',
+    #         'creator': self.user.id,
+    #         'private': False,
+    #         'form-TOTAL_FORMS': '24',
+    #         'form-INITIAL_FORMS': '0',
+    #         'form-MAX_NUM_FORMS': '24',
+    #     }
+
+    #     # Add formset data to post_data
+    #     for i in range(24):
+    #         text_key = 'form-{}-text'.format(i)
+    #         text_value = 'square {}'.format(i)
+    #         post_data[text_key] = text_value
+
+    #     self.assertEqual(len(post_data), 31)
+
+    #     response = self.client.post(
+    #         reverse('cards:card_create'),
+    #         post_data
+    #     )
+    #     print(reponse)

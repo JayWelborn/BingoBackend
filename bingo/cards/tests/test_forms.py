@@ -4,6 +4,8 @@ from django.test import TestCase
 from cards.forms import BingoCardForm, BingoSquareForm, BingoSquareFormset
 from cards.models import BingoCard, BingoCardSquare
 
+import pdb
+
 
 class BingoCardFormTests(TestCase):
     """Tests for BingoCardForm
@@ -191,25 +193,27 @@ class BingoSquareFormsetTests(TestCase):
             title='FormsetTest',
             free_space='free_space',
             creator=self.user,
-        )
+        )[0]
 
         # Formset data
         self.data = {
-            'form-TOTAL_FORMS': 24,
-            'form-INITIAL_FORMS': 0,
+            'squares-TOTAL_FORMS': 24,
+            'squares-INITIAL_FORMS': 0,
+            'squares-MAX_NUM_FORMS': 24,
         }
 
         # iteratively add squares to data dict
         for i in range(24):
-            text_key = 'form-{}-text'.format(i)
+            text_key = 'squares-{}-text'.format(i)
             text_value = 'square {}'.format(i)
             self.data[text_key] = text_value
 
-    # def test_formset_accepts_valid_data(self):
-    #     """
-    #     Formset should have access to helper for crispy rendering.
-    #     """
+    def test_formset_accepts_valid_data(self):
+        """
+        Formset should have access to helper for crispy rendering.
+        """
 
-    #     formset = BingoSquareFormset(self.data)
-    #     formset.instance = self.card
-    #     self.assertTrue(formset.is_valid())
+        formset = BingoSquareFormset(self.data)
+        formset.instance = self.card
+        #pdb.set_trace()
+        self.assertTrue(formset.is_valid())
