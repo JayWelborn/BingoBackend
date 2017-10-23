@@ -84,8 +84,11 @@ class CardCreateView(LoginRequiredMixin, g.CreateView):
     """Create a new Bingo Card.
 
     Attributes:
-        model: Model associated with view
-        fields: fields to display on the page
+        model: Model associated with view.
+        fields: Fields to display on the page.
+        template_name: Template to be rendered.
+        login_url: URL for redirecting unauthenticated users.
+        redirect_field_name: Remove querystring from login_url upon redirect.
 
     Methods:
         get_context_data: Add bingoCardFormset to view's context
@@ -102,7 +105,8 @@ class CardCreateView(LoginRequiredMixin, g.CreateView):
     model = BingoCard
     fields = ['title', 'free_space', 'creator', 'private']
     template_name = 'cards/card_create.html'
-    login_url = '/profile/permisison-denied/'
+    login_url = '/profile/permission-denied/'
+    redirect_field_name = None
 
     def get_context_data(self, *args, **kwargs):
         """

@@ -285,8 +285,10 @@ class CardCreateViewTests(TestCase):
     Methods:
         setUp: Create test data.
         test_template_used: View should render `cards/card_create.html`.
-        test_context:
-        test_login_redirect:
+        test_context: Context should have both form and formset for rendering.
+        test_login_redirect: Unauthenticated users should be sent to Permission
+            Denied view as there will be no link to create a card visible to
+            unauthenticated users.
         test_form_valid:
 
     References:
@@ -323,3 +325,33 @@ class CardCreateViewTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'cards/card_create.html')
+        self.client.logout()
+
+    def test_context(self):
+        """
+        Context should have form and square_formset to be rendered by template.
+        """
+
+        self.client.login(username='testuser', password='password2323')
+        response = self.client.get(
+            reverse('cards:card_create')
+        )
+        self.assertIn('form', response.context)
+        self.assertIn('square_formset', response.context)
+
+        self.client.logout()
+
+    def test_login_redirect(self):
+        """
+        Unauthenticated users should be sent to Permission Denied view.
+        """
+
+        response = self.client.get(
+            reverse('cards:card_create')
+        )
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse('auth_extension:permission_denied'),
+            status_code=302
+        )
