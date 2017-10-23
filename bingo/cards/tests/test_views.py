@@ -277,3 +277,49 @@ class CardDetailViewTests(TestCase):
         self.assertIn('card', response.context)
         card = response.context['card']
         self.assertEqual(card, self.private_card)
+
+
+class CardCreateViewTests(TestCase):
+    """Tests for Card Create View.
+
+    Methods:
+        setUp: Create test data.
+        test_template_used: View should render `cards/card_create.html`.
+        test_context:
+        test_login_redirect:
+        test_form_valid:
+
+    References:
+        * https://docs.djangoproject.com/en/1.10/ref/class-based-views/flattened-index/#CreateView
+
+    """
+
+    def setUp(self):
+        """
+        Create user for testing.
+        """
+
+        self.user = User.objects.get_or_create(
+            username='testuser',
+            email='test@gmail.com'
+        )[0]
+        self.user.set_password('password2323')
+        self.user.save()
+
+        test_user = User.objects.get(
+            username='testuser'
+        )
+        self.assertEqual(self.user, test_user)
+
+    def test_template_used(self):
+        """
+        View should render `cards/card_create.html`.
+        """
+
+        self.client.login(username='testuser', password='password2323')
+
+        response = self.client.get(
+            reverse('cards:card_create')
+        )
+
+        self.assertEqual(response.status_code, 200)

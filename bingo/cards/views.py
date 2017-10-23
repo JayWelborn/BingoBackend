@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.shortcuts import redirect
 from django.views import generic as g
@@ -79,7 +80,7 @@ class CardDetailView(g.DetailView):
             return self.render_to_response(context)
 
 
-class CardCreateView(g.CreateView):
+class CardCreateView(LoginRequiredMixin, g.CreateView):
     """Create a new Bingo Card.
 
     Attributes:
@@ -101,6 +102,7 @@ class CardCreateView(g.CreateView):
     model = BingoCard
     fields = ['title', 'free_space', 'creator', 'private']
     template_name = 'cards/card_create.html'
+    login_url = '/profile/permisison-denied/'
 
     def get_context_data(self, *args, **kwargs):
         """
