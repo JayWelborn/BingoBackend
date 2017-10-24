@@ -208,6 +208,19 @@ class BingoSquareFormsetTests(TestCase):
             text_value = 'square {}'.format(i)
             self.data[text_key] = text_value
 
+    def test_helper(self):
+        """
+        Formset forms should have crispy helper
+        """
+
+        formset = BingoSquareFormset()
+        for form in formset.forms:
+            helper = form.helper
+            self.assertTrue(helper)
+            self.assertEqual(helper.form_id, 'bingo_square_form')
+            self.assertEqual(helper.form_method, 'post')
+            self.assertEqual(helper.form_action, '.')
+
     def test_formset_accepts_valid_data(self):
         """
         Formset should have access to helper for crispy rendering.
@@ -215,5 +228,6 @@ class BingoSquareFormsetTests(TestCase):
 
         formset = BingoSquareFormset(self.data)
         formset.instance = self.card
-        #pdb.set_trace()
         self.assertTrue(formset.is_valid())
+
+
