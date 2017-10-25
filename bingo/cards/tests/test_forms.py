@@ -166,6 +166,10 @@ class BingoSquareFormsetTests(TestCase):
         test_formset_accepts_valid_data: Formset should accept valid data
         test_squares_created_correctly: Formset should create squares all
             associated with a parent card set as formset.instance
+        test_formset_rejects_too_many_forms: Formset should require max of
+            24 forms
+        test_formset_rejects_too_few_forms: Formset should require minimum of
+            24 forms
 
     References:
         * http://schinckel.net/2016/04/30/%28directly%29-testing-django-formsets/
@@ -200,6 +204,7 @@ class BingoSquareFormsetTests(TestCase):
             'squares-TOTAL_FORMS': 24,
             'squares-INITIAL_FORMS': 0,
             'squares-MAX_NUM_FORMS': 24,
+            'squares-MIN_NUM_FORMS': 24,
         }
 
         # iteratively add squares to data dict
@@ -230,4 +235,62 @@ class BingoSquareFormsetTests(TestCase):
         formset.instance = self.card
         self.assertTrue(formset.is_valid())
 
+    def test_squares_created_correctly(self):
+        """
+        Formset should create 24 squares related to BingoCard (also created).
+        """
 
+        # Create and save formset associated with self.card
+        formset = BingoSquareFormset(self.data)
+        formset.instance = self.card
+        if formset.is_valid():
+            formset.save()
+
+        # Check that 24 squares exist, and that all
+        # have self.card as their ForeignKey
+        squares = BingoCardSquare.objects.filter(card=self.card)
+        self.assertEqual(len(squares), 24)
+        for square in squares:
+            self.assertEqual(square.card, self.card)
+
+        # Clean newly create cards out of database
+        squares.delete()
+        squares = BingoCardSquare.objects.all()
+
+        self.assertEqual(len(squares), 0)
+
+    def test_formset_rejects_too_many_forms(self):
+        """
+        Formset should enforce a max of 24 forms per set.
+        """
+
+        # Add another item to form data
+        test_data = self.data
+        test_data['squares-24-text'] = 'square 24'
+
+        # ManagementForm data must match number of forms present
+        test_data['squares-TOTAL_FORMS'] = 25
+
+        # data should include 25 forms plus 3 for management form data
+        self.assertGreater(len(test_data), 28)
+
+        # Formset with too many dictionary items should be rejected
+        formset = BingoSquareFormset(test_data)
+        self.assertFalse(formset.is_valid())
+
+    def test_formset_rejects_too_few_forms(self):
+        """
+        Formset should enforce a minimum of 24 forms per set.
+        """
+
+        # pop a form from self.data
+        test_data = self.data
+        test_data.pop('squares-23-text')
+        test_data['squares-TOTAL_FORMS'] = 23
+
+        # formset should be shorter than normal
+        self.assertLess(len(test_data), 28)
+
+        # Formset with too few items should be rejected
+        formset = BingoSquareFormset(test_data)
+        self.assertFalse(formset.is_valid())

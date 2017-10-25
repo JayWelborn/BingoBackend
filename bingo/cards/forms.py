@@ -73,4 +73,6 @@ BingoSquareFormset = inlineformset_factory(
     form=BingoSquareForm,
     min_num=24,
     max_num=24,
+    validate_min=True,
+    validate_max=True,
 )
