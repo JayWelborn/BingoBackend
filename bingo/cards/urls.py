@@ -20,9 +20,19 @@ from . import views as v
 app_name = 'cards'
 urlpatterns = [
 
-    url(r'^(?P<pk>\d+)/$', v.CardDetailView.as_view(), name='card_detail'),
+    url(r'^(?P<pk>\d+)/$',
+        v.CardDetailView.as_view(),
+        name='card_detail'),
 
-    url(r'^create/$', v.CardCreateView.as_view(), name='card_create'),
+    url(r'^create/$',
+        v.CardCreateView.as_view(),
+        name='card_create'),
 
-    url(r'^', v.CardListView.as_view(), name='card_list'),
+    url(r'^update/(?P<pk>\d+)/$',
+        v.CardUpdateView.as_view(),
+        name='card_update'),
+
+    url(r'^',
+        v.CardListView.as_view(),
+        name='card_list'),
 ]

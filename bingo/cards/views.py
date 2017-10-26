@@ -5,7 +5,7 @@ from django.views import generic as g
 from django.urls import reverse
 
 from .models import BingoCard
-from .forms import BingoSquareFormset
+from .forms import BingoCardForm, BingoSquareFormset
 
 
 # Create your views here.
@@ -85,7 +85,7 @@ class CardCreateView(LoginRequiredMixin, g.CreateView):
 
     Attributes:
         model: Model associated with view.
-        fields: Fields to display on the page.
+        form_class: Form to create the bingo card.
         template_name: Template to be rendered.
         login_url: URL for redirecting unauthenticated users.
         redirect_field_name: Remove querystring from login_url upon redirect.
@@ -103,7 +103,7 @@ class CardCreateView(LoginRequiredMixin, g.CreateView):
     """
 
     model = BingoCard
-    fields = ['title', 'free_space', 'creator', 'private']
+    form_class = BingoCardForm
     template_name = 'cards/card_create.html'
     login_url = '/profile/permission-denied/'
     redirect_field_name = None
@@ -142,3 +142,28 @@ class CardCreateView(LoginRequiredMixin, g.CreateView):
                 square_formset.save()
 
         return super(CardCreateView, self).form_valid(form)
+
+
+class CardUpdateView(LoginRequiredMixin, g.UpdateView):
+    """View for updating already existing cards
+
+    Attributes:
+        template_name: Template to render.
+        model: Model to be updated.
+        form_class: Form to update the Bingo Card.
+        login_url: URL for redirecting unauthenticated users.
+        redirect_field_name: Remove querystring from login_url upon redirect
+
+    Methods:
+
+
+    References:
+        * https://groups.google.com/forum/#!topic/django-users/yS8mXXGhJY0
+
+    """
+
+    model = BingoCard
+    form_class = BingoCardForm
+    template_name = 'cards/card_update.html'
+    login_url = '/profile/permission-denied'
+    redirect_field_name = None

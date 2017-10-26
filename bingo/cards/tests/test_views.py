@@ -407,3 +407,67 @@ class CardCreateViewTests(TestCase):
         self.assertEqual(len(squares), 24)
         for square in squares:
             self.assertIn(square, card.squares.all())
+
+
+class CardUpdateViewTests(TestCase):
+    """Tests for Card Update View.
+
+    Methods:
+        setUp: Create test data.
+        test_template_used: View should render `cards/card_update.html`.
+        tearDown: Delete test data after completion.
+
+    References:
+
+    """
+
+    def setUp(self):
+        """
+        Create data for testing.
+        """
+
+        # create user
+        self.user = User.objects.create(
+            username='testuser',
+            email='test@gmail.com'
+        )
+        self.user.set_password('testpass')
+        self.user.save()
+
+        # create card
+        self.card = BingoCard.objects.create(
+            title='updatetest',
+            free_space='updatetestspace',
+            creator=self.user,
+            private=False
+        )
+        setup_card = BingoCard.objects.get(title='updatetest')
+        self.assertEqual(setup_card, self.card)
+
+        # create squares
+        for i in range(24):
+            text = 'square {}'.format(i)
+            new_square = BingoCardSquare.objects.create(
+                text=text,
+                card=self.card
+            )
+            self.assertIn(new_square, self.card.squares.all())
+
+        self.assertEqual(
+            len(BingoCardSquare.objects.all()),
+            len(self.card.squares.all())
+        )
+
+    def test_template_used(self):
+        """
+        View should render `cards/card_update.html`
+        """
+
+        self.client.login(username='testuser', password='testpass')
+
+        response = self.client.get(
+            reverse('cards:card_update', args=[self.card.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'cards/card_update.html')
