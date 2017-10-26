@@ -4,8 +4,6 @@ from django.test import TestCase
 from cards.forms import BingoCardForm, BingoSquareForm, BingoSquareFormset
 from cards.models import BingoCard, BingoCardSquare
 
-import pdb
-
 
 class BingoCardFormTests(TestCase):
     """Tests for BingoCardForm
@@ -16,6 +14,8 @@ class BingoCardFormTests(TestCase):
         test_form_accepts_valid_data: Form should accept valid data
         test_card_created_correctly: New BingoCard should be created with data
             from form, and defaults for attributes not included in the form.
+        test_form_rejects_invalid_data: Form should only be valid if all
+            required fields are present.
 
     References:
 
@@ -80,6 +80,22 @@ class BingoCardFormTests(TestCase):
         self.assertEqual(card, test_card)
         self.assertEqual(card.creator, self.user)
 
+    def test_form_rejects_incomplete_data(self):
+        """
+        Form should only be valid if all required fields are present.
+        """
+
+        no_title, no_free_space, no_creator = self.data, self.data, self.data
+        no_title.pop('title')
+
+        no_free_space.pop('free_space')
+
+        no_creator.pop('creator')
+
+        self.assertFalse(BingoCardForm(no_title).is_valid())
+        self.assertFalse(BingoCardForm(no_free_space).is_valid())
+        self.assertFalse(BingoCardForm(no_creator).is_valid())
+
 
 class BingoSquareFormTests(TestCase):
     """Tests for BingoSquareForm
@@ -89,7 +105,10 @@ class BingoSquareFormTests(TestCase):
         test_helper: Crispy helper should exist and have appropriate attributes
         test_form_accepts_valid_data: Form should accept valid data
         test_card_created_correctly: New BingoSquare should be created with
-        data from form, and defaults for attributes not included in the form.
+            data from form, and defaults for attributes not included in the
+            form.
+        test_form_rejects_incomplete_data: Form should not be valid if fields
+            are missing.
 
     References:
         * http://test-driven-django-development.readthedocs.io/en/latest/05-forms.html
@@ -155,6 +174,20 @@ class BingoSquareFormTests(TestCase):
         self.assertEqual(square, test_square)
         self.assertEqual(square.card, self.card)
         self.assertEqual(square.card.creator, self.user)
+
+    def test_form_rejects_incomplete_data(self):
+        """
+        Form should only be valid if all fields are present.
+        """
+
+        # Copy data, but remove part
+        no_text, no_card = self.data, self.data
+        no_text.pop('text')
+        no_card.pop('card')
+
+        # Assert form is invalid
+        self.assertFalse(BingoSquareForm(no_text).is_valid())
+        self.assertFalse(BingoSquareForm(no_card).is_valid())
 
 
 class BingoSquareFormsetTests(TestCase):

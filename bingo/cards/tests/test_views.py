@@ -314,6 +314,26 @@ class CardCreateViewTests(TestCase):
         )
         self.assertEqual(self.user, test_user)
 
+        # Formset data
+        self.data = {
+            'title': 'test_title',
+            'free_space': 'free_test',
+            'creator': str(self.user.id),
+            'private': False,
+            'squares-TOTAL_FORMS': 24,
+            'squares-INITIAL_FORMS': 0,
+            'squares-MAX_NUM_FORMS': 24,
+            'squares-MIN_NUM_FORMS': 24,
+        }
+
+        # iteratively add squares to data dict
+        for i in range(24):
+            text_key = 'squares-{}-text'.format(i)
+            text_value = 'square {}'.format(i)
+            self.data[text_key] = text_value
+
+        self.assertEqual(len(self.data), 32)
+
     def test_template_used(self):
         """
         View should render `cards/card_create.html`.
@@ -357,36 +377,33 @@ class CardCreateViewTests(TestCase):
             status_code=302
         )
 
-    # def test_form_valid(self):
-    #     """
-    #     Valid data should create new BingoCard and associated BingoCardSquares
-    #     when POSTed.
-    #     """
+    def test_form_valid(self):
+        """
+        Valid data should create new BingoCard and associated BingoCardSquares
+        when POSTed.
+        """
 
-    #     # Log user in
-    #     self.client.login(username='testuser', password='password2323')
+        # Log user in
+        self.client.login(username='testuser', password='password2323')
 
-    #     # Form and FormsetManager data
-    #     post_data = {
-    #         'title': 'Test Card Title',
-    #         'free_space': 'Test Free Space',
-    #         'creator': self.user.id,
-    #         'private': False,
-    #         'form-TOTAL_FORMS': '24',
-    #         'form-INITIAL_FORMS': '0',
-    #         'form-MAX_NUM_FORMS': '24',
-    #     }
+        # Post data to view
+        response = self.client.post(
+            reverse('cards:card_create'),
+            self.data
+        )
 
-    #     # Add formset data to post_data
-    #     for i in range(24):
-    #         text_key = 'form-{}-text'.format(i)
-    #         text_value = 'square {}'.format(i)
-    #         post_data[text_key] = text_value
+        # Check new card was created
+        card = BingoCard.objects.get(title='test_title')
+        self.assertTrue(card)
 
-    #     self.assertEqual(len(post_data), 31)
+        # View should redirect to cards absolute url
+        self.assertRedirects(
+            response=response,
+            expected_url=card.get_absolute_url()
+        )
 
-    #     response = self.client.post(
-    #         reverse('cards:card_create'),
-    #         post_data
-    #     )
-    #     print(reponse)
+        # There should be exactly 24 squares associated with the new card
+        squares = BingoCardSquare.objects.all()
+        self.assertEqual(len(squares), 24)
+        for square in squares:
+            self.assertIn(square, card.squares.all())
