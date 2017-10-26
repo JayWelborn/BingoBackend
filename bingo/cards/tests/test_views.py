@@ -471,3 +471,26 @@ class CardUpdateViewTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'cards/card_update.html')
+
+        self.client.logout()
+
+    def test_unauthenticated_redirect(self):
+        """
+        Unauthenticated users should be redirected to permission denied view.
+        """
+
+        response = self.client.get(
+            reverse('cards:card_update', args=[self.card.pk])
+        )
+
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse('auth_extension:permission_denied')
+        )
+
+    def tearDown(self):
+        """
+        Log user out.
+        """
+
+        self.client.logout()

@@ -165,5 +165,5 @@ class CardUpdateView(LoginRequiredMixin, g.UpdateView):
     model = BingoCard
     form_class = BingoCardForm
     template_name = 'cards/card_update.html'
-    login_url = '/profile/permission-denied'
+    login_url = '/profile/permission-denied/'
     redirect_field_name = None
