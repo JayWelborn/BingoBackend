@@ -7,6 +7,8 @@ from django.utils import timezone
 
 from cards.models import BingoCard, BingoCardSquare
 
+import pdb
+
 
 class CardListViewTests(TestCase):
     """Tests for CardListView class
@@ -414,8 +416,13 @@ class CardUpdateViewTests(TestCase):
 
     Methods:
         setUp: Create test data.
-        test_template_used: View should render `cards/card_update.html`.
         tearDown: Delete test data after completion.
+        test_template_used: View should render `cards/card_update.html`.
+        test_unauthenticated_redirect: View should redirect unauthenticated
+            users.
+        test_context: Context should include both form and formset. Formset's
+            instance should be set to BingoCard to be updated.
+        test_post_valid_data: Objects should be updated on valid POST.
 
     References:
 
@@ -447,16 +454,23 @@ class CardUpdateViewTests(TestCase):
         # create squares
         for i in range(24):
             text = 'square {}'.format(i)
-            new_square = BingoCardSquare.objects.create(
+            new_square = BingoCardSquare.objects.get_or_create(
                 text=text,
                 card=self.card
-            )
+            )[0]
             self.assertIn(new_square, self.card.squares.all())
 
         self.assertEqual(
             len(BingoCardSquare.objects.all()),
             len(self.card.squares.all())
         )
+
+    def tearDown(self):
+        """
+        Log user out.
+        """
+
+        self.client.logout()
 
     def test_template_used(self):
         """
@@ -488,9 +502,47 @@ class CardUpdateViewTests(TestCase):
             expected_url=reverse('auth_extension:permission_denied')
         )
 
-    def tearDown(self):
+    def test_context(self):
         """
-        Log user out.
+        View's context should include both form and formset.
         """
 
-        self.client.logout()
+        # get response to test
+        self.client.login(username='testuser', password='testpass')
+        response = self.client.get(
+            reverse(
+                'cards:card_update',
+                args=[self.card.pk]
+            )
+        )
+
+        # Assert context has form and formset
+        self.assertIn('form', response.context)
+        self.assertIn('square_formset', response.context)
+
+        # Assert formset's instance is the object to be updated
+        formset = response.context['square_formset']
+        self.assertEqual(formset.instance, self.card)
+
+    def test_post_valid_data(self):
+        """
+        Card and squares should be updated if valid data is POSTed.
+        """
+        data = {
+            'title': 'after_update',
+            'free_space': 'after_update',
+            'creator': str(self.user.id),
+            'private': False,
+            'squares-TOTAL_FORMS': 24,
+            'squares-INITIAL_FORMS': 24,
+            'squares-MAX_NUM_FORMS': 24,
+            'squares-MIN_NUM_FORMS': 24,
+        }
+
+        # iteratively add squares to data dict
+        for i in range(24):
+            text_key = 'squares-{}-text'.format(i)
+            text_value = 'square {} updated'.format(i)
+            data[text_key] = text_value
+
+        self.assertEqual(len(data), 32)

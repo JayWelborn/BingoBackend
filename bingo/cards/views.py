@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
 from django.shortcuts import redirect
 from django.views import generic as g
@@ -144,7 +145,7 @@ class CardCreateView(LoginRequiredMixin, g.CreateView):
         return super(CardCreateView, self).form_valid(form)
 
 
-class CardUpdateView(LoginRequiredMixin, g.UpdateView):
+class CardUpdateView(LoginRequiredMixin, SuccessMessageMixin, g.UpdateView):
     """View for updating already existing cards
 
     Attributes:
@@ -152,13 +153,20 @@ class CardUpdateView(LoginRequiredMixin, g.UpdateView):
         model: Model to be updated.
         form_class: Form to update the Bingo Card.
         login_url: URL for redirecting unauthenticated users.
-        redirect_field_name: Remove querystring from login_url upon redirect
+        redirect_field_name: Remove querystring from login_url upon redirect.
+        success_message: Message to be displayed on successful update
 
     Methods:
-
+        get_context_data: Add formset to context with data and instance as
+            needed.
+        post: Add formset validation to form validation. Reject both if either
+            is invalid.
+        form_valid: Save formset along with form.
+        form_invalid: Render same page with error messages.
 
     References:
         * https://groups.google.com/forum/#!topic/django-users/yS8mXXGhJY0
+        * https://github.com/timhughes/django-cbv-inline-formset/blob/master/music/views.py
 
     """
 
@@ -167,3 +175,66 @@ class CardUpdateView(LoginRequiredMixin, g.UpdateView):
     template_name = 'cards/card_update.html'
     login_url = '/profile/permission-denied/'
     redirect_field_name = None
+    success_message = 'Card Updated Successfully'
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Add formset to context.
+        """
+
+        context = super(CardUpdateView, self).get_context_data(*args, **kwargs)
+
+        # give formset data and instance on POST
+        if self.request.POST:
+            context['square_formset'] = BingoSquareFormset(
+                self.request.POST,
+                instance=self.object
+            )
+
+        # give formset instance on GET
+        else:
+            context['square_formset'] = BingoSquareFormset(
+                instance=self.object
+            )
+
+        return context
+
+    def post(self, *args, **kwargs):
+        """
+        Add formset validation to POST. Reject form and formset if either is
+        invalid.
+        """
+
+        # Get object, form, and formset
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        formset = BingoSquareFormset(self.request.POST)
+
+        # Validate form and formset
+        if form.is_valid() and formset.is_valid():
+            return self.form_valid(form, formset)
+
+        else:
+            return self.form_invalid(form, formset)
+
+    def form_valid(self, form, formset):
+        """
+        Update objects if form and formset are valid.
+        """
+
+        self.object = form.save()
+        formset.instance = self.object
+        formset.save()
+        return redirect(self.get_success_url())
+
+    def form_invalid(self, form, formset):
+        """
+        Reject form and formset if either are invalid.
+        """
+        return self.render_to_response(
+            self.get_context_data(
+                form=form,
+                formset=formset
+            )
+        )
