@@ -434,20 +434,20 @@ class CardUpdateViewTests(TestCase):
         """
 
         # create user
-        self.user = User.objects.create(
+        self.user = User.objects.get_or_create(
             username='testuser',
             email='test@gmail.com'
-        )
+        )[0]
         self.user.set_password('testpass')
         self.user.save()
 
         # create card
-        self.card = BingoCard.objects.create(
+        self.card = BingoCard.objects.get_or_create(
             title='updatetest',
             free_space='updatetestspace',
             creator=self.user,
             private=False
-        )
+        )[0]
         setup_card = BingoCard.objects.get(title='updatetest')
         self.assertEqual(setup_card, self.card)
 
@@ -528,6 +528,8 @@ class CardUpdateViewTests(TestCase):
         """
         Card and squares should be updated if valid data is POSTed.
         """
+
+        # Create POST data
         data = {
             'title': 'after_update',
             'free_space': 'after_update',
@@ -545,4 +547,23 @@ class CardUpdateViewTests(TestCase):
             text_value = 'square {} updated'.format(i)
             data[text_key] = text_value
 
-        self.assertEqual(len(data), 32)
+            id_key = 'squares-{}-id'.format(i)
+            id_value = i + 1
+            data[id_key] = id_value
+
+        # Get POST response
+        self.client.login(username='testuser', password='testpass')
+        response = self.client.post(
+            reverse('cards:card_update', args=[self.card.id]),
+            data=data
+        )
+
+        card = BingoCard.objects.get(
+            title='after_update'
+        )
+        self.assertTrue(card)
+        self.assertEqual(card.title, 'after_update')
+        self.assertEqual(card.free_space, 'after_update')
+
+        for square in card.squares.all():
+            self.assertIn('updated', square.text)
