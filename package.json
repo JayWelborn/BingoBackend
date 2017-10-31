@@ -1,10 +1,17 @@
 {
   "name": "bingo",
   "version": "0.0.1",
-  "description": "generate bingo cards online",
+  "description": "An app to let you make custom bingo cards",
   "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cd bingo && python manage.py test",
+    "css-compile": "npm run node-sass bingo/static/sass -o bingo/static/css",
+    "css-watch": "npm run node-sass bingo/static/sass -o bingo/static/css --watch",
+    "browser-sync": "npm run browser-sync start --files \"bingo/static/**/*.css, bingo/static/**/*.js, bingo/**/*.py, bingo/**/*.html\" --proxy 127.0.0.1:8000 --reload-delay=300 --reload-debounce=500",
+    "start": "npm run concurrently --kill-others \"npm run css-watch\" \"python bingo/manage.py runserver\" \"npm run browser-sync\" "
   },
   "repository": {
     "type": "git",
@@ -16,16 +23,12 @@
     "url": "https://github.com/JayWelborn/Bingo/issues"
   },
   "homepage": "https://github.com/JayWelborn/Bingo#readme",
+  "dependencies": {},
   "devDependencies": {
-    "autoprefixer": "^7.1.2",
+    "autoprefixer": "^7.1.6",
     "browser-sync": "^2.18.13",
     "concurrently": "^3.5.0",
-    "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^4.0.0",
-    "gulp-sass": "^3.1.0",
     "node-sass": "^4.5.3",
-    "postcss": "^6.0.9",
-    "postcss-cli": "^4.1.0"
-  },
-  "dependencies": {}
+    "postcss-cli": "^4.1.1"
+  }
 }
