@@ -27,8 +27,10 @@
   "devDependencies": {
     "autoprefixer": "^7.1.6",
     "browser-sync": "^2.18.13",
-    "concurrently": "^3.5.0",
-    "node-sass": "^4.5.3",
-    "postcss-cli": "^4.1.1"
+    "gulp": "^3.9.1",
+    "gulp-cli": "^1.4.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-postcss": "^7.0.0",
+    "gulp-sass": "^3.1.0"
   }
 }
