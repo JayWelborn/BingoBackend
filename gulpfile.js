@@ -18,7 +18,7 @@ gulp.task('styles', function() {
 });
 
 gulp.task('watch-sass', function() {
-    gulp.watch('./bingo/home/static/sass/main.sass',['styles']);
+    gulp.watch('./bingo/home/static/sass/**/*.sass',['styles']);
 })
 
 gulp.task('default', ['django', 'watch-sass']);
