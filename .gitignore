@@ -38,3 +38,6 @@ secrets/
 htmlcov/
 .coverage
 .coveragec
+
+# media files
+media/

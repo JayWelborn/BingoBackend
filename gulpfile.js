@@ -14,7 +14,7 @@ gulp.task('styles', function() {
     gulp.src('./bingo/**/main.sass')
         .pipe(sass().on('error', sass.logError))
         .pipe(concat('style.css'))
-        .pipe(gulp.dest('./bingo/static/css/'));
+        .pipe(gulp.dest('./bingo/home/static/css/'));
 });
 
 gulp.task('watch-sass', function() {
