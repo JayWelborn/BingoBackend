@@ -1,0 +1,10 @@
+body {
+  margin: 0; }
+
+a {
+  color: orange; }
+
+.content {
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto; }
