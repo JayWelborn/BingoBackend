@@ -1,9 +1,11 @@
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var concat = require('gulp-concat');
-var postcss      = require('gulp-postcss');
-var sourcemaps   = require('gulp-sourcemaps');
 var autoprefixer = require('autoprefixer');
+var browserSync  = require('browser-sync').create();
+var concat       = require('gulp-concat');
+var gulp         = require('gulp');
+var postcss      = require('gulp-postcss');
+var sass         = require('gulp-sass');
+var reload       = browserSync.reload;
+var sourcemaps   = require('gulp-sourcemaps');
 
 // Start Django server
 gulp.task('django', function() {
@@ -25,20 +27,18 @@ gulp.task('styles', function() {
         .pipe(gulp.dest('./bingo/home/static/css/'));
 });
 
-// gulp.task('autoprefixer', function () {
-//     var postcss      = require('gulp-postcss');
-//     var sourcemaps   = require('gulp-sourcemaps');
-//     var autoprefixer = require('autoprefixer');
-
-//     return gulp.src('./bingo/home/static/css/style.css')
-//         .pipe(sourcemaps.init())
-//         .pipe(postcss([ autoprefixer() ]))
-//         .pipe(sourcemaps.write('.'))
-//         .pipe(gulp.dest('./dest'));
-// });
-
-gulp.task('watch-sass', function() {
-    gulp.watch('./bingo/home/static/sass/**/*.sass', ['styles']);
+gulp.task('browsersync', function() {
+    browserSync.init({
+        notify: true,
+        proxy: "localhost:8000",
+    });
 });
 
-gulp.task('default', ['django', 'watch-sass']);
+// Tell gulp to execute 'styles' every time a sass file changes
+gulp.task('watch', function() {
+    gulp.watch('./bingo/home/static/sass/**/*.sass', ['styles']);
+    gulp.watch(['./**/*.{scss,css,html,py,js}'], reload);
+});
+
+// Start django server and start watching sass files
+gulp.task('default', ['django', 'browsersync', 'watch']);

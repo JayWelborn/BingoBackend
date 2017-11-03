@@ -6,13 +6,6 @@
   "directories": {
     "doc": "docs"
   },
-  "scripts": {
-    "test": "cd bingo && python manage.py test",
-    "css-compile": "npm run node-sass bingo/static/sass -o bingo/static/css",
-    "css-watch": "npm run node-sass bingo/static/sass -o bingo/static/css --watch",
-    "browser-sync": "npm run browser-sync start --files \"bingo/static/**/*.css, bingo/static/**/*.js, bingo/**/*.py, bingo/**/*.html\" --proxy 127.0.0.1:8000 --reload-delay=300 --reload-debounce=500",
-    "start": "npm run concurrently --kill-others \"npm run css-watch\" \"python bingo/manage.py runserver\" \"npm run browser-sync\" "
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JayWelborn/Bingo.git"
