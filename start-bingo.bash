@@ -8,3 +8,4 @@ cd ~/Documents/projects/Bingo;
 source bingoenv/bin/activate;
 cd bingo;
 python manage.py test;
+gulp;
