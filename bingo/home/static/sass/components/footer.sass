@@ -1,16 +1,9 @@
 footer
   background-color: $off-white;
-  box-shadow: 0px 0px 5px gray;
+  @extend %shadow;
   padding: 30px;
 
   ul
     list-style-type: none;
     padding: 0;
-    margin: 0;
-
-  .footer-link
-    color: #212121;
-    text-decoration: none;
-
-    &::hover
-      color: #222222;
+    display: inline-block;

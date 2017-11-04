@@ -1,35 +1,66 @@
-body {
-  background-color: #f1f1f1; }
+footer, nav, .content {
+  -webkit-box-shadow: 0px 0px 5px gray;
+          box-shadow: 0px 0px 5px gray; }
 
-.navbar-brand img {
-  max-height: 50px; }
+body {
+  background-color: #eee;
+  color: #101010; }
+  body strong {
+    font-weight: 700; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cutive'; }
+
+h1 {
+  font-size: 2.98598rem; }
+
+h2 {
+  font-size: 2.48832rem; }
+
+h3 {
+  font-size: 2.0736rem; }
+
+h4 {
+  font-size: 1.728rem; }
+
+h5 {
+  font-size: 1.44rem; }
+
+h6 {
+  font-size: 1.2rem; }
+
+body {
+  font-family: 'Lato';
+  font-weight: 300;
+  font-size: 1rem; }
 
 footer {
-  background-color: #f1f1f1;
-  -webkit-box-shadow: 0px 0px 5px gray;
-          box-shadow: 0px 0px 5px gray;
+  background-color: #f8f9fa;
   padding: 30px; }
   footer ul {
     list-style-type: none;
     padding: 0;
-    margin: 0; }
-  footer .footer-link {
-    color: #212121;
-    text-decoration: none; }
-    footer .footer-link::hover {
-      color: #222222; }
+    display: inline-block; }
+
+.navbar-brand img {
+  max-height: 50px; }
+
+.nav-link {
+  color: #888888;
+  text-decoration: none;
+  padding: 4px; }
+  .nav-link:hover {
+    color: #101010; }
 
 .content {
   width: 80%;
-  max-width: 1080px;
+  max-width: 1140px;
   margin-left: auto;
   margin-right: auto;
-  background-color: #f1f1f1;
+  background-color: #f8f9fa;
   min-height: 100vh;
-  padding: 30px;
-  border-radius: 5px;
-  -webkit-box-shadow: 0px 0px 5px gray;
-          box-shadow: 0px 0px 5px gray; }
+  padding: 30px 50px;
+  border-radius: 5px; }
 
 footer {
   position: absolute;
@@ -40,8 +71,9 @@ footer {
   -webkit-box-direction: normal;
       -ms-flex-flow: row wrap;
           flex-flow: row wrap;
-  -ms-flex-pack: distribute;
-      justify-content: space-around;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   width: 100%;
   margin-top: 30px; }
   footer section {
@@ -58,6 +90,6 @@ footer {
       float: left; }
     footer .social-list img {
       max-height: 40px;
-      margin: 10px; }
+      margin: 5px; }
 
 /*# sourceMappingURL=style.css.map */
