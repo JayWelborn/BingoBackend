@@ -88,8 +88,10 @@
   </nav>
   <!-- end navbar -->
   <!-- start templatetags -->
-  {% block sidebartag %}
-  {% endblock %}
+  {% if user.is_authenticated %}
+    {% block profile-tag %}
+    {% endblock %}
+  {% endif %}
   {% block templatetags %}
   {% endblock %}
   <!-- end templatetags -->
@@ -98,7 +100,38 @@
   {% endblock %}
   </div>
   <footer>
-    This is where the footer will live.
+    <section>
+      <ul>
+        <li><a class="footer-link" href="{% url 'home:index' %}">HOME</a></li>
+        <li><a class="footer-link" href="{% url 'home:about' %}">ABOUT</a></li>
+        <li><a class="footer-link" href="{% url 'home:contact' %}">CONTACT</a></li>
+      </ul>
+    </section>
+    <section>
+      <p>This website was created by <a target="blank" href="http://www.jaywelborn.com">Jay Welborn</a>.</p>
+      <ul class="social-list">
+        <li>
+          <a href="//facebook.com/jaywelb">
+            <img src="{% static 'icons/social/facebook.png' %}" alt="Facebook">
+          </a>
+        </li>
+        <li>
+          <a href="//twitter.com/__JayWelborn__">
+            <img src="{% static 'icons/social/twitter.png' %}" alt="Twitter">
+          </a>
+        </li>
+        <li>
+          <a href="//github.com/jaywelborn">
+            <img src="{% static 'icons/social/github.png' %}" alt="GitHub">
+          </a>
+        </li>
+        <li>
+          <a href="//linkedin.com/--jaywelborn--">
+            <img src="{% static 'icons/social/linkedin.png' %}" alt="LinkedIn">
+          </a>
+        </li>
+      </ul>
+    </section>
   </footer>
   <!-- JS libraries -->
   <script src="{% static 'js/jquery.min.js' %}"></script>

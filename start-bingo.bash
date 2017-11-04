@@ -2,8 +2,8 @@
 
 # Executes within xterm script installed system-wide.
 
-sudo apt-get update;
-sudo apt-get upgrade -y;
+# sudo apt-get update;
+# sudo apt-get upgrade -y;
 cd ~/Documents/projects/Bingo;
 source bingoenv/bin/activate;
 cd bingo;
