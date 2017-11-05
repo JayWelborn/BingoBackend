@@ -90,14 +90,6 @@
     </div>
   </nav>
   <!-- end navbar -->
-  <!-- start templatetags -->
-  {% if user.is_authenticated %}
-    {% block profile-tag %}
-    {% endblock %}
-  {% endif %}
-  {% block templatetags %}
-  {% endblock %}
-  <!-- end templatetags -->
   <main class="content">
     {% block content %}
     {% endblock %}

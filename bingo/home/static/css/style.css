@@ -24,42 +24,90 @@ main {
       -ms-flex: 1 0 auto;
           flex: 1 0 auto; }
 
+body {
+  line-height: 1.4; }
+
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Cutive'; }
 
 h1 {
-  font-size: 2.98598rem; }
+  font-size: 3.8147rem; }
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 3.43323rem; } }
+  @media (max-width: 576px) {
+    h1 {
+      font-size: 3.05176rem; } }
 
 h2 {
-  font-size: 2.48832rem; }
+  font-size: 3.05176rem; }
+  @media (max-width: 768px) {
+    h2 {
+      font-size: 2.74658rem; } }
+  @media (max-width: 576px) {
+    h2 {
+      font-size: 2.44141rem; } }
 
 h3 {
-  font-size: 2.0736rem; }
+  font-size: 2.44141rem; }
+  @media (max-width: 768px) {
+    h3 {
+      font-size: 2.19727rem; } }
+  @media (max-width: 576px) {
+    h3 {
+      font-size: 1.95312rem; } }
 
 h4 {
-  font-size: 1.728rem; }
+  font-size: 1.95312rem; }
+  @media (max-width: 768px) {
+    h4 {
+      font-size: 1.75781rem; } }
+  @media (max-width: 576px) {
+    h4 {
+      font-size: 1.5625rem; } }
 
 h5 {
-  font-size: 1.44rem; }
+  font-size: 1.5625rem; }
+  @media (max-width: 768px) {
+    h5 {
+      font-size: 1.40625rem; } }
+  @media (max-width: 576px) {
+    h5 {
+      font-size: 1.25rem; } }
 
 h6 {
-  font-size: 1.2rem; }
+  font-size: 1.25rem; }
+  @media (max-width: 768px) {
+    h6 {
+      font-size: 1.125rem; } }
+  @media (max-width: 576px) {
+    h6 {
+      font-size: 1rem; } }
 
 body {
   font-family: 'Lato';
   font-weight: 300;
   font-size: 1rem; }
+  @media (max-width: 768px) {
+    body {
+      font-size: 1rem; } }
+  @media (max-width: 576px) {
+    body {
+      font-size: 1rem; } }
 
-.card-normal, .card-inverted, footer, nav {
-  -webkit-box-shadow: 0px 0px 5px #101010;
-          box-shadow: 0px 0px 5px #101010; }
+.card, .card-inverted, footer, nav {
+  -webkit-box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
+          box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1); }
 
-.card-normal, .card-inverted {
+.card, .card-inverted {
   border-radius: 5px;
   padding: 30px 50px;
-  margin: 10px; }
+  margin: 5px 0px; }
+  @media (max-width: 576px) {
+    .card, .card-inverted {
+      padding: 30px; } }
 
-.card-normal {
+.card {
   background-color: #f8f9fa; }
 
 .card-inverted {
@@ -68,7 +116,8 @@ body {
 
 footer {
   padding: 30px;
-  background-color: #f8f9fa; }
+  background-color: #f8f9fa;
+  text-align: center; }
   footer ul {
     list-style-type: none;
     padding: 0;
@@ -88,11 +137,10 @@ nav {
     color: #101010; }
 
 .content {
-  width: 80%;
+  width: 98%;
   max-width: 1140px;
   margin-left: auto;
-  margin-right: auto;
-  margin-top: 50px; }
+  margin-right: auto; }
 
 footer {
   display: -webkit-box;

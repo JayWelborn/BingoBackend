@@ -36,8 +36,8 @@ gulp.task('browsersync', function() {
 
 // Tell gulp to execute 'styles' every time a sass file changes
 gulp.task('watch', function() {
-    gulp.watch('./bingo/home/static/sass/**/*.sass', ['styles']);
-    gulp.watch(['./**/*.{scss,css,html,py,js}'], reload);
+    gulp.watch('./**/*.{sass,scss}', ['styles']);
+    gulp.watch(['./**/*.{sass,scss,css,html,py,js}'], reload);
 });
 
 // Start django server and start watching sass files
