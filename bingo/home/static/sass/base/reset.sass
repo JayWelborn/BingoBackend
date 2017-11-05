@@ -1,6 +1,18 @@
+html
+  height: 100%
+
 body
   background-color: #eee;
   color: $off-black;
-  
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
   strong
     font-weight: 700
+
+nav, footer
+  flex-shrink: 0;
+
+main
+  flex: 1 0 auto;
