@@ -31,55 +31,55 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Cutive'; }
 
 h1 {
-  font-size: 3.8147rem; }
+  font-size: 2.98598rem; }
   @media (max-width: 768px) {
     h1 {
-      font-size: 3.43323rem; } }
+      font-size: 2.68739rem; } }
   @media (max-width: 576px) {
     h1 {
-      font-size: 3.05176rem; } }
+      font-size: 2.38879rem; } }
 
 h2 {
-  font-size: 3.05176rem; }
+  font-size: 2.48832rem; }
   @media (max-width: 768px) {
     h2 {
-      font-size: 2.74658rem; } }
+      font-size: 2.23949rem; } }
   @media (max-width: 576px) {
     h2 {
-      font-size: 2.44141rem; } }
+      font-size: 1.99066rem; } }
 
 h3 {
-  font-size: 2.44141rem; }
+  font-size: 2.0736rem; }
   @media (max-width: 768px) {
     h3 {
-      font-size: 2.19727rem; } }
+      font-size: 1.86624rem; } }
   @media (max-width: 576px) {
     h3 {
-      font-size: 1.95312rem; } }
+      font-size: 1.65888rem; } }
 
 h4 {
-  font-size: 1.95312rem; }
+  font-size: 1.728rem; }
   @media (max-width: 768px) {
     h4 {
-      font-size: 1.75781rem; } }
+      font-size: 1.5552rem; } }
   @media (max-width: 576px) {
     h4 {
-      font-size: 1.5625rem; } }
+      font-size: 1.3824rem; } }
 
 h5 {
-  font-size: 1.5625rem; }
+  font-size: 1.44rem; }
   @media (max-width: 768px) {
     h5 {
-      font-size: 1.40625rem; } }
+      font-size: 1.296rem; } }
   @media (max-width: 576px) {
     h5 {
-      font-size: 1.25rem; } }
+      font-size: 1.152rem; } }
 
 h6 {
-  font-size: 1.25rem; }
+  font-size: 1.2rem; }
   @media (max-width: 768px) {
     h6 {
-      font-size: 1.125rem; } }
+      font-size: 1.08rem; } }
   @media (max-width: 576px) {
     h6 {
       font-size: 1rem; } }
@@ -95,19 +95,19 @@ body {
     body {
       font-size: 1rem; } }
 
-.card, .card-inverted, footer, nav {
+.card-default, .profile-sidebar, .card-inverted, footer, nav {
   -webkit-box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
           box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1); }
 
-.card, .card-inverted {
+.card-default, .profile-sidebar, .card-inverted {
   border-radius: 5px;
   padding: 30px 50px;
   margin: 5px 0px; }
   @media (max-width: 576px) {
-    .card, .card-inverted {
+    .card-default, .profile-sidebar, .card-inverted {
       padding: 30px; } }
 
-.card {
+.card-default, .profile-sidebar {
   background-color: #f8f9fa; }
 
 .card-inverted {
@@ -136,11 +136,35 @@ nav {
   .nav-link:hover {
     color: #101010; }
 
+.profile-sidebar {
+  float: left;
+  width: 20%;
+  margin-right: 5px; }
+  .profile-sidebar ul {
+    list-style-type: none; }
+  .profile-sidebar p {
+    max-width: 90%;
+    float: right; }
+
+.profile-picture {
+  width: 40%;
+  min-width: 50px;
+  border-radius: 50%;
+  float: left; }
+
+.profile-info {
+  float: right;
+  text-align: right;
+  max-width: 45%;
+  min-width: 150px; }
+
 .content {
-  width: 98%;
-  max-width: 1140px;
+  width: 75%;
+  max-width: 1020px;
+  min-width: 315px;
   margin-left: auto;
-  margin-right: auto; }
+  margin-right: auto;
+  float: left; }
 
 footer {
   display: -webkit-box;

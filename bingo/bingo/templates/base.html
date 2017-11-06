@@ -66,7 +66,7 @@
           </li>
           {% if user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'cards:card_create' %}">Create</a>
+              <a class="nav-link" href="#TODO">Search Cards</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'registration:auth_logout' %}">Logout</a>
@@ -89,12 +89,33 @@
       </div>
     </div>
   </nav>
-  <!-- end navbar -->
-  <main class="content">
-    {% block content %}
-    {% endblock %}
+  <main>
+    {% if user.is_authenticated %}
+    <!-- profile sidebar -->
+      <aside class="profile-sidebar">
+        {% if user.profile.picture %}
+          <img class="profile-picture" src="{{ user.profile.picture.url }}" alt="{{ user.username }}">
+        {% endif %}
+        <section class="profile-info">
+          <h5>{{ user.username }}</h5>
+          <ul>
+            <li><a href="{{ user.profile.website }}" target="blank"><strong>My Website</strong></a></li>
+            <li><a href="#TODO">My Cards</a></li>
+            <li><a href="{% url 'cards:card_create' %}">New Card</a></li>
+          </ul>
+          <hr>
+          <p>{{ user.profile.about_me }}</p>
+        </section>
+      </aside>
+    {% endif %}
+    <!-- end profile sidebar -->
+    <!-- body content -->
+    <div class="content">
+      {% block content %}
+      {% endblock %}
+    </div>
+    <!-- body content -->
   </main>
-
   <footer class="footer">
     <!-- left side of footer -->
     <section>
@@ -109,7 +130,7 @@
       <ul>
         <li><a class="nav-link" href="{% url 'cards:card_list' %}">Cards</a></li>
         {% if user.is_authenticated %}
-          <li><a class="nav-link" href="{% url 'cards:card_create' %}">Create a Card</a></li>
+          <li><a class="nav-link" href="{% url 'cards:card_create' %}">New Card</a></li>
           <li><a class="nav-link" href="{% url 'auth_extension:profile_edit' user.id %}">My Profile</a></li>
         {% else %}
           <li><a class="nav-link" href="{% url 'registration:auth_login' %}">Log In</a></li>

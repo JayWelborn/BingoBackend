@@ -3,17 +3,6 @@ from django.utils import timezone
 from django.forms import inlineformset_factory
 
 
-class Author(models.Model):
-    name = models.CharField(max_length=100)
-
-
-class Book(models.Model):
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
-    title = models.CharField(max_length=100)
-
-BookFormSet = inlineformset_factory(Author, Book, fields=('title',))
-
-
 # Create your models here.
 class Contact(models.Model):
     """Model to store Contact Information.
