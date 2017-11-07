@@ -4,33 +4,32 @@
 
 {% block content %}
 
-  <div class="card-default">
-    <h1>Header 1</h1>
-    <h2>Header 2</h2>
-    <h3>Header 3</h3>
-    <h4>Header 4</h4>
-    <h5>Header 5</h5>
-    <h6>Header 6</h6>
+  <div class="card-default title">
+    <h1>Welcome to Bingo</h1>
+    <p>
+      Have you ever been stuck in a boring class with nothing to do? Are you looking for a fun party game?
+      Look no further! Thanks to a guy with too much dedication you can make your own bingo cards right here.
+    </p>
+      {% if user.is_authenticated %}
+        <a class="call-to-action" href="{% url 'cards:card_create' %}">Create a Bingo Card</a>
+      {% else %}
+        <a class="call-to-action" href="{% url 'registration:registration_register' %}">Sign Up</a>
+      {% endif %}
+    </ul>
   </div>
 
-  <div class="card-inverted">
-    <p>Regular paragraph</p>
-    <p><em>Emphasized text</em></p>
-    <p><strong>Strong text</strong></p>
-    <p><a href="#">Anchor Text</a></p>
-    <p><code>Code Sample</code></p>
-  </div>
+  <hr>
 
-  <div class="card-default">
-    <p>
-      Consecutive paragraphs will need to be spaced properly in order to maintain readability. Severl factors will need to be considered in styling such as: Line-height,
-      letter spacing, font size, and more.
-    </p>
-    <p>
-      I set the tab-size for html files to 2 spaces. I'm not sure why my tabs are still 4 spaces long. I really really need to fix that for html editing.
-      Having 4-space wide tabs will result in an incredible amount of clutter because html elements tend to need to be nested more deeply than python or
-      javascript.
-    </p>
-  </div>
+  <!-- list most recent cards -->
+  {% for card in card_list %}
+    <section class="card-list">
+      <img class="profile-picture" src="{{ card.creator.profile.picture.url }}" alt="{{ card.creator.user.username }}">
+      <ul>
+        <li><a href="{% url 'cards:card_detail' card.pk %}"><h5>{{ card.title }}</h5></a></li>
+        <li>Creator: <a href="{% url 'auth_extension:profile_view' card.creator.pk %}">{{ card.creator.username }}</a></li>
+      </ul>
+    </section>
+  {% endfor %}
+  <!-- endlist -->
 
 {% endblock %}

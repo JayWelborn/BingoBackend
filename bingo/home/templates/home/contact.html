@@ -1,9 +1,37 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
 
-{% block title %}Contact{% endblock %}
+{% block title %}{{contact.title}}{% endblock %}
 
 {% block content %}
 
-  <h1>Contact Page</h1>
+  <div class="card-default">
+    <h1>{{contact.title}}:</h1>
+    {% crispy form %}
+    <hr>
+    <ul class="social-list">
+        <li>
+          <a href="{{ contact.facebook }}" target="blank">
+            <img src="{% static 'icons/social/facebook.png' %}" alt="Facebook">
+          </a>
+        </li>
+        <li>
+          <a href="{{ contact.twitter }}" target="blank">
+            <img src="{% static 'icons/social/twitter.png' %}" alt="Twitter">
+          </a>
+        </li>
+        <li>
+          <a href="{{ contact.github }}" target="blank">
+            <img src="{% static 'icons/social/github.png' %}" alt="GitHub">
+          </a>
+        </li>
+        <li>
+          <a href="{{ contact.linkedin }}" target="blank">
+            <img src="{% static 'icons/social/linkedin.png' %}" alt="LinkedIn">
+          </a>
+        </li>
+    </ul>
+  </div>
 
 {% endblock %}

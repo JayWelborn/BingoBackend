@@ -94,23 +94,23 @@
     <!-- profile sidebar -->
       <aside class="profile-sidebar">
         {% if user.profile.picture %}
-          <img class="profile-picture" src="{{ user.profile.picture.url }}" alt="{{ user.username }}">
+          <a href="{% url 'auth_extension:profile_view' user.profile.pk %}">
+            <img class="profile-picture" src="{{ user.profile.picture.url }}" alt="{{ user.username }}">
+          </a>
         {% endif %}
         <section class="profile-info">
-          <h5>{{ user.username }}</h5>
+          <h6>{{ user.username }}</h6>
           <ul>
-            <li><a href="{{ user.profile.website }}" target="blank"><strong>My Website</strong></a></li>
+            <li><a href="{% url 'auth_extension:profile_edit' user.pk %}">Edit Profile</a></li>
             <li><a href="#TODO">My Cards</a></li>
             <li><a href="{% url 'cards:card_create' %}">New Card</a></li>
           </ul>
-          <hr>
-          <p>{{ user.profile.about_me }}</p>
         </section>
       </aside>
     {% endif %}
     <!-- end profile sidebar -->
     <!-- body content -->
-    <div class="content">
+    <div class="content {% if not user.is_authenticated %}unauthenticated_content{%endif%}">
       {% block content %}
       {% endblock %}
     </div>
@@ -143,22 +143,22 @@
       <p>This website was created by <a target="blank" href="http://www.jaywelborn.com">Jay Welborn</a>.</p>
       <ul class="social-list">
         <li>
-          <a href="//facebook.com/jaywelb">
+          <a href="{{ contact.facebook }}" target="blank">
             <img src="{% static 'icons/social/facebook.png' %}" alt="Facebook">
           </a>
         </li>
         <li>
-          <a href="//twitter.com/__JayWelborn__">
+          <a href="{{ contact.twitter }}" target="blank">
             <img src="{% static 'icons/social/twitter.png' %}" alt="Twitter">
           </a>
         </li>
         <li>
-          <a href="//github.com/jaywelborn">
+          <a href="{{ contact.github }}" target="blank">
             <img src="{% static 'icons/social/github.png' %}" alt="GitHub">
           </a>
         </li>
         <li>
-          <a href="//linkedin.com/--jaywelborn--">
+          <a href="{{ contact.linkedin }}" target="blank">
             <img src="{% static 'icons/social/linkedin.png' %}" alt="LinkedIn">
           </a>
         </li>

@@ -1,7 +1,26 @@
+main
+  max-width: $breakpoint-xl
+  width: 100%
+
+  @include bp-xl
+    max-width: $breakpoint-large
+
+  @include bp-large
+    max-width: $breakpoint-medium
+
+  @include bp-medium
+    max-width: $breakpoint-small
+
 .content
-  width: 75%;
-  max-width: 1020px;
+  width: calc(100% - 305px)
   min-width: 315px;
-  margin-left: auto;
-  margin-right: auto;
-  float: left;
+  margin-left: auto
+  margin-right: auto
+  // float: left
+  overflow: hidden
+
+
+.content.unauthenticated_content
+  display: block
+  width: 100%
+  float: none

@@ -42,6 +42,7 @@ class ContactForm(CrispyBaseForm):
         """
         super(ContactForm, self).__init__(*args, **kwargs)
         self.helper.form_id = 'contact_form'
+        self.helper.form_class = 'contact_form'
         self.helper.form_method = 'post'
         self.helper.form_action = '.'
         self.helper.add_input(Submit('submit', 'Contact Me'))
