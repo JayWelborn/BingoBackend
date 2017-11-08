@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils import timezone
-from django.forms import inlineformset_factory
 
 
 # Create your models here.

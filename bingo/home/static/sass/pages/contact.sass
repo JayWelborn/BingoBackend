@@ -5,16 +5,17 @@
     font-weight: bold
     margin-bottom: 3px
 
-  input
+  input.textinput, input.emailinput
     min-width: 95%
+
+  input, textarea
     margin-bottom: 10px
 
   textarea
     width: 95%
 
   .btn.btn-primary
-    background-color: purple
-    border: none
+    @extend .call-to-action
 
     &:hover
       background-color: blue
