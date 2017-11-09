@@ -25,7 +25,10 @@
   <!-- list most recent cards -->
   {% for card in card_list %}
     <section class="card-list">
-      <img class="profile-picture" src="{{ card.creator.profile.picture.url }}" alt="{{ card.creator.user.username }}">
+      {% if card.creator.profile.picture %}
+        <img class="profile-picture" src="{{ card.creator.profile.picture.url }}" alt="{{ card.creator.user.username }}">
+      {% else %}
+      {% endif %}
       <ul>
         <li><a href="{% url 'cards:card_detail' card.pk %}"><h5>{{ card.title }}</h5></a></li>
         <li>Creator: <a href="{% url 'auth_extension:profile_view' card.creator.pk %}">{{ card.creator.username }}</a></li>
