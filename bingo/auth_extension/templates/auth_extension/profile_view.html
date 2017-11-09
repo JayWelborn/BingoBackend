@@ -3,9 +3,6 @@
 
 {% block title %}Profiles{% endblock %}
 
-{# Profile sidebar shouldn't display here #}
-{% block profile_card %}
-{% endblock %}
 
 {% block content %}
 
@@ -20,7 +17,7 @@
             <p>{{ profile.about_me }}</p>
         {% endif %}
         {% if profile.website %}
-            <p><a href="{{ profile.website }}">My Website</a></p>
+            <p><a href="{{ profile.website }}" target="blank">{{profile.user.username}}&rsquo;s Website</a></p>
         {% endif %}
     </section>
 </div>
@@ -29,7 +26,9 @@
 
 {% if not profile.user.bingo_cards.all %}
 
-<div class="card-default"><h3>Coming Soon!</h3></div>
+<div class="card-default">
+    <h3>Coming Soon!</h3>
+</div>
 
 {% else %}
     <section class="profile-card-list">
