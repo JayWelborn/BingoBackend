@@ -1,0 +1,34 @@
+.profile-picture.detail
+  max-width: 200px
+  max-height: 200px
+
+  @include bp-medium
+    float: none
+    margin-left: auto
+    margin-right: auto
+
+.profile-detail
+  display: block
+  position: relative
+  left: 30px
+  width: calc(100% - 30px)
+
+  @include bp-medium
+    display: static
+    left: 0px
+    top: 30px
+
+    br
+      display: none
+
+.profile-card-list
+  display: flex
+  flex-flow: row wrap
+  justify-content: space-between
+
+  .card-list
+    display: block
+    width: 30%
+
+    @include bp-medium
+      width: 100%

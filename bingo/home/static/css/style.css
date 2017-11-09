@@ -188,7 +188,7 @@ nav {
   max-height: 75px;
   max-width: 75px; }
 
-.call-to-action, .contact_form .btn.btn-primary {
+.call-to-action, form .btn.btn-primary, .contact_form .btn.btn-primary {
   display: inline-block;
   color: #f8f9fa;
   background-color: purple;
@@ -199,7 +199,7 @@ nav {
   transition: .2s ease-in-out;
   font-weight: bold;
   letter-spacing: 1px; }
-  .call-to-action:hover, .contact_form .btn.btn-primary:hover {
+  .call-to-action:hover, form .btn.btn-primary:hover, .contact_form .btn.btn-primary:hover {
     text-decoration: none;
     background-color: blue;
     color: #f8f9fa;
@@ -220,6 +220,17 @@ nav {
 .h1-logo {
   height: 4.29982rem;
   display: inline-block; }
+
+form label, .contact_form label {
+  font-weight: bold;
+  margin-bottom: 3px;
+  display: block; }
+
+form input, .contact_form input, form textarea, .contact_form textarea {
+  margin-bottom: 10px; }
+
+form .btn.btn-primary:hover, .contact_form .btn.btn-primary:hover {
+  background-color: blue; }
 
 main {
   max-width: 1140px;
@@ -278,16 +289,49 @@ footer {
 
 .contact_form {
   width: 100%; }
-  .contact_form label {
-    font-weight: bold;
-    margin-bottom: 3px; }
   .contact_form input.textinput, .contact_form input.emailinput {
     min-width: 95%; }
-  .contact_form input, .contact_form textarea {
-    margin-bottom: 10px; }
   .contact_form textarea {
     width: 95%; }
-  .contact_form .btn.btn-primary:hover {
-    background-color: blue; }
+
+.profile-picture.detail {
+  max-width: 200px;
+  max-height: 200px; }
+  @media (max-width: 768px) {
+    .profile-picture.detail {
+      float: none;
+      margin-left: auto;
+      margin-right: auto; } }
+
+.profile-detail {
+  display: block;
+  position: relative;
+  left: 30px;
+  width: calc(100% - 30px); }
+  @media (max-width: 768px) {
+    .profile-detail {
+      display: static;
+      left: 0px;
+      top: 30px; }
+      .profile-detail br {
+        display: none; } }
+
+.profile-card-list {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between; }
+  .profile-card-list .card-list {
+    display: block;
+    width: 30%; }
+    @media (max-width: 768px) {
+      .profile-card-list .card-list {
+        width: 100%; } }
 
 /*# sourceMappingURL=style.css.map */

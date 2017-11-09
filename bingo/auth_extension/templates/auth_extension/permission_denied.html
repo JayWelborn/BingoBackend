@@ -4,6 +4,16 @@
 
 {% block content %}
 
-  <h1>Permission Denied</h1>
+  <div class="card-default">
+      <h3>Permission Denied</h3>
+      <p>
+        If you are seeing this, you probably tried to do something you shouldn&rdquo;t have.
+      </p>
+      <p>
+        Don&rdquo;t do that.
+      </p>
+        If you believe this is an error, please <a href="{% url 'home:contact' %}">contact us</a>.
+      </p>
+  </div>
 
 {% endblock %}

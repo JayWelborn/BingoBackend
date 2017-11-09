@@ -91,6 +91,7 @@
   </nav>
   <main>
     {% if user.is_authenticated %}
+      {% block profile_card %}
     <!-- profile sidebar -->
       <aside class="profile-sidebar">
         {% if user.profile.picture %}
@@ -107,6 +108,7 @@
           </ul>
         </section>
       </aside>
+      {% endblock %}
     {% endif %}
     <!-- end profile sidebar -->
     <!-- body content -->
