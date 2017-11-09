@@ -230,6 +230,15 @@ form label, .contact_form label {
 form input, .contact_form input, form textarea, .contact_form textarea {
   margin-bottom: 10px; }
 
+form a + input[type=checkbox], .contact_form a + input[type=checkbox] {
+  margin-left: 25px; }
+
+form input[type=checkbox], .contact_form input[type=checkbox] {
+  display: inline-block; }
+
+form input[type=checkbox] + label, .contact_form input[type=checkbox] + label {
+  display: inline-block; }
+
 form .btn.btn-primary:hover, .contact_form .btn.btn-primary:hover {
   background-color: blue; }
 
