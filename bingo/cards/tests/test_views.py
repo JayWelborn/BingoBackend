@@ -7,8 +7,6 @@ from django.utils import timezone
 
 from cards.models import BingoCard, BingoCardSquare
 
-import pdb
-
 
 class CardListViewTests(TestCase):
     """Tests for CardListView class

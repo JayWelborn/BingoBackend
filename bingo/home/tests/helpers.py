@@ -34,7 +34,7 @@ def create_user(username, password, private):
     return user
 
 
-def create_card(title, user, private):
+def create_card(title, user, private=False):
     """Create BingoCard object with associated Creator.
 
     Args:

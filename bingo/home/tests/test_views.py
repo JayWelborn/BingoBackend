@@ -28,8 +28,6 @@ class IndexViewTests(TestCase):
             both public and private cards
         test_unauthenticated_visitor: An unauthenticated visitor should be able
             to see only public cards with public creators
-        test_contact_in_context: The latest Contact object should be in
-            context['contact']
 
     References:
 
@@ -63,16 +61,6 @@ class IndexViewTests(TestCase):
             new_card = create_card(title, user, False)
             self.cards.append(new_card)
 
-        self.contact = Contact.objects.get_or_create(
-            title='title2',
-            facebook='https://www.facebook.com/jwelb',
-            github='//www.github.com/jaywelborn',
-            linkedin='//www.linkedin.com/--jaywelborn--',
-            twitter='//www.twitter.com/__jaywelborn__',
-            email='jesse.welborn@gmail.com',
-            contact_date=timezone.now().date(),
-        )[0]
-
     def test_response_code(self):
         """
         Response code should be 200
@@ -85,7 +73,7 @@ class IndexViewTests(TestCase):
         Context Object should be called `card_list`
         """
         response = self.client.get(reverse('home:index'))
-        self.assertTrue('card_list' in response.context)
+        self.assertIn('card_list', response.context)
 
     def test_authenticated_visitor(self):
         """
@@ -103,7 +91,7 @@ class IndexViewTests(TestCase):
         qs = response.context['card_list']
 
         for card in cards:
-            self.assertTrue(card in qs)
+            self.assertIn(card, qs)
 
     def test_unauthenticated_visitor(self):
         """
@@ -120,16 +108,7 @@ class IndexViewTests(TestCase):
         qs = response.context['card_list']
 
         for card in cards:
-            self.assertEqual(card in qs, True)
-
-    def test_contact_in_context(self):
-        """
-        Latest contact object sould be in context.
-        """
-
-        response = self.client.get(reverse('home:index'))
-        self.assertIn('contact', response.context)
-        self.assertEqual(response.context['contact'], self.contact)
+            self.assertIn(card, qs)
 
 
 class ContactViewTests(TestCase):

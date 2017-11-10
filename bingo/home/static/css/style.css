@@ -199,7 +199,8 @@ nav {
   -webkit-transition: .2s ease-in-out;
   transition: .2s ease-in-out;
   font-weight: bold;
-  letter-spacing: 1px; }
+  letter-spacing: 1px;
+  margin-right: 20px; }
   .call-to-action:hover, form .btn.btn-primary:hover, .contact_form .btn.btn-primary:hover {
     text-decoration: none;
     background-color: blue;

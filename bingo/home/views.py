@@ -35,14 +35,6 @@ class IndexView(generic.ListView):
     template_name = 'home/index.html'
     context_object_name = 'card_list'
 
-    def get_context_data(self, **kwargs):
-        """
-        Get list of info from Contact Model to be passed to template
-        """
-        context = super(IndexView, self).get_context_data(**kwargs)
-        context['contact'] = Contact.objects.latest('contact_date')
-        return context
-
     def get_queryset(self):
         """
         Returns 5 most recent cards, filtered by privacy setting.
