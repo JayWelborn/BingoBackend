@@ -34,7 +34,7 @@
     <section class="profile-card-list">
     {% for card in profile.user.bingo_cards.all %}
         <div class="card-list">
-            <a href="{% url 'cards:card_detail' card.pk %}"><h5>{{ card.title }}</h5></a></li>
+            <a href="{% url 'cards:card_detail' card.pk %}"><h5>{{ card.title }}</h5></a>
         </div>
     {% endfor %}
     </section>

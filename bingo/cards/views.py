@@ -74,7 +74,6 @@ class MyCardListView(LoginRequiredMixin, g.ListView):
         authenticated user.
         """
         queryset = BingoCard.objects.filter(creator=self.request.user)
-        # pdb.set_trace()
         return queryset.order_by('-created_date')
 
 
