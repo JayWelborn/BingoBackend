@@ -107,7 +107,8 @@ body {
 .card-default, .profile-sidebar, .card-list, .card-inverted {
   border-radius: 5px;
   padding: 30px;
-  margin: 5px 0px; }
+  margin: 5px 0px;
+  display: block; }
   .card-default ul, .profile-sidebar ul, .card-list ul, .card-inverted ul {
     margin-bottom: 0px; }
   @media (max-width: 576px) {
@@ -334,14 +335,18 @@ footer {
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
       -ms-flex-flow: row wrap;
-          flex-flow: row wrap; }
+          flex-flow: row wrap;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between; }
   .profile-card-list .card-list {
     display: block;
-    width: 30%;
-    margin-left: 1.5%;
-    margin-right: 1.5%; }
+    width: 33%; }
     @media (max-width: 768px) {
       .profile-card-list .card-list {
-        width: 100%; } }
+        width: 100%;
+        margin-right: 0px; } }
+    .profile-card-list .card-list ul {
+      padding: 0; }
 
 /*# sourceMappingURL=style.css.map */
