@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
@@ -109,6 +111,19 @@ class CardDetailView(g.DetailView):
             return redirect(reverse('auth_extension:unauthorized'))
         else:
             return self.render_to_response(context)
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        Add squares to context.
+        """
+        context = super(CardDetailView, self).get_context_data()
+        self.object.squares.all()
+        square_set = self.object.squares.all()
+        random.shuffle(list(square_set))
+        context['squares'] = list(square_set)
+        # makes the free space always in the center
+        context['squares'].insert(12, self.object.free_space)
+        return context
 
 
 class CardCreateView(LoginRequiredMixin, g.CreateView):

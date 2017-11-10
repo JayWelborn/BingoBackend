@@ -33,14 +33,13 @@ class BingoCard(models.Model):
         verbose_name_plural = 'Bingo Cards'
 
     title = models.CharField(
-        'Title of the Bingo Card',
+        'Card Title',
         max_length=50,
     )
 
     slug = models.SlugField()
 
     free_space = models.CharField(
-        'Free Space text will be shown in the center of your Bingo Card',
         max_length=40,
         default='Free Space',
     )
@@ -100,7 +99,6 @@ class BingoCardSquare(models.Model):
         verbose_name_plural = 'Bingo Squares'
 
     text = models.CharField(
-        'Text will be shown in a square of your Bingo Card',
         max_length=40,
     )
 

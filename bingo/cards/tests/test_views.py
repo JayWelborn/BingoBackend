@@ -244,6 +244,8 @@ class CardDetailViewTests(TestCase):
             card even if they aren't authenticated.
         test_private_card_only_authenticated: Only authenticated users should
             be able to see private cards
+        test_squares_in_context: Assert all squares associated with card are in
+            context['squares']
 
     References:
         * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-display/#detailview
@@ -270,6 +272,14 @@ class CardDetailViewTests(TestCase):
             creator=self.user
         )
         self.public_card.save()
+
+        for i in range(24):
+            text = 'square {}'.format(i)
+            new_square = BingoCardSquare.objects.get_or_create(
+                text=text,
+                card=self.public_card
+            )[0]
+            self.assertIn(new_square, self.public_card.squares.all())
 
         # Create private card
         self.private_card = BingoCard.objects.create(
@@ -362,6 +372,15 @@ class CardDetailViewTests(TestCase):
         self.assertIn('card', response.context)
         card = response.context['card']
         self.assertEqual(card, self.private_card)
+
+    def test_squares_in_context(self):
+        """
+        Squares should be added to context in 'squares'
+        """
+        response = self.client.get(
+            reverse('cards:card_detail', args=[self.public_card.pk])
+        )
+        self.assertEqual(response.status_code, 200)
 
 
 class CardCreateViewTests(TestCase):

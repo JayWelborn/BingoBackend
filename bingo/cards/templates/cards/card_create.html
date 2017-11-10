@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
 
 {% block title %}Card Create{% endblock %}
 
 {% block content %}
 
-  <h1>Card Create</h1>
+  <div class="card-default">
+      {% crispy form %}
+      {% crispy square_formset square_formset.form.helper %}
+      <input type="submit" class="btn btn-primary" value="{% trans 'Create Card' %}" />
+  </div>
 
 {% endblock %}
