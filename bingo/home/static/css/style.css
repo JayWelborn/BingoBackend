@@ -241,7 +241,7 @@ form input[type=checkbox] + label, .contact_form input[type=checkbox] + label {
   display: inline-block; }
 
 form .btn.btn-primary:hover, .contact_form .btn.btn-primary:hover {
-  background-color: blue; }
+  background-color: purple; }
 
 main {
   max-width: 1140px;
