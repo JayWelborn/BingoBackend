@@ -42,3 +42,6 @@ htmlcov/
 
 # media files
 media/
+
+# local bash script
+start-bingo.bash

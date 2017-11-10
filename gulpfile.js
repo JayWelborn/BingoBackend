@@ -31,6 +31,7 @@ gulp.task('browsersync', function() {
     browserSync.init({
         notify: true,
         proxy: "localhost:8000",
+        browser: ["google chrome", "firefox"]
     });
 });
 

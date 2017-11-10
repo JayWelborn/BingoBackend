@@ -32,6 +32,10 @@ urlpatterns = [
         v.CardUpdateView.as_view(),
         name='card_update'),
 
+    url(r'^my-cards/$',
+        v.MyCardListView.as_view(),
+        name='my_cards'),
+
     url(r'^',
         v.CardListView.as_view(),
         name='card_list'),

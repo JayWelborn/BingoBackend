@@ -148,6 +148,91 @@ class CardListViewTests(TestCase):
             self.assertTrue(card.private)
 
 
+class MyCardListViewTests(TestCase):
+    """Tests for MyCardListView.
+
+    Methods:
+        setUp: Create objects for testing
+        test_login_required: Unauthenticated users should be redirected to
+            permission_denied
+        test_cards_in_context: authenticated user should see their cards, and
+            only their cards, in context
+
+    """
+
+    def setUp(self):
+        """
+        Create objects for testing
+        """
+
+        # Create Users
+        self.user = User.objects.create(
+            username='cardviewtests',
+            email='cardviewtest@gmail.com'
+        )
+        self.user.set_password('password')
+        self.user.save()
+
+        self.user2 = User.objects.create(
+            username='cardviewtests2',
+            email='test@gmail.com'
+        )
+        self.user2.set_password('password')
+        self.user2.save()
+
+        self.assertTrue(self.user)
+        self.assertTrue(self.user2)
+
+        # Create bingocards
+        self.user_cards = []
+        self.user2_cards = []
+        for i in range(10):
+            card = BingoCard.objects.create(
+                title='card # {}'.format(i),
+                created_date=timezone.now() - timedelta(days=i),
+                creator=self.user,
+            )
+            card.save()
+            self.user_cards.append(card)
+
+            card = BingoCard.objects.create(
+                title='card2 # {}'.format(i),
+                created_date=timezone.now() - timedelta(days=i),
+                creator=self.user2,
+            )
+            card.save()
+            self.user2_cards.append(card)
+
+    def test_login_required(self):
+        """
+        Unauthenticated visitors should be redirected to permission-denied
+        """
+        response = self.client.get(reverse('cards:my_cards'))
+        self.assertRedirects(
+            response=response,
+            expected_url=reverse('auth_extension:permission_denied'),
+            status_code=302
+        )
+
+    def test_cards_in_context(self):
+        """
+        Only cards created by authenticated user should be added to context.
+        """
+        self.client.login(
+            username='cardviewtests',
+            password='password'
+        )
+
+        self.assertIn('_auth_user_id', self.client.session)
+
+        response = self.client.get(reverse('cards:my_cards'))
+        self.assertEqual(response.status_code, 200)
+
+        for card in response.context['cards']:
+            self.assertIn(card, self.user_cards)
+            self.assertNotIn(card, self.user2_cards)
+
+
 class CardDetailViewTests(TestCase):
     """Tests for Card Detail View.
 

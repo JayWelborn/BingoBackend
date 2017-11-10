@@ -8,6 +8,8 @@ from django.urls import reverse
 from .models import BingoCard
 from .forms import BingoCardForm, BingoSquareFormset
 
+import pdb
+
 
 # Create your views here.
 class CardListView(g.ListView):
@@ -45,6 +47,35 @@ class CardListView(g.ListView):
 
         else:
             return queryset.filter(private=False)
+
+
+class MyCardListView(LoginRequiredMixin, g.ListView):
+    """View to allow Users to view cards they created.
+
+    Attributes:
+        login_url: Url for redirecting unauthenticated visitors
+        template_name: Temaplate to render
+        context_object_name: Name used in template to access queryset
+        redirect_field_name: Remove querystring from login_url upon redirect
+
+    Methods:
+        get_queryset: filter queryset to only cards created by current user
+
+    """
+
+    login_url = '/profile/permission-denied/'
+    template_name = 'cards/my_cards.html'
+    context_object_name = 'cards'
+    redirect_field_name = None
+
+    def get_queryset(self):
+        """
+        Filter queryset to only include cards created by currently
+        authenticated user.
+        """
+        queryset = BingoCard.objects.filter(creator=self.request.user)
+        # pdb.set_trace()
+        return queryset.order_by('-created_date')
 
 
 class CardDetailView(g.DetailView):
