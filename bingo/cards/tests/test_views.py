@@ -382,6 +382,9 @@ class CardDetailViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+        for square in self.public_card.squares.all():
+            self.assertIn(square, response.context['squares'])
+
 
 class CardCreateViewTests(TestCase):
     """Tests for Card Create View.
