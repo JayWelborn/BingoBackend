@@ -33,7 +33,7 @@
         {% endif %}
         <ul>
           <li><a href="{% url 'cards:card_detail' card.pk %}"><h5>{{ card.title }}</h5></a></li>
-          <li>Creator: <a href="{% url 'auth_extension:profile_view' card.creator.pk %}">{{ card.creator.username }}</a></li>
+          <li>Creator: <a href="{% url 'auth_extension:profile_view' card.creator.profile.pk %}">{{ card.creator.username }}</a></li>
         </ul>
       </section>
     {% endfor %}
