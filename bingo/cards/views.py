@@ -117,8 +117,7 @@ class CardDetailView(g.DetailView):
         context = super(CardDetailView, self).get_context_data()
         self.object.squares.all()
         square_set = self.object.squares.all()
-        random.shuffle(list(square_set))
-        context['squares'] = list(square_set)
+        context['squares'] = random.sample(list(square_set), len(square_set))
         # makes the free space always in the center
         context['squares'].insert(12, self.object.free_space)
         return context

@@ -2,25 +2,49 @@
   border: 1px solid $off-black
   padding: 10px
   text-align: center
+  box-sizing: border-box
 
 #bingo-card
   @extend %table
   width: 100%
+  box-sizing: border-box
+
+  @include bp-medium
+    max-width: 300px
 
   th
     @extend %table
     padding: 30px
+    padding-top: 40px
     background-color: $purple
     color: $off-white
+    box-sizing: border-box
+
+    @include bp-medium
+      padding: 20px
+      h1
+        @include font-scale($scale, 3)
+
+    h1
+      margin-bottom: 0px
 
   td
     @extend %table
-    width: 20%
+    width: 18%
     transition: .2s ease-in-out
     cursor: pointer
 
+    @include bp-medium
+      font-size: .8rem
+      word-wrap: break-all
+      padding: 3px
+
   tr
-    height: exponent($scale, 9) + rem
+    height: exponent($scale, 10) + rem
+
+    @include bp-medium
+      height: auto
+
 
   .clicked-square
     background-color: $green

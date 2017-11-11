@@ -229,7 +229,7 @@ form label, .contact_form label {
   margin-bottom: 3px;
   display: block; }
 
-form input, .contact_form input, form textarea, .contact_form textarea {
+form input, .contact_form input, form textarea, .contact_form textarea, form select, .contact_form select {
   margin-bottom: 10px; }
 
 form a + input[type=checkbox], .contact_form a + input[type=checkbox] {
@@ -247,32 +247,72 @@ form .btn.btn-primary:hover, .contact_form .btn.btn-primary:hover {
 #bingo-card, #bingo-card th, #bingo-card td {
   border: 1px solid #101010;
   padding: 10px;
-  text-align: center; }
+  text-align: center;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box; }
 
 #bingo-card {
-  width: 100%; }
+  width: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box; }
+  @media (max-width: 768px) {
+    #bingo-card {
+      max-width: 300px; } }
   #bingo-card th {
     padding: 30px;
+    padding-top: 40px;
     background-color: purple;
-    color: #f8f9fa; }
+    color: #f8f9fa;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box; }
+    @media (max-width: 768px) {
+      #bingo-card th {
+        padding: 20px; }
+        #bingo-card th h1 {
+          font-size: 1.728rem; } }
+    @media (max-width: 768px) and (max-width: 768px) {
+      #bingo-card th h1 {
+        font-size: 1.5552rem; } }
+    @media (max-width: 768px) and (max-width: 576px) {
+      #bingo-card th h1 {
+        font-size: 1.3824rem; } }
+    #bingo-card th h1 {
+      margin-bottom: 0px; }
   #bingo-card td {
-    width: 20%;
+    width: 18%;
     -webkit-transition: .2s ease-in-out;
     transition: .2s ease-in-out;
     cursor: pointer; }
+    @media (max-width: 768px) {
+      #bingo-card td {
+        font-size: .8rem;
+        word-wrap: break-all;
+        padding: 3px; } }
   #bingo-card tr {
-    height: 5.15978rem; }
+    height: 6.19174rem; }
+    @media (max-width: 768px) {
+      #bingo-card tr {
+        height: auto; } }
   #bingo-card .clicked-square {
     background-color: green;
     color: #f8f9fa; }
 
 #bingo_square_form {
-  display: block;
-  width: 100%; }
-  #bingo_square_form label {
-    display: inline-block; }
-  #bingo_square_form input {
-    display: inline-block; }
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  margin: 20px 0px; }
+
+#bingo_square_form > div:nth-child(2) {
+  display: none; }
 
 main {
   max-width: 1140px;

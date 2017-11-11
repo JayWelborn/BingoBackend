@@ -31,6 +31,7 @@ class BingoCardForm(CrispyBaseModelForm):
         self.helper.form_id = 'bingo_card_form'
         self.helper.form_method = 'post'
         self.helper.form_action = '.'
+        self.helper.form_tag = False
 
     class Meta:
         model = BingoCard
@@ -60,6 +61,7 @@ class BingoSquareForm(CrispyBaseModelForm):
         self.helper.form_id = 'bingo_square_form'
         self.helper.form_method = 'post'
         self.helper.form_action = '.'
+        self.helper.form_tag = False
 
     class Meta:
         model = BingoCardSquare
