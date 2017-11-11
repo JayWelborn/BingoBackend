@@ -244,6 +244,36 @@ form input[type=checkbox] + label, .contact_form input[type=checkbox] + label {
 form .btn.btn-primary:hover, .contact_form .btn.btn-primary:hover {
   background-color: purple; }
 
+#bingo-card, #bingo-card th, #bingo-card td {
+  border: 1px solid #101010;
+  padding: 10px;
+  text-align: center; }
+
+#bingo-card {
+  width: 100%; }
+  #bingo-card th {
+    padding: 30px;
+    background-color: purple;
+    color: #f8f9fa; }
+  #bingo-card td {
+    width: 20%;
+    -webkit-transition: .2s ease-in-out;
+    transition: .2s ease-in-out;
+    cursor: pointer; }
+  #bingo-card tr {
+    height: 5.15978rem; }
+  #bingo-card .clicked-square {
+    background-color: green;
+    color: #f8f9fa; }
+
+#bingo_square_form {
+  display: block;
+  width: 100%; }
+  #bingo_square_form label {
+    display: inline-block; }
+  #bingo_square_form input {
+    display: inline-block; }
+
 main {
   max-width: 1140px;
   width: 100%; }

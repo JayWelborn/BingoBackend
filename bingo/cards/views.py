@@ -10,8 +10,6 @@ from django.urls import reverse
 from .models import BingoCard
 from .forms import BingoCardForm, BingoSquareFormset
 
-import pdb
-
 
 # Create your views here.
 class CardListView(g.ListView):

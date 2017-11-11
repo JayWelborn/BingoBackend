@@ -116,5 +116,4 @@ class BingoCardSquare(models.Model):
         """
         Calling __str__ will return something legible.
         """
-        string = '{}: {}'.format(self.card.title, self.text)
-        return string
+        return self.text

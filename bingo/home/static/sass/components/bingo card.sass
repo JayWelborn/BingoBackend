@@ -1,0 +1,27 @@
+%table
+  border: 1px solid $off-black
+  padding: 10px
+  text-align: center
+
+#bingo-card
+  @extend %table
+  width: 100%
+
+  th
+    @extend %table
+    padding: 30px
+    background-color: $purple
+    color: $off-white
+
+  td
+    @extend %table
+    width: 20%
+    transition: .2s ease-in-out
+    cursor: pointer
+
+  tr
+    height: exponent($scale, 9) + rem
+
+  .clicked-square
+    background-color: $green
+    color: $off-white
