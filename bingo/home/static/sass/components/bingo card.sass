@@ -6,7 +6,7 @@
 
 #bingo-card
   @extend %table
-  width: 100%
+  flex: 0 0 75%
   box-sizing: border-box
 
   @include bp-medium
@@ -33,11 +33,11 @@
     width: 18%
     transition: .2s ease-in-out
     cursor: pointer
+    word-wrap: break-word
 
     @include bp-medium
-      font-size: .8rem
-      word-wrap: break-all
-      padding: 3px
+      font-size: .6rem
+      padding: 2px
 
   tr
     height: exponent($scale, 11) + rem

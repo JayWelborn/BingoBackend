@@ -141,5 +141,4 @@ class BingoCardSquareModelTests(TestCase):
         """
 
         for square in BingoCardSquare.objects.all():
-            self.assertEqual(str(square), '{}: {}'.format(square.card.title,
-                                                          square.text))
+            self.assertEqual(str(square), square.text)

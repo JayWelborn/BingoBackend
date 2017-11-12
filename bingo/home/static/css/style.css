@@ -252,7 +252,9 @@ form .btn.btn-primary:hover, .contact_form .btn.btn-primary:hover {
           box-sizing: border-box; }
 
 #bingo-card {
-  width: 100%;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 75%;
+          flex: 0 0 75%;
   -webkit-box-sizing: border-box;
           box-sizing: border-box; }
   @media (max-width: 768px) {
@@ -282,12 +284,12 @@ form .btn.btn-primary:hover, .contact_form .btn.btn-primary:hover {
     width: 18%;
     -webkit-transition: .2s ease-in-out;
     transition: .2s ease-in-out;
-    cursor: pointer; }
+    cursor: pointer;
+    word-wrap: break-word; }
     @media (max-width: 768px) {
       #bingo-card td {
-        font-size: .8rem;
-        word-wrap: break-all;
-        padding: 3px; } }
+        font-size: .6rem;
+        padding: 2px; } }
   #bingo-card tr {
     height: 7.43008rem; }
     @media (max-width: 768px) {
@@ -313,6 +315,9 @@ form .btn.btn-primary:hover, .contact_form .btn.btn-primary:hover {
 
 #bingo_square_form > div:nth-child(2) {
   display: none; }
+
+.search-results {
+  padding-left: 0px; }
 
 main {
   max-width: 1140px;

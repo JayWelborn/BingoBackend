@@ -36,6 +36,14 @@ urlpatterns = [
         v.MyCardListView.as_view(),
         name='my_cards'),
 
+    url(r'^search/$',
+        v.CardSearchView.as_view(),
+        name='card_search'),
+
+    url(r'^suggest/',
+        v.suggest_cards,
+        name='suggest_cards'),
+
     url(r'^',
         v.CardListView.as_view(),
         name='card_list'),

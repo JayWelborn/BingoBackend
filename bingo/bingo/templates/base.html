@@ -66,7 +66,7 @@
           </li>
           {% if user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="#TODO">Search Cards</a>
+              <a class="nav-link" href="{% url 'cards:card_search' %}">Search Cards</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'registration:auth_logout' %}">Logout</a>

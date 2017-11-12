@@ -3,7 +3,7 @@ import random
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.views import generic as g
 from django.urls import reverse
 
@@ -280,3 +280,26 @@ class CardUpdateView(LoginRequiredMixin, SuccessMessageMixin, g.UpdateView):
                 formset=formset
             )
         )
+
+
+class CardSearchView(LoginRequiredMixin, g.TemplateView):
+    """View for searching cards.
+
+    Attributes:
+        template_name: template to render
+
+    """
+
+    template_name = 'cards/card_search.html'
+
+
+def suggest_cards(request):
+    card_list = []
+    starts_with = ''
+
+    if request.method == 'GET':
+        starts_with = request.GET['suggestion']
+
+    card_list = BingoCard.objects.filter(title__istartswith=starts_with)
+
+    return render(request, 'cards/search_results.html', {'cards': card_list})

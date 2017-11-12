@@ -1,4 +1,5 @@
 from django.forms.models import inlineformset_factory
+from django import forms
 
 # app imports
 from bingo.forms import CrispyBaseModelForm
