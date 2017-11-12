@@ -46,7 +46,7 @@ class BaseTemplateTests(TestCase):
 
         self.contact = Contact.objects.get_or_create(
             title='title2',
-            facebook='https://www.facebook.com/jwelb',
+            facebook='https://www.facebook.com/jaywelb',
             github='//www.github.com/jaywelborn',
             linkedin='//www.linkedin.com/--jaywelborn--',
             twitter='//www.twitter.com/__jaywelborn__',
