@@ -396,6 +396,8 @@ class CardCreateViewTests(TestCase):
         test_login_redirect: Unauthenticated users should be sent to Permission
             Denied view as there will be no link to create a card visible to
             unauthenticated users.
+        test_initial_creator: Form should prepopulate `creator` with currently
+            authenticated user.
         test_form_valid: View should create BingoCard and BingoCardSquare upon
             valid POST request.
 
@@ -482,6 +484,22 @@ class CardCreateViewTests(TestCase):
             response=response,
             expected_url=reverse('auth_extension:permission_denied'),
             status_code=302
+        )
+
+    def test_initial_creator(self):
+        """
+        Form should prepopulate `creator` with currently authenticated user.
+        """
+        self.client.login(
+            username="testuser",
+            password="password2323"
+        )
+
+        response = self.client.get(reverse('cards:card_create'))
+        initial = response.context['form'].initial
+        self.assertEqual(
+            initial['creator'],
+            self.user.id
         )
 
     def test_form_valid(self):

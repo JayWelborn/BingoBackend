@@ -135,6 +135,7 @@ class CardCreateView(LoginRequiredMixin, g.CreateView):
 
     Methods:
         get_context_data: Add bingoCardFormset to view's context
+        get_initial: Set currently authenticated user to form's `creator`
         form_valid: Save the formset as well as the form so cards get created
             with squares
 
@@ -167,6 +168,15 @@ class CardCreateView(LoginRequiredMixin, g.CreateView):
             context['square_formset'] = BingoSquareFormset()
 
         return context
+
+    def get_initial(self):
+        """
+        Set currently authenticated user as Card's creator.
+        """
+        initial = super(CardCreateView, self).get_initial()
+
+        initial['creator'] = self.request.user.id
+        return initial
 
     def form_valid(self, form):
         """
