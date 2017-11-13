@@ -326,6 +326,17 @@ class CardSearchView(LoginRequiredMixin, g.TemplateView):
 
 
 def suggest_cards(request):
+    """
+    Processes AJAX requests from search form in CardSearchView.
+
+    params:
+        request: a django request object containing a string `suggestion`
+
+    returns:
+        renered_response: HTML rendering of a list of cards starting with
+            `suggestion`
+
+    """
     card_list = []
     starts_with = ''
 
