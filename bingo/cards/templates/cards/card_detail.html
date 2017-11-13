@@ -20,8 +20,24 @@
             </tr>
         </tbody>
     </table>
-{% endblock %}
 </div>
+
+<div class="card-default profile-sidebar">
+    {% if card.creator.profile.picture %}
+      <a href="{% url 'auth_extension:profile_view' card.creator.profile.pk %}">
+        <img class="profile-picture" src="{{ card.creator.profile.picture.url }}" alt="{{ card.creator.username }}">
+      </a>
+    {% endif %}
+    <section class="profile-info">
+        <h5>Creator:</h5>
+        <h6>
+            <a href="{% url 'auth_extension:profile_view' card.creator.profile.pk %}">
+                {{ card.creator.username }}
+            </a>
+        </h6>
+    </section>
+</div>
+{% endblock %}
 
 {% block javascript %}
 <script type="text/javascript" src="{% static 'cards/js/detail.js' %}"></script>
