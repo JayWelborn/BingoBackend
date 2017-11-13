@@ -90,3 +90,13 @@ class CardCreateTests(TestCase):
         self.assertIn(form.helper.form_id, content)
         self.assertIn(form.helper.form_method, content)
         self.assertIn(form.helper.form_action, content)
+
+
+class CardDetailTests(TestCase):
+    """Tests for `card_detail.html`
+
+    Methods:
+
+    References:
+
+    """
