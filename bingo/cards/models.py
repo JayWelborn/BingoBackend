@@ -44,7 +44,7 @@ class BingoCard(models.Model):
         default='Free Space',
     )
 
-    created_date = models.DateField(
+    created_date = models.DateTimeField(
         default=timezone.now,
     )
 
