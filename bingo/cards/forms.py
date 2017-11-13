@@ -37,6 +37,7 @@ class BingoCardForm(CrispyBaseModelForm):
     class Meta:
         model = BingoCard
         fields = ('title', 'free_space', 'creator', 'private')
+        widgets = {'creator': forms.HiddenInput()}
 
 
 class BingoSquareForm(CrispyBaseModelForm):
