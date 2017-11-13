@@ -32,6 +32,10 @@ urlpatterns = [
         v.CardUpdateView.as_view(),
         name='card_update'),
 
+    url(r'^delete/(?P<pk>\d+)/$',
+        v.CardDeleteView.as_view(),
+        name='card_delete'),
+
     url(r'^my-cards/$',
         v.MyCardListView.as_view(),
         name='my_cards'),

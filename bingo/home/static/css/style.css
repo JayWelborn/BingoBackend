@@ -241,8 +241,10 @@ form input[type=checkbox], .contact_form input[type=checkbox] {
 form input[type=checkbox] + label, .contact_form input[type=checkbox] + label {
   display: inline-block; }
 
-form .btn.btn-primary:hover, .contact_form .btn.btn-primary:hover {
-  background-color: purple; }
+form .btn.btn-primary, .contact_form .btn.btn-primary {
+  cursor: pointer; }
+  form .btn.btn-primary:hover, .contact_form .btn.btn-primary:hover {
+    background-color: purple; }
 
 #bingo-card, #bingo-card th, #bingo-card td {
   border: 1px solid #101010;

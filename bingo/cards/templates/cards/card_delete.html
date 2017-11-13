@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %}Delete Card{% endblock %}
+
+{% block content %}
+
+  <div class="card-default">
+    <form action="." method="post">
+        {% csrf_token %}
+        <h5>Are you sure you want to delete {{ card.title }}</h5>
+      <input type="submit" class="btn btn-primary" value="{% trans 'Yes' %}" />
+    </form>
+  </div>
+
+{% endblock %}

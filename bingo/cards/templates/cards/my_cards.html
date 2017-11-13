@@ -15,6 +15,7 @@
             <ul>
                 <li><a href="{% url 'cards:card_detail' card.pk %}"><h5>{{ card.title }}</h5></a></li>
                 <li><a href="{% url 'cards:card_update' card.pk %}">Edit</a></li>
+                <li><a href="{% url 'cards:card_delete' card.pk %}">Delete</a></li>
             </ul>
         </div>
     {% endfor %}

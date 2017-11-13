@@ -292,6 +292,28 @@ class CardUpdateView(LoginRequiredMixin, SuccessMessageMixin, g.UpdateView):
         )
 
 
+class CardDeleteView(LoginRequiredMixin, SuccessMessageMixin, g.DeleteView):
+    """View for deleting bingo cards.
+
+    Attributes:
+        model: Model to be deleted
+        context_object_name: Name of object to use in template.
+        login_url: Url to redirect for unauthenticated users
+        success_url: Redirect users to their card list upon successful deletion
+        template_name: template to render
+
+    References:
+        * https://docs.djangoproject.com/en/1.11/topics/class-based-views/generic-editing/
+
+    """
+
+    model = BingoCard
+    context_object_name = 'card'
+    login_url = '/profile/permission-denied/'
+    success_url = '/cards/my-cards/'
+    template_name = 'cards/card_delete.html'
+
+
 class CardSearchView(LoginRequiredMixin, g.TemplateView):
     """View for searching cards.
 
