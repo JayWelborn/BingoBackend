@@ -64,6 +64,7 @@ class BingoSquareForm(CrispyBaseModelForm):
         self.helper.form_method = 'post'
         self.helper.form_action = '.'
         self.helper.form_tag = False
+        self.empty_permitted = False
 
     class Meta:
         model = BingoCardSquare

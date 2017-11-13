@@ -187,14 +187,17 @@ class CardCreateView(LoginRequiredMixin, g.CreateView):
         square_formset = context['square_formset']
 
         with transaction.atomic():
-            # get card instance
-            self.object = form.save()
-            if square_formset.is_valid():
+            if form.is_valid() and square_formset.is_valid():
+                # get card instance
+                self.object = form.save()
                 # name instance for formset to relate to via ForeignKey
                 square_formset.instance = self.object
                 square_formset.save()
 
-        return super(CardCreateView, self).form_valid(form)
+                return super(CardCreateView, self).form_valid(form)
+
+            else:
+                return super(CardCreateView, self).form_invalid(form)
 
 
 class CardUpdateView(LoginRequiredMixin, SuccessMessageMixin, g.UpdateView):
