@@ -45,5 +45,9 @@ urlpatterns = [
 
     url(r'^permission-denied/$',
         v.PermissionDenied.as_view(),
-        name='permission_denied')
+        name='permission_denied'),
+
+    url(r'^suggest/',
+        v.suggest_profiles,
+        name='profile_search'),
 ]

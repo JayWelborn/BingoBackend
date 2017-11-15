@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin as LRM
+from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import render
 from django.views import generic as g
 from django.urls import reverse
 
@@ -309,3 +311,28 @@ class PermissionDenied(g.TemplateView):
 
     """
     template_name = 'auth_extension/permission_denied.html'
+
+
+def suggest_profiles(request):
+    """Processes AJAX requests from search form in ProfileListView.
+
+    params:
+        request: a django request object containing a string `suggestion`
+
+    returns:
+        rendered_response: HTML rendering of a list of profiles starting with
+            `suggestion`
+
+    """
+    profile_list = []
+    starts_with = ''
+
+    if request.method == 'GET':
+        starts_with = request.GET['suggestion']
+
+    users = User.objects.filter(username__istartswith=starts_with)
+    users = users.order_by('-date_joined')
+    profile_list = [user.profile for user in users]
+
+    return render(request, 'auth_extension/search_results.html',
+                  {'profiles': profile_list})
