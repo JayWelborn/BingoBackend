@@ -347,5 +347,6 @@ def suggest_cards(request):
         starts_with = request.GET['suggestion']
 
     card_list = BingoCard.objects.filter(title__istartswith=starts_with)
+    card_list = card_list.order_by('title')
 
     return render(request, 'cards/search_results.html', {'cards': card_list})
