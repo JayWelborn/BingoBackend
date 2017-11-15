@@ -26,7 +26,7 @@
   <!-- stylesheets -->
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link href="https://fonts.googleapis.com/css?family=Cutive|Lato:300,700" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css?family=Cutive|Lato:300,700" rel="stylesheet">
   <!-- end stylesheets -->
 
   <!-- social media tags -->
@@ -47,7 +47,7 @@
   <!-- end social -->
   {% block meta %}
   {% endblock %}
-  
+
 </head>
 <body>
   <!-- navbar -->
@@ -63,6 +63,9 @@
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
             <a class="nav-link" href="{% url 'cards:card_list' %}">Cards</a>
+          </li>
+          <li>
+            <a class="nav-link" href="{% url 'auth_extension:profile_list' %}">Bingonauts</a>
           </li>
           {% if user.is_authenticated %}
             <li class="nav-item">

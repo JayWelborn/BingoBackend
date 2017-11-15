@@ -23,6 +23,10 @@ urlpatterns = [
         v.LoginRedirectView.as_view(),
         name='login_redirect'),
 
+    url(r'^list/$',
+        v.ProfileListView.as_view(),
+        name='profile_list'),
+
     url(r'^(?P<pk>\d+)/$',
         v.ProfileRedirectView.as_view(),
         name='profile'),

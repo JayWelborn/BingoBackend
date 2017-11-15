@@ -64,7 +64,7 @@ class ProfileRedirectView(LRM, g.RedirectView):
             (Status Code 301)
 
     Methods:
-        dispatch: get pk of authenticated user for verification during 
+        dispatch: get pk of authenticated user for verification during
             redirect.
         get_redirect_url: send visitor to profile page if profile is not
             private. Send to Permission Denied view if private.
@@ -248,7 +248,41 @@ class ProfileEditView(LRM, SuccessMessageMixin, g.FormView):
         return super(ProfileEditView, self).form_valid(form)
 
 
-# TODO *** ProfileListView ***
+class ProfileListView(g.ListView):
+    """View that displays a list of cards.
+
+    Attributes:
+        model: Model to list
+        context_object_name: Name used in template for readability
+        queryset: Sort list of cards by most recent first
+        paginate_by: Break list into pages for convenient viewing
+        template_name: Template used to render list
+
+    Methods:
+        get_queryset: Filter out private cards if user is not authenticated
+
+    References:
+        * https://docs.djangoproject.com/en/1.11/ref/class-based-views/generic-display/#listview
+
+    """
+
+    model = UserProfile
+    context_object_name = 'profiles'
+    queryset = UserProfile.objects.order_by('-created_date')
+    paginate_by = 8
+    template_name = 'auth_extension/profile_list.html'
+
+    def get_queryset(self):
+        """
+        Filter private cards out if user is not authenticated
+        """
+        queryset = super(ProfileListView, self).get_queryset()
+
+        if self.request.user.is_authenticated:
+            return queryset
+
+        else:
+            return queryset.filter(private=False)
 
 
 class Unauthorized(g.TemplateView):

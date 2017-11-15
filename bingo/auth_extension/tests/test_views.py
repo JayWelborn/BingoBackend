@@ -820,6 +820,92 @@ class ProfileEditViewTests(TestCase):
         )
 
 
+class ProfileListViewTests(TestCase):
+    """Tests for Profile List View.
+
+    Methods:
+        setUp: Create users and profiles for testing
+        test_unauthenticated_visitor: Private profiles should not be visible to
+            unauthenticated visitors.
+        test_authenticated_visitor: Private profiles should be visible to
+            authenticated visitors.
+
+    References:
+
+    """
+
+    def setUp(self):
+        """
+        Create private and public profiles for testing
+        """
+
+        self.public_profiles = []
+        self.private_profiles = []
+
+        for i in range(4):
+            # Add private profile to list
+            private_user = User.objects.get_or_create(
+                username='private{}'.format(i),
+                email='private{}@gmail.com'.format(i)
+            )[0]
+            private_user.set_password('password{}'.format(i))
+            private_user.save()
+            private_profile = UserProfile.objects.get_or_create(
+                user=private_user,
+                private=True
+            )[0]
+            private_profile.save()
+            self.private_profiles.append(private_profile)
+
+            # Add public profile to list
+            public_user = User.objects.get_or_create(
+                username='public{}'.format(i),
+                email='public{}@gmail.com'.format(i)
+            )[0]
+            public_user.set_password('password{}'.format(i))
+            public_user.save()
+            public_profile = UserProfile.objects.get_or_create(
+                user=public_user,
+                private=False
+            )[0]
+            public_profile.save()
+            self.public_profiles.append(public_profile)
+
+    def test_unauthenticated_visitor(self):
+        """
+        Unauthenticated visitors should not see private profiles.
+        """
+        self.client.logout()
+        response = self.client.get(reverse('auth_extension:profile_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('profiles', response.context)
+
+        # Assert public profiles are in context
+        for profile in self.public_profiles:
+            self.assertIn(profile, response.context['profiles'])
+
+        # Assert private profiles aren't in context
+        for profile in self.private_profiles:
+            self.assertNotIn(profile, response.context['profiles'])
+
+    def test_authenticated_visotor(self):
+        """
+        Authenticated visitors should see all profiles.
+        """
+        self.client.login(
+            username='private0',
+            password='password0'
+        )
+        self.assertIn('_auth_user_id', self.client.session)
+        response = self.client.get(reverse('auth_extension:profile_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('profiles', response.context)
+
+        # Assert all profiles are in context
+        for profile in self.private_profiles + self.public_profiles:
+            self.assertIn(profile, response.context['profiles'])
+
+
 class UnauthorizedTests(TestCase):
     """Tests for Unauthorized Template View
 

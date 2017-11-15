@@ -181,14 +181,17 @@ nav {
   width: 45%;
   min-width: 120px; }
 
-.card-list ul {
-  list-style-type: none;
-  position: relative;
-  left: 20px; }
-
-.card-list .profile-picture {
-  max-height: 75px;
-  max-width: 75px; }
+.card-list {
+  min-height: 130px; }
+  .card-list ul {
+    list-style-type: none;
+    position: relative;
+    left: 20px; }
+  .card-list .profile-picture {
+    max-height: 75px;
+    max-width: 75px; }
+  .card-list h5 {
+    margin-bottom: 5px; }
 
 .call-to-action, form .btn.btn-primary, .contact_form .btn.btn-primary {
   display: inline-block;
