@@ -322,6 +322,9 @@ form .btn.btn-primary, .contact_form .btn.btn-primary {
 .search-results {
   padding-left: 0px; }
 
+.profile-header {
+  min-height: 260px; }
+
 main {
   max-width: 1140px;
   width: 100%; }
