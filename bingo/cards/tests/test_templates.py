@@ -6,6 +6,8 @@ from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
 from cards.forms import BingoCardForm, BingoSquareForm, BingoSquareFormset
 
+import pdb
+
 
 class CardCreateTests(TestCase):
     """Tests for `card_create.html`
@@ -90,6 +92,53 @@ class CardCreateTests(TestCase):
         self.assertIn(form.helper.form_id, content)
         self.assertIn(form.helper.form_method, content)
         self.assertIn(form.helper.form_action, content)
+
+
+class CardDeleteTests(TestCase):
+    """Tests for `card_delete.html`
+
+    Methods:
+        setUp: Create card and user
+        test_content: Ensure content is present in template
+
+    """
+
+    def setUp(self):
+        """
+        Create card and user for rendering.
+        """
+
+        self.user = User.objects.get_or_create(
+            username='templatetest',
+            email='test@test.com'
+        )[0]
+        self.user.set_password('password')
+        self.user.save()
+
+        self.profile = UserProfile.objects.get_or_create(
+            user=self.user
+        )[0]
+
+        self.card = BingoCard.objects.get_or_create(
+            title='templatetests',
+            creator=self.user
+        )[0]
+
+    def test_content(self):
+        """
+        Ensure card title is present in template
+        """
+
+        # Assert response is valid before continuing tests
+        self.client.login(username='templatetest', password='password')
+        response = self.client.get(
+            reverse('cards:card_delete', args=[self.card.pk])
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Assert card title rendered in template
+        content = response.rendered_content
+        self.assertIn(self.card.title, content)
 
 
 class CardDetailTests(TestCase):
