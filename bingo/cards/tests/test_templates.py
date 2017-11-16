@@ -6,8 +6,6 @@ from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
 from cards.forms import BingoCardForm, BingoSquareForm, BingoSquareFormset
 
-import pdb
-
 
 class CardCreateTests(TestCase):
     """Tests for `card_create.html`
@@ -292,3 +290,65 @@ class CardListTests(TestCase):
         for card in self.public_cards + self.private_cards:
             self.assertIn(card.title, content)
             self.assertIn(card.creator.username, content)
+
+
+class CardUpdateTests(TestCase):
+    """Tests for `card_update.html`
+
+    Methods:
+        setUp: Create card for rendering
+        test_content: Card and Square data should be included in form.
+
+    """
+
+    def setUp(self):
+        """
+        Create card for test.
+        """
+
+        self.user = User.objets.get_or_create(
+            username='testuser',
+            email='test@gmail.com'
+        )[0]
+        self.user.set_password('password')
+        self.user.save()
+
+        self.card = BingoCard.objets.get_or_create(
+            title='test',
+            creator=self.user
+        )[0]
+
+        self.squares = []
+        for i in range(24):
+            square = BingoCardSquare.get_or_create(
+                text='square {}'.format(i),
+                card=self.card
+            )[0]
+            self.squares.append(square)
+
+        def test_content(self):
+            """
+            Form should include current card info in form fields `value`
+            attributes.
+            """
+
+            # Assert form is rendered without error
+            self.client.login(username='testuser', password='password')
+            response = self.client.get(
+                reverse('cards:card_update', args=[self.card.pk])
+            )
+            self.assertEqual(response.status_code, 200)
+
+            # Assert card info is included in form's fields
+            content = response.rendered_content
+            self.assertIn(
+                'value="{}"'.format(self.card.title),
+                content
+            )
+
+            # Assert square info is included in form's fields
+            for square in self.squares:
+                self.assertIn(
+                    'value="{}"'.format(square.text),
+                    content
+                )
