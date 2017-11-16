@@ -167,3 +167,79 @@ class CardListTests(TestCase):
     References:
 
     """
+
+    def setUp(self):
+        """
+        Create user and cards for testing.
+        """
+
+        self.user = User.objects.get_or_create(
+            username='templatetest',
+            email='test@test.com'
+        )[0]
+        self.user.set_password('password')
+        self.user.save()
+
+        self.profile = UserProfile.objects.get_or_create(
+            user=self.user
+        )[0]
+
+        # create public cards
+        self.public_cards = []
+        for i in range(4):
+            card = BingoCard.objects.get_or_create(
+                title='public {}'.format(i),
+                creator=self.user,
+                private=False
+            )[0]
+            self.public_cards.append(card)
+
+        # create private cards
+        self.private_cards = []
+        for i in range(4):
+            card = BingoCard.objects.get_or_create(
+                title='private {}'.format(i),
+                creator=self.user,
+                private=True
+            )[0]
+            self.private_cards.append(card)
+
+    def test_unauthenticated_visitor(self):
+        """
+        Unauthenticated visitors should see only public cards.
+        """
+
+        # Make sure no previous test left client logged in
+        self.client.logout()
+
+        # Make sure request returns valid response
+        response = self.client.get(reverse('cards:card_list'))
+        self.assertEqual(response.status_code, 200)
+        content = response.rendered_content
+
+        # Assert expected public card info is present
+        for card in self.public_cards:
+            self.assertIn(card.title, content)
+            self.assertIn(card.creator.username, content)
+
+        # Assert private card data is not present
+        for card in self.private_cards:
+            self.assertNotIn(card.title, content)
+            self.assertIn(card.creator.username, content)
+
+    def test_authenticated_visitor(self):
+        """
+        Authenticated visitors should see both private and public cards.
+        """
+
+        self.client.login(username='templatetest', password='password')
+
+        # Make sure request returns valid response
+        response = self.client.get(reverse('cards:card_list'))
+        self.assertEqual(response.status_code, 200)
+        content = response.rendered_content
+
+        # Assert expected public card info is present
+        for card in self.public_cards + self.private_cards:
+            self.assertIn(card.title, content)
+            self.assertIn(card.creator.username, content)
