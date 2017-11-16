@@ -96,6 +96,73 @@ class CardDetailTests(TestCase):
     """Tests for `card_detail.html`
 
     Methods:
+        setUp: Create objects needed to render template
+        test_content_present: Card and all Squares should be present in
+            rendered template
+
+    References:
+
+    """
+
+    def setUp(self):
+        """
+        Create objects needed to render template.
+        """
+        self.user = User.objects.get_or_create(
+            username='templatetest',
+            email='test@test.com'
+        )[0]
+        self.user.set_password('password')
+        self.user.save()
+
+        self.profile = UserProfile.objects.get_or_create(
+            user=self.user
+        )[0]
+
+        self.card = BingoCard.objects.get_or_create(
+            title='templatetests',
+            creator=self.user
+        )[0]
+
+        self.squares = []
+        for i in range(24):
+            square = BingoCardSquare.objects.get_or_create(
+                text='square {}'.format(i),
+                card=self.card
+            )[0]
+            self.squares.append(square)
+
+    def test_content_present(self):
+        """
+        Rendered template should contain Card title, creator's username, and
+        text from all cards.
+        """
+
+        # Get response and assert page loads
+        response = self.client.get(
+            reverse('cards:card_detail', args=[self.card.pk])
+        )
+        self.assertEqual(response.status_code, 200)
+        content = response.rendered_content
+
+        # Assert user and card info is rendered
+        self.assertIn(self.user.username, content)
+        self.assertIn(self.card.title, content)
+
+        # Assert squares are rendered
+        for square in self.squares:
+            self.assertIn(square.text, content)
+
+
+class CardListTests(TestCase):
+    """Tests for `card_list.html`
+
+    Methods:
+        setUp: Create multiple cards for testing
+        test_unauthenticated_visitor: Unauthenticated visitors should only see
+            public cards listed
+        test_authenticated_visitor: Authenticated visitors should see both
+            private and public cards
 
     References:
 
