@@ -352,3 +352,4 @@ class CardUpdateTests(TestCase):
                     'value="{}"'.format(square.text),
                     content
                 )
+
