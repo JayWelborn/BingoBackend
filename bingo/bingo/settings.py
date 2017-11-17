@@ -40,7 +40,7 @@ ALLOWED_HOSTS = [
 # Application definitions
 INSTALLED_APPS = [
     'django.contrib.sites',
-    'registration',
+    'registration',  # Django-registraion-redux
     'django.contrib.auth',
     'home',
     'auth_extension',
@@ -50,8 +50,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'crispy_forms',
+    'social_django',  # Enable social authentication
+    'rest_framework',  # Make REST Api
+    'crispy_forms',  # More clean form handling
 ]
 
 MIDDLEWARE = [
@@ -62,6 +63,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Social Auth Middleware
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'bingo.urls'
@@ -78,6 +81,8 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',  # For social auth
+                'social_django.context_processors.login_redirect',  # Social
             ],
         },
     },
@@ -121,6 +126,17 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Authentication back ends
+# https://docs.djangoproject.com/en/1.11/topics/auth/customizing/#specifying-authentication-backends
+# https://simpleisbetterthancomplex.com/tutorial/2016/10/24/how-to-add-social-login-to-django.html
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.github.GithubOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.facebook.FacebookOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # Password Hashers
 # https://docs.djangoproject.com/en/1.11/topics/auth/passwords/
@@ -175,6 +191,7 @@ REGISTRATION_AUTO_LOGIN = True
 REGISTRATION_OPEN = True
 LOGIN_REDIRECT_URL = '/profile/'
 LOGIN_URL = '/accounts/login/'
+LOGOUT_URL = '/accounts/logout/'
 
 
 # Test Specific Settings
@@ -185,3 +202,26 @@ if 'test' in sys.argv:
     }
 
     CACHE_MIDDLEWARE_SECONDS = 0
+
+# Social Auth Settings
+with open(os.path.join(SECRETS, 'github-auth.id'), 'r') as f:
+            SOCIAL_AUTH_GITHUB_KEY = f.readline().strip()
+
+with open(os.path.join(SECRETS, 'github-auth.key'), 'r') as f:
+            SOCIAL_AUTH_GITHUB_SECRET = f.readline().strip()
+
+with open(os.path.join(SECRETS, 'twitter-auth.key'), 'r') as f:
+            SOCIAL_AUTH_TWITTER_KEY = f.readline().strip()
+
+with open(os.path.join(SECRETS, 'twitter-auth.secret'), 'r') as f:
+            SOCIAL_AUTH_TWITTER_SECRET = f.readline().strip()
+
+with open(os.path.join(SECRETS, 'facebook-auth.key'), 'r') as f:
+            SOCIAL_AUTH_FACEBOOK_KEY = f.readline().strip()
+
+with open(os.path.join(SECRETS, 'facebook-auth.secret'), 'r') as f:
+            SOCIAL_AUTH_FACEBOOK_SECRET = f.readline().strip()
+
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/profile/settings/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/profile/settings/'
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
