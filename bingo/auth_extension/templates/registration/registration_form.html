@@ -1,15 +1,30 @@
 {% extends "registration/registration_base.html" %}
 {% load i18n %}
+{% load static %}
 
 {% block title %}{% trans "Register for an account" %}{% endblock %}
 
 {% block content %}
 <div class="card-default form-wrapper">
+    <h5>Create an Account:</h5>
     <form method="post" action="">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" class="btn btn-primary" value="{% trans 'Submit' %}" />
     </form>
+</div>
+
+<div class="card-default">
+    <h5>Or:</h5>
+    <a  href="{% url 'social:begin' 'github' %}">
+        <img class="social-button" src="{% static 'icons/social/github-login.png' %}" alt="Log in with GitHub">
+    </a>
+    <a href="{% url 'social:begin' 'twitter' %}">
+        <img class="social-button" src="{% static 'icons/social/twitter-login.png' %}" alt="Log in with Twitter">
+    </a>
+    <a href="{% url 'social:begin' 'facebook' %}">
+        <img class="social-button" src="{% static 'icons/social/facebook-login.png' %}" alt="Log in with Facebook">
+    </a>
 </div>
 {% endblock %}
 
