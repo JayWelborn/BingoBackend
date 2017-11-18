@@ -6,6 +6,7 @@
 
 {% block content %}
 <div class="card-default form-wrapper">
+    <h5>Log In to Bingo</h5>
     <form method="post" action="">
         {% csrf_token %}
         {{ form.as_p }}
@@ -14,17 +15,15 @@
     </form>
 </div>
 <div class="card-default">
-    <a class="social-login github" href="{% url 'social:begin' 'github' %}">
-        <img src="{% static 'icons/social/github.png' %}" alt="github">
-        Login with GitHub
+    <h5>Or:</h5>
+    <a  href="{% url 'social:begin' 'github' %}">
+        <img class="social-button" src="{% static 'icons/social/github-login.png' %}" alt="Log in with GitHub">
     </a>
-    <a class="social-login twitter" href="{% url 'social:begin' 'twitter' %}">
-        <img src="{% static 'icons/social/twitter.png' %}" alt="twitter">
-        Login with Twitter
+    <a href="{% url 'social:begin' 'twitter' %}">
+        <img class="social-button" src="{% static 'icons/social/twitter-login.png' %}" alt="Log in with Twitter">
     </a>
-    <a class="social-login facebook" href="{% url 'social:begin' 'facebook' %}">
-        <img src="{% static 'icons/social/facebook.png' %}" alt="facebook">
-        Login with Facebook
+    <a href="{% url 'social:begin' 'facebook' %}">
+        <img class="social-button" src="{% static 'icons/social/facebook-login.png' %}" alt="Log in with Facebook">
     </a>
 </div>
 <div class="card-default">

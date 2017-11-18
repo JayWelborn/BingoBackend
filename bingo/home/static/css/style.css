@@ -330,7 +330,8 @@ form .btn.btn-primary, .contact_form .btn.btn-primary {
   display: inline-block;
   min-height: 25px;
   max-height: 35px;
-  width: auto; }
+  width: auto;
+  margin: 5px; }
 
 main {
   max-width: 1140px;
