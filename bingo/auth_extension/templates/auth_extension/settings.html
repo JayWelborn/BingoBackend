@@ -1,8 +1,21 @@
 {% extends 'base.html' %}
 
+{% block title %}My Account{% endblock %}
+
 {% block content %}
 <div class="card-default">
-  <h2>Social Media Settings</h2>
+  <h2>Account Settings</h2>
+</div>
+
+<div class="card-default">
+  <h3>Account Info</h3>
+  <ul>
+    <li><strong>Username</strong> {{ user.username }}</li>
+    <li><strong>Email</strong> {{user.email}} </li>
+    <li>
+      <a href="{% url 'registration:auth_password_change' %}">Change Password</a>
+    </li>
+  </ul>
 </div>
 
 <div class="card-default">
@@ -12,10 +25,14 @@
     {% if can_disconnect %}
       <form method="post" action="{% url 'social:disconnect' 'github' %}">
         {% csrf_token %}
-        <button class="btn btn-primary" type="submit">Disconnect from GitHub</button>
+        <button class="social-button" type="submit">
+          <img src="{% static 'icons/social/githug-disconnect.png' %}" alt="Disconnect from GitHub">
+        </button>
       </form>
     {% else %}
-      <button class="btn btn-primary" type="button" disabled>Disconnect from GitHub</button>
+      <button class="social-button" type="button" disabled>
+        <img src="{% static 'icons/social/githug-disconnect.png' %}" alt="Disconnect from GitHub">
+      </button>
       <p style="color: red">You must <a href="{% url 'auth_extension:password' %}">define a password</a> for your account before disconnecting from Github.</p>
     {% endif %}
   {% else %}
