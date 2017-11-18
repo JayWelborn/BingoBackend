@@ -1,16 +1,30 @@
 {% extends "registration/registration_base.html" %}
 {% load i18n %}
+{% load static %}
 
 {% block title %}{% trans "Log in" %}{% endblock %}
 
 {% block content %}
-<div class="card-default">
+<div class="card-default form-wrapper">
+    <h5>Log In to Bingo</h5>
     <form method="post" action="">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" class="btn btn-primary" value="{% trans 'Log in' %}" />
         <input type="hidden" name="next" value="{{ next }}" />
     </form>
+</div>
+<div class="card-default">
+    <h5>Or:</h5>
+    <a  href="{% url 'social:begin' 'github' %}">
+        <img class="social-button" src="{% static 'icons/social/github-login.png' %}" alt="Log in with GitHub">
+    </a>
+    <a href="{% url 'social:begin' 'twitter' %}">
+        <img class="social-button" src="{% static 'icons/social/twitter-login.png' %}" alt="Log in with Twitter">
+    </a>
+    <a href="{% url 'social:begin' 'facebook' %}">
+        <img class="social-button" src="{% static 'icons/social/facebook-login.png' %}" alt="Log in with Facebook">
+    </a>
 </div>
 <div class="card-default">
     <p>{% trans "Forgot your password?" %} <a href="{% url 'registration:auth_password_reset' %}">{% trans "Reset it" %}</a>.</p>

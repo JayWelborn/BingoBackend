@@ -37,6 +37,8 @@ urlpatterns = [
 
     url(r'^cards/', include('cards.urls')),
 
+    url(r'^oauth/', include('social_django.urls', namespace='social')),
+
     url(r'^', include('home.urls')),
 ]
 

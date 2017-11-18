@@ -50,4 +50,12 @@ urlpatterns = [
     url(r'^suggest/',
         v.suggest_profiles,
         name='profile_search'),
+
+    url(r'^settings/$',
+        v.settings,
+        name='settings'),
+
+    url(r'^settings/password/$',
+        v.password,
+        name='password'),
 ]

@@ -156,7 +156,8 @@ nav {
     .profile-sidebar {
       margin-left: 10px; } }
   .profile-sidebar ul {
-    list-style-type: none; }
+    list-style-type: none;
+    padding: 0px; }
   .profile-sidebar h6 {
     font-size: 1rem; }
     @media (max-width: 768px) {
@@ -167,7 +168,7 @@ nav {
         font-size: 1rem; } }
 
 .profile-picture {
-  width: 50%;
+  width: 40%;
   min-width: 50px;
   max-width: 100px;
   max-height: 100px;
@@ -178,7 +179,7 @@ nav {
 .profile-info {
   float: right;
   text-align: right;
-  width: 45%;
+  width: 55%;
   min-width: 120px; }
 
 .card-list {
@@ -325,6 +326,13 @@ form .btn.btn-primary, .contact_form .btn.btn-primary {
 .profile-header {
   min-height: 260px; }
 
+.social-button {
+  display: inline-block;
+  min-height: 25px;
+  max-height: 35px;
+  width: auto;
+  margin: 5px; }
+
 main {
   max-width: 1140px;
   width: 100%; }
@@ -429,5 +437,25 @@ footer {
         margin-right: 0px; } }
     .profile-card-list .card-list ul {
       padding: 0; }
+
+#social-login-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 100%; }
+  #social-login-wrapper .card-default, #social-login-wrapper .profile-sidebar, #social-login-wrapper .card-list {
+    width: 33%;
+    display: block; }
+    @media (max-width: 992px) {
+      #social-login-wrapper .card-default, #social-login-wrapper .profile-sidebar, #social-login-wrapper .card-list {
+        width: 100%;
+        margin-right: 0px; } }
 
 /*# sourceMappingURL=style.css.map */
