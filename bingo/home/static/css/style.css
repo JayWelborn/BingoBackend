@@ -326,29 +326,11 @@ form .btn.btn-primary, .contact_form .btn.btn-primary {
 .profile-header {
   min-height: 260px; }
 
-.social-login {
+.social-button {
   display: inline-block;
-  padding: 5px 12px;
-  border-radius: 5px;
-  color: #f8f9fa;
-  font-weight: bold;
-  min-height: 35px; }
-  .social-login img {
-    height: 1.2rem;
-    float: left;
-    margin-right: 10px;
-    vertical-align: middle; }
-
-.github {
-  background-color: black; }
-
-.facebook {
-  background-color: #3b5998; }
-
-.twitter {
-  background-color: #1da1f2; }
-  .twitter img {
-    height: 1.728rem; }
+  min-height: 25px;
+  max-height: 35px;
+  width: auto; }
 
 main {
   max-width: 1140px;
@@ -454,5 +436,25 @@ footer {
         margin-right: 0px; } }
     .profile-card-list .card-list ul {
       padding: 0; }
+
+#social-login-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 100%; }
+  #social-login-wrapper .card-default, #social-login-wrapper .profile-sidebar, #social-login-wrapper .card-list {
+    width: 33%;
+    display: block; }
+    @media (max-width: 992px) {
+      #social-login-wrapper .card-default, #social-login-wrapper .profile-sidebar, #social-login-wrapper .card-list {
+        width: 100%;
+        margin-right: 0px; } }
 
 /*# sourceMappingURL=style.css.map */

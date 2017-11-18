@@ -25,9 +25,9 @@
 }
 
 @mixin font-scale($scale, $exp) {
-  
+
   font-size: exponent($scale, $exp) + rem;
-  
+
   @include bp-medium {
     $scale-size: (exponent($scale, $exp) * .9);
 
