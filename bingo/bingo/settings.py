@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'social_django',  # Enable social authentication
     'rest_framework',  # Make REST Api
     'crispy_forms',  # More clean form handling
+    'api',  # REST API
 ]
 
 MIDDLEWARE = [
