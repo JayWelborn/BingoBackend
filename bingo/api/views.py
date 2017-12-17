@@ -20,6 +20,7 @@ from .permissions import IsOwnerOrReadOnly
 def api_root(request, format=None):
     return Response({
         'users': reverse('user-list', request=request, format=format),
+        'profiles': reverse('profile-list', request=request, format=format),
         'cards': reverse('card-list', request=request, format=format),
         'contact': reverse('contact-list', request=request, format=format),
     })

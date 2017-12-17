@@ -226,3 +226,9 @@ with open(os.path.join(SECRETS, 'facebook-auth.secret'), 'r') as f:
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/profile/settings/'
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/profile/settings/'
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
+
+# Rest API Settings
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}

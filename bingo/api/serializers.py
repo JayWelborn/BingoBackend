@@ -69,29 +69,6 @@ class ContactSerializer(serializers.HyperlinkedModelSerializer):
                   'linkedin', 'twitter', 'email',)
 
 
-class BingoCardSerializer(serializers.HyperlinkedModelSerializer):
-    """Serializer to convert Bingo Cards to various data types.
-
-    Fields:
-        squares: Reverse lookup field to find squares related to a Bingo Card.
-        creator:
-        model: model to be serializers
-        fields: fields to include in serialization
-
-    References:
-        * http://www.django-rest-framework.org/tutorial/1-serialization/#using-Hyperlinkedmodelserializers
-
-    """
-
-    squares = serializers.HyperlinkedRelatedField(
-        many=True, view_name='square-detail', read_only=True)
-    creator = serializers.ReadOnlyField(source='creator.username')
-
-    class Meta:
-        model = BingoCard
-        fields = ('id', 'title', 'free_space', 'creator', 'squares')
-
-
 class BingoCardSquareSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for Bingo Card Squares.
 
@@ -110,3 +87,25 @@ class BingoCardSquareSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = BingoCardSquare
         fields = ('text', 'card')
+
+
+class BingoCardSerializer(serializers.HyperlinkedModelSerializer):
+    """Serializer to convert Bingo Cards to various data types.
+
+    Fields:
+        squares: Reverse lookup field to find squares related to a Bingo Card.
+        creator:
+        model: model to be serializers
+        fields: fields to include in serialization
+
+    References:
+        * http://www.django-rest-framework.org/tutorial/1-serialization/#using-Hyperlinkedmodelserializers
+
+    """
+
+    squares = BingoCardSquareSerializer(many=True)
+    creator = serializers.ReadOnlyField(source='creator.username')
+
+    class Meta:
+        model = BingoCard
+        fields = ('id', 'title', 'free_space', 'creator', 'squares')
