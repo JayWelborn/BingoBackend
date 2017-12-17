@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 
 from rest_framework import serializers
 
+from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
 from home.models import Contact
 
@@ -12,6 +13,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     Fields:
         cards: Reverse lookup field to find Bingo Cards related to a
                given user.
+        profile: User's profile data
         model: model to be serialized
         fields: fields to include in serialization
 
@@ -22,10 +24,31 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     bingo_cards = serializers.HyperlinkedRelatedField(
         many=True, view_name='card-detail', read_only=True)
+    profile = serializers.HyperlinkedRelatedField(
+        many=False, view_name='profile-detail', read_only=True)
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'bingo_cards',)
+        fields = ('id', 'username', 'bingo_cards', 'profile',)
+
+
+class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
+    """Seralizer for User Profiles.
+
+    Fields:
+
+    References:
+            * http://www.django-rest-framework.org/tutorial/1-serialization/#using-Hyperlinkedmodelserializers
+
+    """
+
+    user = serializers.HyperlinkedRelatedField(
+        many=False, view_name='user-detail', read_only=True)
+
+    class Meta:
+        model = UserProfile
+        fields = ('user', 'created_date', 'slug', 'picture', 'website',
+                  'about_me')
 
 
 class ContactSerializer(serializers.HyperlinkedModelSerializer):
@@ -78,6 +101,7 @@ class BingoCardSquareSerializer(serializers.HyperlinkedModelSerializer):
         fields: fields to include in serialization
 
     References:
+        * http://www.django-rest-framework.org/tutorial/1-serialization/#using-Hyperlinkedmodelserializers
 
     """
 

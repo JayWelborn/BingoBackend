@@ -23,6 +23,16 @@ urlpatterns = [
         views.UserDetail.as_view(),
         name='user-detail'),
 
+    # profile list
+    url(r'profiles/$',
+        views.UserProfileList.as_view(),
+        name='profile-list'),
+
+    # profile detail
+    url(r'profiles/(?P<pk>[0-9]+)/$',
+        views.UserProfileDetail.as_view(),
+        name='profile-detail'),
+
     # bingo card list
     url(r'^cards/$',
         views.BingoCardList.as_view(),

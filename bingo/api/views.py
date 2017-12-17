@@ -6,11 +6,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
+from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
 from home.models import Contact
 
 from .serializers import (ContactSerializer, BingoCardSerializer,
-                          UserSerializer, BingoCardSquareSerializer)
+                          UserSerializer, BingoCardSquareSerializer,
+                          UserProfileSerializer)
 from .permissions import IsOwnerOrReadOnly
 
 
@@ -39,6 +41,24 @@ class UserDetail(generics.RetrieveAPIView):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class UserProfileList(generics.ListAPIView):
+    """
+    List view for Profiles
+    """
+
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+
+
+class UserProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Detail view for profiles
+    """
+
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
 
 
 class BingoCardList(generics.ListCreateAPIView):
