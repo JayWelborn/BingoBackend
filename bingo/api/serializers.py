@@ -6,6 +6,8 @@ from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
 from home.models import Contact
 
+import pdb
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer to convert Users to various data types.
@@ -98,14 +100,27 @@ class BingoCardSerializer(serializers.HyperlinkedModelSerializer):
         model: model to be serializers
         fields: fields to include in serialization
 
+    Methods:
+        validate_squares: There should be exactly 24 squares in data to be
+            serialized.
+
     References:
         * http://www.django-rest-framework.org/tutorial/1-serialization/#using-Hyperlinkedmodelserializers
 
     """
 
-    squares = BingoCardSquareSerializer(many=True)
+    squares = BingoCardSquareSerializer(many=True, read_only=False)
     creator = serializers.ReadOnlyField(source='creator.username')
 
     class Meta:
         model = BingoCard
         fields = ('id', 'title', 'free_space', 'creator', 'squares')
+
+    def validate_squares(self, value):
+        """
+        Ensure exactly 24 squares are present.
+        """
+        pdb.set_trace()
+        if len(value) != 24:
+            raise serializers.ValidationError('Must have exactly 24 squares')
+        return value
