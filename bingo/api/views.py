@@ -17,7 +17,7 @@ from .serializers import (ContactSerializer, BingoCardSerializer,
 from .permissions import IsOwnerOrReadOnly
 
 
-class UserViewset(viewsets.ReadOnlyModelViewSet):
+class UserViewset(viewsets.ModelViewSet):
     """
     Read only viewset class for User objects.
     """

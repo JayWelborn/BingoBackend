@@ -4,6 +4,8 @@ from rest_framework.routers import DefaultRouter
 
 from . import views
 
+import pdb
+
 
 # Wire up the router
 router = DefaultRouter()

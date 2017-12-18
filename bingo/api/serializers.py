@@ -18,6 +18,10 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         profile: User's profile data
         model: model to be serialized
         fields: fields to include in serialization
+        read_only_fields: specifies which fields can't be written to via API
+        extra_kwargs:
+            password: set password so it is write-only. No one should be
+                allowed to see any user's password hash
 
     References:
         * http://www.django-rest-framework.org/tutorial/1-serialization/#using-Hyperlinkedmodelserializers
@@ -25,19 +29,28 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     """
 
     bingo_cards = serializers.HyperlinkedRelatedField(
-        many=True, view_name='card-detail', read_only=True)
+        many=True, view_name='bingocard-detail', read_only=True)
     profile = serializers.HyperlinkedRelatedField(
-        many=False, view_name='profile-detail', read_only=True)
+        many=False, view_name='userprofile-detail', read_only=True)
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'bingo_cards', 'profile',)
+        fields = ('id', 'username', 'bingo_cards',
+                  'profile', 'email', 'password')
+        read_only_fields = ('is_staff', 'is_superuser',
+                            'is_active', 'date_joined',)
+        extra_kwargs = {
+            'password': {'write_only': True},
+        }
 
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     """Seralizer for User Profiles.
 
     Fields:
+        user: related User object
+        model: model to be serialized
+        fields: fields to include in serialization
 
     References:
             * http://www.django-rest-framework.org/tutorial/1-serialization/#using-Hyperlinkedmodelserializers
