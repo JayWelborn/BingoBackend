@@ -103,6 +103,8 @@ class BingoCardSerializer(serializers.HyperlinkedModelSerializer):
     Methods:
         validate_squares: There should be exactly 24 squares in data to be
             serialized.
+        create: Create new Bingo Card, and 24 Squares linked to newly created
+            card.
 
     References:
         * http://www.django-rest-framework.org/tutorial/1-serialization/#using-Hyperlinkedmodelserializers
@@ -120,7 +122,32 @@ class BingoCardSerializer(serializers.HyperlinkedModelSerializer):
         """
         Ensure exactly 24 squares are present.
         """
-        pdb.set_trace()
         if len(value) != 24:
             raise serializers.ValidationError('Must have exactly 24 squares')
         return value
+
+    def create(self, validated_data):
+        """
+        Create Bingo Card with Squares.
+        """
+
+        if validated_data.get('free_space'):
+            free_space = validated_data.get('free_space')
+        else:
+            free_space = 'Free Space'
+
+        card = BingoCard.objects.create(
+            title=validated_data.get('title'),
+            creator=validated_data.get('creator'),
+            free_space=free_space
+        )
+        card.save()
+
+        for square in validated_data.get('squares'):
+            new_square = BingoCardSquare.objects.create(
+                text=square['text'],
+                card=card
+            )
+            new_square.save()
+
+        return card
