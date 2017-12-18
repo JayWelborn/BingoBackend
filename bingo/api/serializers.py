@@ -43,6 +43,16 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             'password': {'write_only': True},
         }
 
+    def create(self, validated_data):
+        """
+        Create new User object, as well as an associated Profile Object
+        with blank fields.
+        """
+
+        user = super(UserSerializer, self).create(validated_data)
+        UserProfile.objects.create(user=user)
+        return user
+
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     """Seralizer for User Profiles.
