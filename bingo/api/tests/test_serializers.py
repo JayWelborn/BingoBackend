@@ -2,7 +2,8 @@ from django.contrib.auth.models import User
 
 from rest_framework.test import APITestCase
 
-from api.serializers import BingoCardSerializer, UserSerializer
+from api.serializers import (BingoCardSerializer, UserSerializer,
+                             UserProfileSerializer)
 from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
 
@@ -32,6 +33,8 @@ class UserSerializerTest(APITestCase):
             the three available fields without affecting the other two.
 
     References:
+
+        * http://www.django-rest-framework.org/api-guide/serializers/
 
     """
 
@@ -287,6 +290,89 @@ class UserSerializerTest(APITestCase):
 
         self.assertNotEqual(updated_user.password, password)
         self.assertNotEqual(updated_user.email, email)
+
+
+class UserProfileSerializerTest(APITestCase):
+    """Tests for UserProfileSerializer
+
+    Methods:
+        setUp: Create User and Profile for testing.
+        tearDown: Clean database between tests
+        serializer_accepts_valid_data: `is_valid()` should return True when
+            instantiated with valid data
+        save_updates_correct_fields: Calling `.save()` should update correct
+            fields on model
+    References:
+    """
+
+    def setUp(self):
+        """
+        Create profile and data for tests.
+        """
+
+        self.user = User.objects.create_user(
+            username='profileserializertests',
+            email='profileserializer@test.com',
+            password='passwordtesting'
+        )
+
+        self.profile = UserProfile.objects.get_or_create(user=self.user)[0]
+
+        self.data = {
+            'website': 'http://www.google.com',
+            'about_me': 'I am a test user. I am not real.',
+        }
+
+        self.context = {'request': None}
+
+    def tearDown(self):
+        """
+        Clear database between tests.
+        """
+
+        for user in User.objects.all():
+            user.delete()
+
+        self.assertEqual(len(UserProfile.objects.all()), 0)
+
+    def test_serializer_accepts_valid_data(self):
+        """
+        Serializer.is_valid() should return true when instantiated with
+        valid data.
+        """
+
+        serializer = UserProfileSerializer(
+            data=self.data, context=self.context
+        )
+        self.assertTrue(serializer.is_valid())
+
+    def test_save_updates_correct_fields(self):
+        """
+        Calling `.save()` should update correct fields on model.
+        """
+        serializer = UserProfileSerializer(
+            self.profile, data=self.data, context=self.context
+        )
+
+        if serializer.is_valid():
+            new_profile = serializer.save()
+
+        self.assertEqual(new_profile.website, self.data['website'])
+        self.assertEqual(new_profile.about_me, self.data['about_me'])
+        self.assertEqual(new_profile.user, self.user)
+
+    def test_get_includes_expected_fields(self):
+        """
+        GET requests should include url, user, created_date, slug, picture,
+        website, and about_me fields.
+        """
+
+        serializer = UserProfileSerializer(self.profile, context=self.context)
+        expeted_fields = ['url', 'user', 'created_date', 'slug', 'website',
+                          'about_me']
+
+        for field in expeted_fields:
+            self.assertIn(field, serializer.data)
 
 
 class BingoCardSerializerTests(APITestCase):

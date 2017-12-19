@@ -34,7 +34,7 @@ class UserProfile(models.Model):
         on_delete=models.CASCADE,
     )
 
-    created_date = models.DateField(
+    created_date = models.DateTimeField(
         default=timezone.now
     )
 

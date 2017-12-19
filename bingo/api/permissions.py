@@ -14,3 +14,16 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
         # Write permissions are only allowed to the owner of the object.
         return obj.creator == request.user
+
+
+class IsUserOrReadOnly(permissions.BasePermission):
+    """
+    Custom Permission to only allow users to edit their own profiles.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # write permission are only allowed to User who owns profile
+        return obj.user == request.user

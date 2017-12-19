@@ -11,7 +11,7 @@ from home.models import Contact
 from .serializers import (ContactSerializer, BingoCardSerializer,
                           UserSerializer, BingoCardSquareSerializer,
                           UserProfileSerializer)
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsUserOrReadOnly
 
 
 class UserViewset(viewsets.ModelViewSet):
@@ -31,7 +31,7 @@ class UserProfileViewset(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
-                          IsOwnerOrReadOnly)
+                          IsUserOrReadOnly)
 
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)
