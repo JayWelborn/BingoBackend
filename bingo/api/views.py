@@ -3,9 +3,6 @@ from django.contrib.auth.models import User
 from rest_framework import generics
 from rest_framework import permissions
 from rest_framework import viewsets
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.reverse import reverse
 
 from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
@@ -54,22 +51,9 @@ class BingoCardViewset(viewsets.ModelViewSet):
         serializer.save(creator=self.request.user)
 
 
-class BingoCardSquareList(generics.ListCreateAPIView):
+class BingoCardSquareViewset(viewsets.ModelViewSet):
     """
-    List all Bingo Cards, or create new Bingo Cards Square.
-    """
-
-    queryset = BingoCardSquare.objects.all()
-    serializer_class = BingoCardSquareSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-    def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
-
-
-class BingoCardSquareDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Retrieve, update, or delete a Bingo Card Square.
+    Viewset for Bingo Card Squares.
     """
 
     queryset = BingoCardSquare.objects.all()

@@ -1,12 +1,15 @@
 from django.contrib.auth.models import User
-from django.test import TestCase
+
+from rest_framework.test import APITestCase
 
 from api.serializers import BingoCardSerializer, UserSerializer
 from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
 
+import pdb
 
-class UserSerializerTest(TestCase):
+
+class UserSerializerTest(APITestCase):
     """Tests for User Serializer.
 
     Methods:
@@ -18,6 +21,15 @@ class UserSerializerTest(TestCase):
         proper_fields_included_on_retrieval: Password hash should not be sent
             when User object is serialized. Id, username, cards, profile,
             and email should be.
+        user_updates_username: User should be able to update username without
+            affecting other fields.
+        user_updates_email: User updating email should not affect other fields.
+        user_updates_username_and_email: User should be able to update any 2 of
+            the three available fields without affecting the other two.
+        user_updates_username_and_password: User should be able to update any 2
+            of the three available fields without affecting the other two.
+        user_updates_email_and_password: User should be able to update any 2 of
+            the three available fields without affecting the other two.
 
     References:
 
@@ -40,6 +52,15 @@ class UserSerializerTest(TestCase):
         self.user.set_password('jimothy')
         self.user.save()
 
+        self.profile = UserProfile.objects.create(user=self.user)
+
+    def tearDown(self):
+        """
+        Clean database so each test starts fresh.
+        """
+        for user in User.objects.all():
+            user.delete()
+
     def test_serializer_accepts_valid_data(self):
         """
         Serializer should be valid when provided with a username, email and
@@ -48,6 +69,19 @@ class UserSerializerTest(TestCase):
 
         serializer = UserSerializer(data=self.data)
         self.assertTrue(serializer.is_valid())
+
+    def test_password_hashed_for_new_user(self):
+        """
+        Upon creation, new User's passwords should be hashed before storing
+        in the database.
+        """
+
+        serializer = UserSerializer(data=self.data)
+        if serializer.is_valid():
+            user = serializer.save()
+
+        self.assertNotEqual(user.password, self.data['password'])
+        self.assertNotEqual(len(user.password), len(self.data['password']))
 
     def test_user_and_profile_created_upon_save(self):
         serializer = UserSerializer(data=self.data)
@@ -65,15 +99,197 @@ class UserSerializerTest(TestCase):
         """
         Password should not be included when User is serialized
         """
-        serializer = UserSerializer(self.user)
+        serializer = UserSerializer(self.user, context={'request': None})
         self.assertNotIn('password', serializer.data)
 
         included_fields = ['id', 'username', 'bingo_cards', 'profile', 'email']
         for field in included_fields:
             self.assertIn(field, serializer.data)
 
+    def test_user_updates_username(self):
+        """
+        User updating username should not affect other fields.
+        """
 
-class BingoCardSerializerTests(TestCase):
+        user = User.objects.get(username=self.user.username)
+        email = user.email
+        userid = user.id
+        pk = user.pk
+        profile = user.profile
+        username = user.username
+
+        update = {
+            'username': 'NewUserName',
+        }
+
+        serializer = UserSerializer(user, data=update, partial=True,
+                                    context={'request': None})
+        self.assertTrue(serializer.is_valid())
+        updated_user = serializer.save()
+
+        self.assertTrue(updated_user)
+        self.assertEqual(updated_user.username, 'NewUserName')
+        self.assertEqual(userid, updated_user.id)
+        self.assertEqual(pk, updated_user.pk)
+        self.assertEqual(email, updated_user.email)
+        self.assertEqual(profile, updated_user.profile)
+
+        self.assertNotEqual(username, updated_user.username)
+
+    def test_user_updates_email(self):
+        """
+        User updating email should not affect other fields.
+        """
+
+        email = self.user.email
+        username = self.user.username
+        password = self.user.password
+        userid = self.user.id
+        pk = self.user.pk
+        profile = self.user.profile
+
+        update = {
+            'email': 'newemail@new.new'
+        }
+
+        serializer = UserSerializer(self.user, data=update, partial=True,
+                                    context={'request': None})
+        # pdb.set_trace()
+        self.assertTrue(serializer.is_valid())
+        updated_user = serializer.save()
+
+        self.assertTrue(updated_user)
+        self.assertEqual(updated_user.email, update['email'])
+        self.assertEqual(updated_user.username, username)
+        self.assertEqual(userid, updated_user.id)
+        self.assertEqual(pk, updated_user.pk)
+        self.assertEqual(password, updated_user.password)
+        self.assertEqual(profile, updated_user.profile)
+        self.assertNotEqual(email, updated_user.email)
+
+    def test_user_updates_password(self):
+        """
+        User updating password should have password hashed before storage,
+        and update should not affect other fields.
+        """
+
+        email = self.user.email
+        username = self.user.username
+        password = self.user.password
+        userid = self.user.id
+        pk = self.user.pk
+        profile = self.user.profile
+
+        update = {
+            'password': 'newtestdude'
+        }
+
+        serializer = UserSerializer(self.user, data=update, partial=True)
+        self.assertTrue(serializer.is_valid())
+        updated_user = serializer.save()
+
+        self.assertTrue(updated_user)
+        self.assertEqual(updated_user.email, email)
+        self.assertEqual(updated_user.username, username)
+        self.assertEqual(userid, updated_user.id)
+        self.assertEqual(pk, updated_user.pk)
+        self.assertEqual(profile, updated_user.profile)
+
+        self.assertNotEqual(updated_user.password, update['password'])
+        self.assertNotEqual(password, updated_user.password)
+
+    def test_user_updates_username_and_email(self):
+        """
+        User updating any two fields should not affect the third field.
+        """
+
+        email = self.user.email
+        username = self.user.username
+        password = self.user.password
+        userid = self.user.id
+        pk = self.user.pk
+        profile = self.user.profile
+
+        update = {
+            'username': 'multipletest',
+            'email': 'multiple@mult.iple'
+        }
+
+        serializer = UserSerializer(self.user, data=update, partial=True)
+        self.assertTrue(serializer.is_valid())
+        updated_user = serializer.save()
+
+        self.assertTrue(updated_user)
+        self.assertEqual(password, updated_user.password)
+        self.assertEqual(userid, updated_user.id)
+        self.assertEqual(pk, updated_user.pk)
+        self.assertEqual(profile, updated_user.profile)
+
+        self.assertNotEqual(updated_user.username, username)
+        self.assertNotEqual(updated_user.email, email)
+
+    def test_user_updates_username_and_password(self):
+        """
+        User updating any two fields should not affect the third field.
+        """
+
+        email = self.user.email
+        username = self.user.username
+        password = self.user.password
+        userid = self.user.id
+        pk = self.user.pk
+        profile = self.user.profile
+
+        update = {
+            'username': 'multipletest',
+            'password': 'multipleupdatepassword'
+        }
+
+        serializer = UserSerializer(self.user, data=update, partial=True)
+        self.assertTrue(serializer.is_valid())
+        updated_user = serializer.save()
+
+        self.assertTrue(updated_user)
+        self.assertEqual(email, updated_user.email)
+        self.assertEqual(userid, updated_user.id)
+        self.assertEqual(pk, updated_user.pk)
+        self.assertEqual(profile, updated_user.profile)
+
+        self.assertNotEqual(updated_user.username, username)
+        self.assertNotEqual(updated_user.password, password)
+
+    def test_user_updates_email_and_password(self):
+        """
+        User updating any two fields should not affect the third field.
+        """
+
+        email = self.user.email
+        username = self.user.username
+        password = self.user.password
+        userid = self.user.id
+        pk = self.user.pk
+        profile = self.user.profile
+
+        update = {
+            'password': 'multipletestthree',
+            'email': 'multiple@mult.iple'
+        }
+
+        serializer = UserSerializer(self.user, data=update, partial=True)
+        self.assertTrue(serializer.is_valid())
+        updated_user = serializer.save()
+
+        self.assertTrue(updated_user)
+        self.assertEqual(username, updated_user.username)
+        self.assertEqual(userid, updated_user.id)
+        self.assertEqual(pk, updated_user.pk)
+        self.assertEqual(profile, updated_user.profile)
+
+        self.assertNotEqual(updated_user.password, password)
+        self.assertNotEqual(updated_user.email, email)
+
+
+class BingoCardSerializerTests(APITestCase):
     """Tests for Bingo Card Serializer.
 
     Methods:

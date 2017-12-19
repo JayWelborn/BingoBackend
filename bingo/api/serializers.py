@@ -23,6 +23,10 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             password: set password so it is write-only. No one should be
                 allowed to see any user's password hash
 
+    Methods:
+        create: Upon creation, new User should have a blank profile associated
+            with it.
+
     References:
         * http://www.django-rest-framework.org/tutorial/1-serialization/#using-Hyperlinkedmodelserializers
 
@@ -35,7 +39,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'bingo_cards',
+        fields = ('url', 'id', 'username', 'bingo_cards',
                   'profile', 'email', 'password')
         read_only_fields = ('is_staff', 'is_superuser',
                             'is_active', 'date_joined',)
@@ -49,9 +53,30 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         with blank fields.
         """
 
-        user = super(UserSerializer, self).create(validated_data)
+        user = User.objects.create_user(
+            username=validated_data.get('username'),
+            email=validated_data.get('email'),
+            password=validated_data.get('password'))
         UserProfile.objects.create(user=user)
         return user
+
+    def update(self, instance, validated_data):
+        """
+        Update passwords via `User.set_password` method. Update
+        other fields normally.
+        """
+
+        if validated_data.get('username'):
+            instance.username = validated_data.get('username')
+
+        if validated_data.get('email'):
+            instance.email = validated_data.get('email')
+
+        if validated_data.get('password'):
+            instance.set_password(validated_data.get('password'))
+
+        instance.save()
+        return instance
 
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
@@ -72,8 +97,8 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('user', 'created_date', 'slug', 'picture', 'website',
-                  'about_me')
+        fields = ('url', 'user', 'created_date', 'slug', 'picture',
+                  'website', 'about_me')
 
 
 class ContactSerializer(serializers.HyperlinkedModelSerializer):
@@ -90,7 +115,7 @@ class ContactSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Contact
-        fields = ('id', 'title', 'facebook', 'github',
+        fields = ('ur', 'id', 'title', 'facebook', 'github',
                   'linkedin', 'twitter', 'email',)
 
 
@@ -111,7 +136,7 @@ class BingoCardSquareSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = BingoCardSquare
-        fields = ('text', 'card')
+        fields = ('url', 'text', 'card')
 
 
 class BingoCardSerializer(serializers.HyperlinkedModelSerializer):
@@ -139,7 +164,7 @@ class BingoCardSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = BingoCard
-        fields = ('id', 'title', 'free_space', 'creator', 'squares')
+        fields = ('url', 'id', 'title', 'free_space', 'creator', 'squares')
 
     def validate_squares(self, value):
         """

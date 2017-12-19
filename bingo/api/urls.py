@@ -4,14 +4,13 @@ from rest_framework.routers import DefaultRouter
 
 from . import views
 
-import pdb
-
 
 # Wire up the router
 router = DefaultRouter()
-router.register(r'cards', views.BingoCardViewset)
 router.register(r'users', views.UserViewset)
 router.register(r'profiles', views.UserProfileViewset)
+router.register(r'cards', views.BingoCardViewset)
+router.register(r'squares', views.BingoCardSquareViewset)
 router.register(r'contact', views.ContactViewSet)
 
 urlpatterns = [
