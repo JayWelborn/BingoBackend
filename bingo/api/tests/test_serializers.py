@@ -390,6 +390,8 @@ class ContactSerializerTests(APITestCase):
         contact_serializes_expected_fields: Serializer should return
             key-value pairs for all fields. Values for missing fields should
             be empty.
+        serializer_updates_only_affect_correct_fields: Updates done through
+            the serializer should only affect the targeted fields.
 
     References:
 
@@ -408,6 +410,11 @@ class ContactSerializerTests(APITestCase):
         )[0]
 
         self.context = {'request': None}
+
+        self.data = {
+            'github': 'https://www.github.com',
+            'facebook': 'https://www.google.com'
+        }
 
     def tearDown(self):
         """
@@ -430,6 +437,37 @@ class ContactSerializerTests(APITestCase):
 
         for field in contact_fields:
             self.assertIn(field, serializer.data)
+
+        self.assertFalse(serializer.data['github'])
+        self.assertFalse(serializer.data['twitter'])
+
+    def test_serializer_updates_only_affect_correct_fields(self):
+        """
+        Updates done through serializer should only affect fields included in
+        serializers data and leave others unaffected.
+        """
+
+        serializer = ContactSerializer(
+            self.contact, data=self.data, context=self.context, partial=True
+        )
+        self.assertTrue(serializer.is_valid())
+        serializer.save()
+
+        contact = Contact.objects.latest('contact_date')
+        self.assertEqual(self.data['github'], contact.github)
+        self.assertEqual(self.data['facebook'], contact.facebook)
+        self.assertEqual('testcontact', contact.title)
+        self.assertEqual('www.linkedin.com', contact.linkedin)
+
+
+class BingoCardSquareSerializerTests(APITestCase):
+    """Tests for Bingo Card Square Serializer.
+
+    Methods:
+
+    References:
+
+    """
 
 
 class BingoCardSerializerTests(APITestCase):
