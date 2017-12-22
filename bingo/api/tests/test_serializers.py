@@ -10,6 +10,9 @@ from api.serializers import (BingoCardSerializer, UserSerializer,
                              BingoCardSquareSerializer)
 
 
+import pdb
+
+
 class UserSerializerTest(APITestCase):
     """Tests for User Serializer.
 
@@ -532,6 +535,57 @@ class BingoCardSquareSerializerTests(APITestCase):
             self.assertEqual(square.id, serializer.data['id'])
             self.assertEqual(square.text, serializer.data['text'])
             self.assertEqual(square.card.title, serializer.data['card'])
+
+    def test_update_cannot_write_card(self):
+        """
+        Serializer updates should not be able to overwrite the associated card.
+        """
+
+        square = self.squares[0]
+
+        data = {
+            'text': 'updated square-0',
+            'card': 'newtitle'
+        }
+
+        serializer = BingoCardSquareSerializer(
+            square, data=data, context=self.context, partial=True
+        )
+
+        self.assertTrue(serializer.is_valid())
+        serializer.save()
+        self.assertEqual(square.text, data['text'])
+        self.assertNotEqual(serializer.data['card'], data['card'])
+        self.assertNotEqual(square.card.title, data['card'])
+
+    def test_update_only_writes_correct_fields(self):
+        """
+        Update should only overwrite included fields.
+        """
+
+        data = {
+            'text': 'new'
+        }
+        square = self.squares[0]
+        original = {
+            'id': square.id,
+            'text': square.text,
+            'card': square.card.title
+        }
+        serializer = BingoCardSquareSerializer(
+            square, data=data, context=self.context, partial=True
+        )
+
+        self.assertTrue(serializer.is_valid())
+        serializer.save()
+        for key in original.keys():
+            self.assertIn(key, serializer.data)
+            if key == 'text':
+                self.assertNotEqual(serializer.data[key],
+                                    original[key])
+            else:
+                self.assertEqual(serializer.data[key],
+                                 original[key])
 
 
 class BingoCardSerializerTests(APITestCase):
