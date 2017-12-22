@@ -137,7 +137,7 @@ class BingoCardSquareSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = BingoCardSquare
-        fields = ('url', 'text', 'card')
+        fields = ('id', 'url', 'text', 'card')
 
 
 class BingoCardSerializer(serializers.HyperlinkedModelSerializer):

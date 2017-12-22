@@ -6,9 +6,8 @@ from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
 from home.models import Contact
 from api.serializers import (BingoCardSerializer, UserSerializer,
-                             UserProfileSerializer, ContactSerializer)
-
-import pdb
+                             UserProfileSerializer, ContactSerializer,
+                             BingoCardSquareSerializer)
 
 
 class UserSerializerTest(APITestCase):
@@ -464,10 +463,75 @@ class BingoCardSquareSerializerTests(APITestCase):
     """Tests for Bingo Card Square Serializer.
 
     Methods:
+        setUp: Create test objects
+        tearDown: clean test database
+        test_square_serialized_correctly: Serialized squares should have info
+            for all fields
+        test_update_cannot_write_card: Updates should not be able to write
+            card info
+        test_update_only_writes_correct_fields: Partial updates should only
+            overwrite specified fields.
 
     References:
 
     """
+
+    def setUp(self):
+        """
+        Create test user, card, and squares.
+        """
+
+        self.user = User.objects.create_user(
+            username='squareserializertest',
+            email='square@serial.izer',
+            password='password123!'
+        )
+
+        self.card = BingoCard.objects.get_or_create(
+            title='testing123',
+            creator=self.user
+        )[0]
+
+        self.squares = []
+        for i in range(24):
+            self.squares.append(
+                BingoCardSquare.objects.get_or_create(
+                    card=self.card,
+                    text='square-{}'.format(i)
+                )[0]
+            )
+
+        self.assertEqual(len(self.squares), 24)
+
+        self.context = {'request': None}
+
+    def tearDown(self):
+        """
+        Clean test database
+        """
+
+        for square in BingoCardSquare.objects.all():
+            square.delete()
+
+        for card in BingoCard.objects.all():
+            card.delete()
+
+        for user in User.objects.all():
+            user.delete()
+
+    def test_square_serialized_correctly(self):
+        """
+        Serialized Suares should include all fields specified.
+        """
+
+        for square in self.squares:
+            serializer = BingoCardSquareSerializer(
+                square, context=self.context
+            )
+
+            self.assertEqual(square.id, serializer.data['id'])
+            self.assertEqual(square.text, serializer.data['text'])
+            self.assertEqual(square.card.title, serializer.data['card'])
 
 
 class BingoCardSerializerTests(APITestCase):
@@ -523,6 +587,20 @@ class BingoCardSerializerTests(APITestCase):
                 text='self.card.square {}'.format(i),
                 card=self.card
             )
+
+    def tearDown(self):
+        """
+        Clean test data.
+        """
+
+        for square in BingoCardSquare.objects.all():
+            square.delete()
+
+        for card in BingoCard.objects.all():
+            card.delete()
+
+        for user in User.objects.all():
+            user.delete()
 
     def test_serializer_accepts_valid_data(self):
         """
