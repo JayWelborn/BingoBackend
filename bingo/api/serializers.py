@@ -116,8 +116,8 @@ class ContactSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Contact
-        fields = ('ur', 'id', 'title', 'facebook', 'github',
-                  'linkedin', 'twitter', 'email',)
+        fields = ('url', 'id', 'title', 'facebook', 'github',
+                  'linkedin', 'twitter', 'email', 'contact_date')
 
 
 class BingoCardSquareSerializer(serializers.HyperlinkedModelSerializer):

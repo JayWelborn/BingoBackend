@@ -51,7 +51,7 @@ class BaseTemplateTests(TestCase):
             linkedin='//www.linkedin.com/--jaywelborn--',
             twitter='//www.twitter.com/__jaywelborn__',
             email='jesse.welborn@gmail.com',
-            contact_date=timezone.now().date(),
+            contact_date=timezone.now(),
         )[0]
 
         self.urls = [

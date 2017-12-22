@@ -51,7 +51,7 @@ class Contact(models.Model):
 
     email = models.EmailField()
 
-    contact_date = models.DateField(default=timezone.now)
+    contact_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title

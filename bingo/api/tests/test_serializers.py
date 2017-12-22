@@ -2,10 +2,11 @@ from django.contrib.auth.models import User
 
 from rest_framework.test import APITestCase
 
-from api.serializers import (BingoCardSerializer, UserSerializer,
-                             UserProfileSerializer)
 from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
+from home.models import Contact
+from api.serializers import (BingoCardSerializer, UserSerializer,
+                             UserProfileSerializer, ContactSerializer)
 
 import pdb
 
@@ -372,6 +373,62 @@ class UserProfileSerializerTest(APITestCase):
                           'about_me']
 
         for field in expeted_fields:
+            self.assertIn(field, serializer.data)
+
+
+class ContactSerializerTests(APITestCase):
+    """ Tests for Contact Serializer.
+
+    Contact serializer is unique in that Contact objects will be edited
+    via that Django admin, and so contact objects only need to be read.
+    These tests will still test the Serializers ability to write and update
+    objects correctly.
+
+    Methods:
+        setUp: Create test object
+        tearDown: clean test database
+        contact_serializes_expected_fields: Serializer should return
+            key-value pairs for all fields. Values for missing fields should
+            be empty.
+
+    References:
+
+    """
+
+    def setUp(self):
+        """
+        Create test object.
+        """
+
+        self.contact = Contact.objects.get_or_create(
+            title='testcontact',
+            facebook='www.facebook.com',
+            linkedin='www.linkedin.com',
+            email='contact@te.st'
+        )[0]
+
+        self.context = {'request': None}
+
+    def tearDown(self):
+        """
+        Clear out test database.
+        """
+        contacts = Contact.objects.all()
+        for contact in contacts:
+            contact.delete()
+
+        self.assertEqual(len(Contact.objects.all()), 0)
+
+    def test_contact_serializes_expected_fields(self):
+        """
+        Serializer should return JSON object with keys for every field. Fields
+        blank in the database should have empty values.
+        """
+
+        contact_fields = [f.name for f in self.contact._meta.get_fields()]
+        serializer = ContactSerializer(self.contact, context=self.context)
+
+        for field in contact_fields:
             self.assertIn(field, serializer.data)
 
 
