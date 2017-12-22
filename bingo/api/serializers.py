@@ -223,6 +223,7 @@ class BingoCardSerializer(serializers.HyperlinkedModelSerializer):
         for key, value in validated_data.items():
             if (
                 key in dir(instance) and
+                validated_data[key] != getattr(instance, key) and
                 key != 'squares'
             ):
                 setattr(instance, key, value)
