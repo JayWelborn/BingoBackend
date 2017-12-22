@@ -6,6 +6,8 @@ from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
 from home.models import Contact
 
+import pdb
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer to convert Users to various data types.
@@ -146,14 +148,15 @@ class BingoCardSerializer(serializers.HyperlinkedModelSerializer):
     Fields:
         squares: Reverse lookup field to find squares related to a Bingo Card.
         creator:
-        model: model to be serializers
+        model: model to be serialized
         fields: fields to include in serialization
 
     Methods:
         validate_squares: There should be exactly 24 squares in data to be
             serialized.
-        create: Create new Bingo Card, and 24 Squares linked to newly created
+        create: Create new Bingo Card and 24 Squares linked to newly created
             card.
+        update: Update Bingo Card and update related squares if needed.
 
     References:
         * http://www.django-rest-framework.org/tutorial/1-serialization/#using-Hyperlinkedmodelserializers
@@ -200,3 +203,35 @@ class BingoCardSerializer(serializers.HyperlinkedModelSerializer):
             new_square.save()
 
         return card
+
+    def update(self, instance, validated_data):
+        """
+        Perform partial updates on Cards and Squares.
+
+        Params:
+            self: BingoCardSerializer instance
+            instance: BingoCard instance
+            validated_data: Data to be updated on model. Can contain any field
+                Bingo Card, or updates to some or all squares.
+
+        """
+
+        squares = instance.squares.all()
+        new_squares = validated_data['squares']
+
+        # Update fields on instance
+        for key, value in validated_data.items():
+            if (
+                key in dir(instance) and
+                key != 'squares'
+            ):
+                setattr(instance, key, value)
+
+        # Update squares
+        for index, square in enumerate(squares):
+            if square.text != new_squares[index]['text']:
+                square.text = new_squares[index]['text']
+                square.save()
+
+        instance.save()
+        return instance

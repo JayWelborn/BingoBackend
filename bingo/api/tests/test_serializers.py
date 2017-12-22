@@ -1,3 +1,5 @@
+import copy
+
 from django.contrib.auth.models import User
 
 from rest_framework.test import APITestCase
@@ -8,9 +10,6 @@ from home.models import Contact
 from api.serializers import (BingoCardSerializer, UserSerializer,
                              UserProfileSerializer, ContactSerializer,
                              BingoCardSquareSerializer)
-
-
-import pdb
 
 
 class UserSerializerTest(APITestCase):
@@ -599,6 +598,8 @@ class BingoCardSerializerTests(APITestCase):
             squares associated with card when saved
         serializer_rejects_too_few_squares: Serializer should reject card with
             too few squares, and render appropriate error message.
+        partial_update_creates_correct_squares: Updating an existing Bingo Card
+            should preserve old squares, and replace text on updated squares.
 
     References:
 
@@ -641,6 +642,8 @@ class BingoCardSerializerTests(APITestCase):
                 text='self.card.square {}'.format(i),
                 card=self.card
             )
+
+        self.context = {'request': None}
 
     def tearDown(self):
         """
@@ -699,5 +702,61 @@ class BingoCardSerializerTests(APITestCase):
         When existing card is serialized, squares should be included.
         """
 
-        # TODO
-        pass
+        serializer = BingoCardSerializer(self.card, context=self.context)
+
+        ids = [square['id'] for square in serializer.data['squares']]
+        texts = [square['text'] for square in serializer.data['squares']]
+
+        for square in self.card.squares.all():
+            self.assertIn(square.id, ids)
+            self.assertIn(square.text, texts)
+
+    def test_partial_update_creates_correct_squares(self):
+        """
+        Updating an existing Bingo Card should preserve old squares, and
+        replace text on updated squares.
+        """
+
+        # Retrive complete data to edit
+        serializer = BingoCardSerializer(self.card, context=self.context)
+        old_data = serializer.data
+        data = copy.deepcopy(old_data)
+        squares = data['squares']
+
+        # Replace text on 10 squares
+        for i in range(10):
+            squares[i]['text'] = 'self.card.new    {}'.format(i)
+
+        # Validate serializer with new data
+        new_serializer = BingoCardSerializer(
+            self.card, data=data, context=self.context, partial=True)
+        self.assertTrue(new_serializer.is_valid())
+        new_serializer.save()
+
+        card = BingoCard.objects.get(title=self.card.title)
+
+        # Check values for square titles
+        for i, square in enumerate(squares):
+            self.assertEqual(square['text'], card.squares.all()[i].text)
+
+    def test_partial_update_updates_correct_square_fields(self):
+        """
+        Updating existing card should change only the fields updated.
+        """
+
+        serializer = BingoCardSerializer(self.card, context=self.context)
+        old_data = serializer.data
+        data = copy.deepcopy(old_data)
+
+        data['title'] = 'Updated'
+
+        new_serializer = BingoCardSerializer(
+            self.card, data=data, context=self.context, partial=True
+        )
+
+        self.assertTrue(new_serializer.is_valid())
+        new_serializer.save()
+
+        for key, value in data.items():
+            if key in dir(self.card) and key != 'squares':
+                self.assertEqual(str(value), str(getattr(self.card, key)))
