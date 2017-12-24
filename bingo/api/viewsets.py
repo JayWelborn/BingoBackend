@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 
-from rest_framework import generics
 from rest_framework import permissions
 from rest_framework import viewsets
 
@@ -28,7 +27,7 @@ class UserProfileViewset(viewsets.ModelViewSet):
     Viewset for User Profiles.
     """
 
-    queryset = UserProfile.objects.all()
+    queryset = UserProfile.objects.all().order_by('created_date')
     serializer_class = UserProfileSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsUserOrReadOnly)
@@ -42,7 +41,7 @@ class BingoCardViewset(viewsets.ModelViewSet):
     Viewset for Bingo Cards.
     """
 
-    queryset = BingoCard.objects.all()
+    queryset = BingoCard.objects.all().order_by('created_date')
     serializer_class = BingoCardSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly)

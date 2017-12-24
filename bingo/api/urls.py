@@ -1,18 +1,19 @@
 from django.conf.urls import url, include
 
-from rest_framework.routers import DefaultRouter
+from .routers import Router
 
-from . import views
+from . import viewsets
 
 
 # Wire up the router
-router = DefaultRouter()
-router.register(r'users', views.UserViewset)
-router.register(r'profiles', views.UserProfileViewset)
-router.register(r'cards', views.BingoCardViewset)
-router.register(r'squares', views.BingoCardSquareViewset)
-router.register(r'contact', views.ContactViewSet)
+router = Router()
+router.register(r'users', viewsets.UserViewset)
+router.register(r'profiles', viewsets.UserProfileViewset)
+router.register(r'cards', viewsets.BingoCardViewset)
+router.register(r'squares', viewsets.BingoCardSquareViewset)
+router.register(r'contact', viewsets.ContactViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls))
+    url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^', include(router.urls)),
 ]

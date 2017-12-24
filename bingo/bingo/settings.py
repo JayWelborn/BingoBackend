@@ -52,6 +52,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social_django',  # Enable social authentication
     'rest_framework',  # Make REST Api
+    'rest_framework.authtoken',  # Enable Token Authentication
+    'allauth',  # Adds multiple authentication schemes
+    'allauth.account',
+    'rest_auth',
+    'rest_auth.rest-registration',  # Registration through API
     'crispy_forms',  # More clean form handling
     'api',  # REST API
 ]

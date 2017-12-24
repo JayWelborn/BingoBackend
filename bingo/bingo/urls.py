@@ -41,7 +41,11 @@ urlpatterns = [
 
     url(r'api/', include('api.urls')),
 
-    url(r'api-auth/', include('rest_framework.urls')),
+    url(r'api-auth/', include('rest_auth.urls', namespace='rest_auth')),
+
+    url(r'api-registration/',
+        include('rest_auth.rest-registration.urls',
+                namespace='rest_registration')),
 
     url(r'^', include('home.urls')),
 ]
