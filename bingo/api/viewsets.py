@@ -10,7 +10,7 @@ from home.models import Contact
 from .serializers import (ContactSerializer, BingoCardSerializer,
                           UserSerializer, BingoCardSquareSerializer,
                           UserProfileSerializer)
-from .permissions import IsOwnerOrReadOnly, IsUserOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsUserOrReadOnly, IsSelfOrAdmin
 
 
 class UserViewset(viewsets.ModelViewSet):
@@ -18,8 +18,9 @@ class UserViewset(viewsets.ModelViewSet):
     Read only viewset class for User objects.
     """
 
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('pk')
     serializer_class = UserSerializer
+    permission_classes = (IsSelfOrAdmin,)
 
 
 class UserProfileViewset(viewsets.ModelViewSet):
