@@ -6,8 +6,6 @@ from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
 from home.models import Contact
 
-import pdb
-
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer to convert Users to various data types.

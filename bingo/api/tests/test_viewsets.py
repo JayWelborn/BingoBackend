@@ -1,3 +1,5 @@
+from copy import deepcopy as copy
+
 from django.contrib.auth.models import User
 from django.urls import reverse
 
@@ -48,7 +50,7 @@ class UserViewsetTests(APITestCase):
         Create several users for testing.
         """
         self.users = []
-        for i in range(10):
+        for i in range(5):
             user = User.objects.create_user(
                 username='user-{}'.format(i),
                 email='test{}@test.test'.format(i),
@@ -60,9 +62,15 @@ class UserViewsetTests(APITestCase):
             self.users.append(user)
             user.save()
 
-        self.assertEqual(len(User.objects.all()), 10)
+        self.assertEqual(len(User.objects.all()), 5)
         self.factory = APIRequestFactory()
         self.listview = UserViewset.as_view({'get': 'list', 'post': 'create'})
+        self.detailview = UserViewset.as_view({
+            'get': 'retrieve',
+            'put': 'update',
+            'patch': 'partial_update',
+            'delete': 'destroy'
+        })
 
     def tearDown(self):
         """
@@ -196,3 +204,74 @@ class UserViewsetTests(APITestCase):
         self.assertIn('password', response.data)
         self.assertEqual(response.data['password'],
                          ['This field is required.'])
+
+    def test_get_with_pk(self):
+        """
+        GET requests that include a Primay Key should retrieve detailed
+        information about a single object.
+        """
+        user = self.users[0]
+        pk = user.pk
+        request = self.factory.get(reverse('user-detail', args=[pk]))
+        response = self.detailview(request, pk=pk)
+        data = response.data
+
+        self.assertEqual(response.status_code, 200)
+        for key, value in data.items():
+            if key in ['id', 'username', 'email']:
+                self.assertEqual(value, getattr(user, key))
+
+    def test_get_with_invalid_pk(self):
+        """
+        `GET` requests with invalid PK should fail loudly and return proper
+        Error code.
+        """
+
+        user = self.users[-1]
+        pk = user.pk + 1
+        request = self.factory.get(reverse('user-detail', args=[pk]))
+        response = self.detailview(request, pk=pk)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('Not Found', response.status_text)
+
+    def test_put_with_valid_data(self):
+        """
+        `PUT` requests with valid data should be accepted and update user
+        object fields as needed.
+        """
+        user = copy(self.users[0])
+        pk = user.pk
+        new_username = {
+            'username': 'new-0'
+        }
+        username_request = self.factory.put(
+            reverse('user-detail', args=[pk]),
+            instance=user,
+            data=new_username
+        )
+
+        response = self.detailview(username_request, pk=pk, partial=True)
+        # pdb.set_trace()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['username'], new_username['username'])
+        self.assertEqual(response.data['email'], user.email)
+        self.assertEqual(response.data['id'], user.id)
+
+        user = User.objects.get(id=self.users[0].id)
+        pk = user.pk
+        new_email = {
+            'email': 'new@new.new'
+        }
+        email_request = self.factory.put(
+            reverse('user-detail', args=[pk]),
+            instance=user,
+            data=new_email
+        )
+
+        response = self.detailview(email_request, pk=pk, partial=True)
+        # pdb.set_trace()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['email'], new_email['email'])
+        self.assertEqual(response.data['username'], user.username)
+        self.assertEqual(response.data['id'], user.id)
