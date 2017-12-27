@@ -156,3 +156,43 @@ class UserViewsetTests(APITestCase):
         self.assertEqual(return_data['username'], user.username)
 
         self.assertEqual(len(self.users) + 1, len(User.objects.all()))
+
+    def test_post_with_invalid_data(self):
+        """
+        `POST` should reject invalid data and return appropriate error code.
+        """
+
+        invalid_email = {
+            'username': 'username',
+            'email': 'notanemail',
+            'password': 'password',
+        }
+        request = self.factory.post(reverse('user-list'), invalid_email)
+        response = self.listview(request)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('email', response.data)
+        self.assertEqual(response.data['email'],
+                         ['Enter a valid email address.'])
+
+        missing_username = {
+            'email': 'email@e.mail',
+            'password': 'password',
+        }
+
+        request = self.factory.post(reverse('user-list'), missing_username)
+        response = self.listview(request)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('username', response.data)
+        self.assertEqual(response.data['username'],
+                         ['This field is required.'])
+
+        missing_password = {
+            'username': 'username',
+        }
+
+        request = self.factory.post(reverse('user-list'), missing_password)
+        response = self.listview(request)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('password', response.data)
+        self.assertEqual(response.data['password'],
+                         ['This field is required.'])
