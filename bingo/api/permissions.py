@@ -3,7 +3,8 @@ from rest_framework import permissions
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
-    Custom permission to only allow owners of an object to edit it.
+    Custom permission to only allow owners of an object or staff to edit
+    object.
     """
 
     def has_object_permission(self, request, view, obj):
@@ -13,20 +14,21 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
             return True
 
         # Write permissions are only allowed to the owner of the object.
-        return obj.creator == request.user
+        return obj.creator == request.user or request.user.is_staff
 
 
 class IsUserOrReadOnly(permissions.BasePermission):
     """
-    Custom Permission to only allow users to edit their own profiles.
+    Custom Permission to only allow users to edit their own profiles. Allows
+    staff to eit all profiles
     """
 
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        # write permission are only allowed to User who owns profile
-        return obj.user == request.user
+        # write permission are only allowed to User who owns profile or staff
+        return obj.user == request.user or request.user.is_staff
 
 
 class IsSelfOrAdmin(permissions.BasePermission):

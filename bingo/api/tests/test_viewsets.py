@@ -7,7 +7,8 @@ from rest_framework.test import (APITestCase,
                                  APIRequestFactory,
                                  force_authenticate)
 
-from api.viewsets import UserViewset
+from api.viewsets import UserViewset, UserProfileViewset
+from auth_extension.models import UserProfile
 
 import pdb
 
@@ -56,19 +57,16 @@ class UserViewsetTests(APITestCase):
         Create several users for testing.
         """
         self.users = []
-        for i in range(5):
+        for i in range(3):
             user = User.objects.create_user(
                 username='user-{}'.format(i),
                 email='test{}@test.test'.format(i),
                 password='password23234545'
             )
-            # Create one staff member
-            if i == 0:
-                user.is_staff = True
             self.users.append(user)
             user.save()
 
-        self.assertEqual(len(User.objects.all()), 5)
+        self.assertEqual(len(User.objects.all()), 3)
         self.factory = APIRequestFactory()
         self.listview = UserViewset.as_view({'get': 'list', 'post': 'create'})
         self.detailview = UserViewset.as_view({
@@ -405,3 +403,224 @@ class UserViewsetTests(APITestCase):
         self.assertEqual(
             data['detail'],
             'You do not have permission to perform this action.')
+
+
+class UserProfileViewsetTests(APITestCase):
+    """Tests for User Profile API Endpoint.
+
+    After testing Users, I have decided to only write tests for methods that
+    should be affected by permissions. Many tests on the User endpoint tested
+    the framework rather than my code. That took a lot of time that could have
+    gone towards something else.
+
+    Methods:
+        setUp: Create test users and profiles
+        tearDown: Empty test database between iterations
+        unauthenticated_user_can_only_get: Unauthenticated users should only be
+            able to `GET` info from this endpoint.
+        wrong_user_can_only_get: Users should only be able to `GET` other users
+            profile's from this endpoint.
+        user_can_modify_and_delete_themselves: Users should be able to modify
+            or delete their own profiles.
+        staff_can_modify_or_delete_profiles: Staff should be able to modify or
+            delete all profiles.
+
+    References:
+
+    """
+
+    def setUp(self):
+        """
+        Create test data.
+        """
+        self.users = []
+        for i in range(3):
+            user = User.objects.create_user(
+                username='user-{}'.format(i),
+                email='test{}@test.test'.format(i),
+                password='password23234545'
+            )
+            self.users.append(user)
+            user.save()
+
+        self.profiles = []
+        for user in User.objects.all():
+            profile = UserProfile.objects.create(user=user)
+            self.profiles.append(profile)
+
+        self.assertEqual(len(User.objects.all()), 3)
+        self.assertEqual(len(UserProfile.objects.all()), 3)
+
+        self.factory = APIRequestFactory()
+        self.listview = UserProfileViewset.as_view({
+            'get': 'list',
+            'post': 'create'
+        })
+        self.detailview = UserProfileViewset.as_view({
+            'get': 'retrieve',
+            'put': 'update',
+            'patch': 'partial_update',
+            'delete': 'destroy'
+        })
+
+    def tearDown(self):
+        """
+        Clear Test Database.
+        """
+        for profile in UserProfile.objects.all():
+            profile.delete()
+        for user in User.objects.all():
+            user.delete()
+
+    def test_unauthenticated_user_can_only_get(self):
+        """
+        Unauthenticated visitors should not be able to create, modify, or
+        delete profiles.
+        """
+
+        # `GET` requests
+        list_url = reverse('userprofile-list')
+        request = self.factory.get(list_url)
+        response = self.listview(request)
+        results = response.data['results']
+        self.assertEqual(response.status_code, 200)
+
+        for index, profile in enumerate(UserProfile.objects.all()):
+            self.assertEqual(results[index]['slug'], profile.slug)
+
+        user = self.users[0]
+        pk = user.pk
+        detail_url = reverse('userprofile-detail', args=[pk])
+        request = self.factory.get(detail_url)
+        response = self.detailview(request, pk=pk)
+        data = response.data
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['slug'], user.username)
+
+        # `POST` request
+        post_data = {
+            'website': 'www.jaywelborn.com'
+        }
+
+        request = self.factory.post(list_url, post_data)
+        response = self.listview(request)
+        self.assertEqual(response.status_code, 403)
+
+        # `PUT` request
+        request = self.factory.put(
+            detail_url,
+            instance=user,
+            data=post_data)
+        response = self.detailview(request, pk=pk, partial=True)
+        self.assertEqual(response.status_code, 403)
+
+        # `DELETE` request
+        request = self.factory.delete(
+            detail_url
+        )
+        response = self.detailview(request)
+        self.assertEqual(response.status_code, 403)
+
+    def test_wrong_user_can_only_get(self):
+        """
+        User should be able to `GET` any profile, but not `POST`, `PUT`, or
+        `DELETE` anyone else.
+        """
+
+        user = self.users[0]
+        profile = self.users[1].profile
+        pk = profile.pk
+
+        # `GET` another profile should succeed
+        request = self.factory.get(
+            reverse('userprofile-detail', args=[pk])
+        )
+        force_authenticate(request, user=user)
+        response = self.detailview(request, pk=pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['slug'], profile.slug)
+
+        # `PUT` request should fail
+        data = {
+            'website': 'www.jaywelborn.com'
+        }
+        request = self.factory.put(
+            reverse('userprofile-list', args=[pk]),
+            data=data
+        )
+        force_authenticate(request, user=user)
+        response = self.detailview(request, pk=pk)
+        self.assertEqual(response.status_code, 403)
+
+        # `DELETE` request should fail
+        request = self.factory.delete(
+            reverse('userprofile-detail', args=[pk])
+        )
+        force_authenticate(request, user=user)
+        response = self.detailview(request, pk=pk)
+        self.assertEqual(response.status_code, 403)
+
+    def test_user_can_modify_and_delete_themselves(self):
+        """
+        User should be able to modify or delete their own profile.
+        """
+
+        user = self.users[0]
+        profile = user.profile
+        pk = profile.pk
+        url = reverse('userprofile-detail', args=[pk])
+
+        # `PUT` should work on self
+        data = {
+            'website': 'https://www.jaywelborn.com'
+        }
+        request = self.factory.put(
+            url,
+            data=data
+        )
+        force_authenticate(request, user=user)
+        response = self.detailview(request, pk=pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['website'], data['website'])
+        self.assertEqual(response.data['slug'], profile.slug)
+
+        # `DELTE` should work on self
+        request = self.factory.delete(url)
+        force_authenticate(request, user=user)
+        response = self.detailview(request, pk=pk)
+        self.assertEqual(response.status_code, 204)
+        self.assertRaises(
+            UserProfile.DoesNotExist, UserProfile.objects.get, pk=pk
+        )
+
+    def test_staff_can_modify_and_delete_profiles(self):
+        """
+        Staff should be able to modify or delete anyone.
+        """
+
+        staff = self.users[0]
+        user = self.users[1]
+        pk = user.pk
+        url = reverse('userprofile-detail', args=[pk])
+        staff.is_staff = True
+        data = {
+            'website': 'https://www.jaywelborn.com'
+        }
+
+        # test staff can `PUT` other profile
+        request = self.factory.put(
+            url,
+            data=data,
+            partial=True
+        )
+        force_authenticate(request, staff)
+
+        response = self.detailview(request, pk=pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['website'], data['website'])
+
+        # test staff can `DELETE` other profile
+        request = self.factory.delete(url)
+        force_authenticate(request, staff)
+        response = self.detailview(request, pk=pk)
+        self.assertEqual(response.status_code, 204)
