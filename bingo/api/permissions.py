@@ -36,7 +36,7 @@ class IsSelfOrAdmin(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
-        if request.method == 'DELETE':
+        if request.method in ['DELETE', 'PUT', 'PATCH']:
             return request.user.is_staff or request.user == obj
 
         return super(IsSelfOrAdmin, self).has_object_permission(request, view, obj)

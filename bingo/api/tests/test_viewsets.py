@@ -3,7 +3,9 @@ from copy import deepcopy as copy
 from django.contrib.auth.models import User
 from django.urls import reverse
 
-from rest_framework.test import APITestCase, APIRequestFactory
+from rest_framework.test import (APITestCase,
+                                 APIRequestFactory,
+                                 force_authenticate)
 
 from api.viewsets import UserViewset
 
@@ -32,6 +34,10 @@ class UserViewsetTests(APITestCase):
             field, leaving others unaffected.
         test_put_with_invalid_data: `PUT` requests with invalid data should
             fail and return appropriate error message.
+        test_unauthenticated_put: `PUT` requests from unauthenticated user
+            should return permission denied status code.
+        test_put_from_another_user: `PUT` requests from users other than self
+            should result in permission denied.
         test_delete_with_staff: Staff should be allowed to delete all users
         test_delete_with_self: users should be allowed to dleete their own
             accounts
@@ -250,6 +256,7 @@ class UserViewsetTests(APITestCase):
             instance=user,
             data=new_username
         )
+        force_authenticate(username_request, user=user)
 
         response = self.detailview(username_request, pk=pk, partial=True)
         # pdb.set_trace()
@@ -268,10 +275,133 @@ class UserViewsetTests(APITestCase):
             instance=user,
             data=new_email
         )
+        force_authenticate(email_request, user=user)
 
         response = self.detailview(email_request, pk=pk, partial=True)
-        # pdb.set_trace()
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['email'], new_email['email'])
         self.assertEqual(response.data['username'], user.username)
         self.assertEqual(response.data['id'], user.id)
+
+    def test_unauthenticated_put(self):
+        """
+        `PUT` requests coming from unauthenticated users should return 403
+        forbidden.
+        """
+        user = copy(self.users[0])
+        pk = user.pk
+        new_username = {
+            'username': 'new-0'
+        }
+        request = self.factory.put(
+            reverse('user-detail', args=[pk]),
+            instance=user,
+            data=new_username
+        )
+
+        response = self.detailview(request, pk=pk, partial=True)
+
+        self.assertEqual(response.status_code, 403)
+        data = response.data
+        self.assertEqual(
+            data['detail'],
+            'Authentication credentials were not provided.')
+
+    def test_put_from_another_user(self):
+        """
+        `PUT` requests from user other than self should result in permission
+        denied.
+        """
+        user = copy(self.users[0])
+        pk = user.pk
+        new_username = {
+            'username': 'new-0'
+        }
+        request = self.factory.put(
+            reverse('user-detail', args=[pk]),
+            instance=user,
+            data=new_username
+        )
+
+        force_authenticate(request, user=self.users[1])
+
+        response = self.detailview(request, pk=pk, partial=True)
+        data = response.data
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            data['detail'],
+            'You do not have permission to perform this action.')
+
+    def test_delete_with_staff(self):
+        """
+        Staff should be allowed to delete any user.
+        """
+        user = copy(self.users[0])
+        pk = user.pk
+        new_username = {
+            'username': 'new-0'
+        }
+        request = self.factory.delete(
+            reverse('user-detail', args=[pk]),
+            instance=user,
+            data=new_username
+        )
+        staff = self.users[1]
+        staff.is_staff = True
+
+        force_authenticate(request, user=staff)
+
+        response = self.detailview(request, pk=pk, partial=True)
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_text, 'No Content')
+        self.assertRaises(User.DoesNotExist, User.objects.get, pk=pk)
+
+    def test_delete_with_self(self):
+        """
+        Users should be able to delete themselves.
+        """
+        user = copy(self.users[0])
+        pk = user.pk
+        new_username = {
+            'username': 'new-0'
+        }
+        request = self.factory.delete(
+            reverse('user-detail', args=[pk]),
+            instance=user,
+            data=new_username
+        )
+
+        force_authenticate(request, user=user)
+
+        response = self.detailview(request, pk=pk, partial=True)
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_text, 'No Content')
+        self.assertRaises(User.DoesNotExist, User.objects.get, pk=pk)
+
+    def test_delete_with_other_user(self):
+        """
+        Users should not be able to delete each other.
+        """
+
+        user = copy(self.users[0])
+        pk = user.pk
+        new_username = {
+            'username': 'new-0'
+        }
+        request = self.factory.delete(
+            reverse('user-detail', args=[pk]),
+            instance=user,
+            data=new_username
+        )
+
+        force_authenticate(request, user=self.users[1])
+
+        response = self.detailview(request, pk=pk, partial=True)
+        data = response.data
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            data['detail'],
+            'You do not have permission to perform this action.')
