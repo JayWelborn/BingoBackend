@@ -9,6 +9,7 @@ from rest_framework.test import (APITestCase,
 
 from api.viewsets import UserViewset, UserProfileViewset
 from auth_extension.models import UserProfile
+from cards.models import BingoCard, BingoCardSquare
 
 import pdb
 
@@ -624,3 +625,69 @@ class UserProfileViewsetTests(APITestCase):
         force_authenticate(request, staff)
         response = self.detailview(request, pk=pk)
         self.assertEqual(response.status_code, 204)
+
+
+class BingoCardViewset(APITestCase):
+    """Tests for Bingo Card Viewset.
+
+    Methods:
+        setUp: Create test data
+        tearDown: Clear test database
+        unauthenticated_user_permissions: Unauthenticated users should be
+            able to `GET` Bingo cards, but not `POST`, `PUT, or `DELETE` them.
+        authenticated_user_has_permissions: Authenticated users should be able
+            to view, create, edit, and delete their own cards, but not others.
+        staff_has_permissions: Staff should be allowed to view, create, edit,
+            and delete all cards.
+
+    """
+
+    def setUp(self):
+        """
+        Create Users and Bingo Cards for testing.
+        """
+        self.users = []
+        self.cards = []
+
+        for i in range(3):
+            # Create User and add to list
+            user = User.objects.create_user(
+                username='user-{}'.format(i),
+                email='test@test.test',
+                password='password-{}'.format(i)
+            )
+            user.save()
+            self.users.append(user)
+
+            # Create card and add to list
+            card = BingoCard.objects.create(
+                title='Bingo Card {}'.format(i),
+                creator=user,
+            )
+
+            # Add squares to card
+            for j in range(24):
+                square = BingoCardSquare.objects.create(
+                    card=card,
+                    text='Square {} for card {}'.format(j, i)
+                )
+                square.save
+            card.save()
+            self.cards.append(card)
+
+        self.assertEqual(len(self.users), 3)
+        self.assertEqual(len(self.cards), 3)
+
+    def tearDown(self):
+        """
+        Clear test database between tests.
+        """
+        for user in self.users:
+            user.delete()
+
+        self.assertEqual(len(BingoCard.objects.all()), 0)
+        self.assertEqual(len(BingoCardSquare.objects.all()), 0)
+        self.assertEqual(len(User.objects.all()), 0)
+
+    def test_unauthenticated_user_permissions(self):
+        pass
