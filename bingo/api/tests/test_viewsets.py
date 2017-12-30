@@ -7,7 +7,7 @@ from rest_framework.test import (APITestCase,
                                  APIRequestFactory,
                                  force_authenticate)
 
-from api.viewsets import UserViewset, UserProfileViewset
+from api.viewsets import UserViewset, UserProfileViewset, BingoCardViewset
 from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
 
@@ -627,7 +627,7 @@ class UserProfileViewsetTests(APITestCase):
         self.assertEqual(response.status_code, 204)
 
 
-class BingoCardViewset(APITestCase):
+class BingoCardViewsetTests(APITestCase):
     """Tests for Bingo Card Viewset.
 
     Methods:
@@ -678,6 +678,18 @@ class BingoCardViewset(APITestCase):
         self.assertEqual(len(self.users), 3)
         self.assertEqual(len(self.cards), 3)
 
+        self.factory = APIRequestFactory()
+        self.listview = BingoCardViewset.as_view({
+            'get': 'list',
+            'post': 'create'
+        })
+        self.detailview = BingoCardViewset.as_view({
+            'get': 'retrieve',
+            'put': 'update',
+            'patch': 'partial_update',
+            'delete': 'destroy'
+        })
+
     def tearDown(self):
         """
         Clear test database between tests.
@@ -690,4 +702,57 @@ class BingoCardViewset(APITestCase):
         self.assertEqual(len(User.objects.all()), 0)
 
     def test_unauthenticated_user_permissions(self):
-        pass
+        """
+        Unauthenticated users should have permission to view bingo cards, but
+        unauthenticated requests to create, edit, or delete bingo cards should
+        be rejected.
+        """
+
+        self.client.logout()
+
+        # `GET` requests
+        url = reverse('bingocard-list')
+        request = self.factory.get(url)
+        response = self.listview(request)
+        self.assertEqual(response.status_code, 200)
+
+        for card in self.cards:
+            url = reverse('bingocard-detail', args=[card.pk])
+            request = self.factory.get(url)
+            response = self.listview(request, pk=card.pk)
+            self.assertEqual(response.status_code, 200)
+
+        # `POST` request
+        url = reverse('bingocard-list')
+        data = {
+            'title': 'something',
+            'free_space': 'freedom',
+            'squares': []
+        }
+
+        # add squares to card
+        for i in range(24):
+            data['squares'].append({'text': '{}'.format(i)})
+
+        request = self.factory.post(url, data)
+        response = self.listview(request)
+        self.assertEqual(response.status_code, 403)
+
+        # `PUT` requests.
+        data = {
+            'title': 'something'
+        }
+        url = reverse('bingocard-detail', args=[self.cards[0].pk])
+        request = self.factory.put(
+            url,
+            data=data,
+            partial=True
+        )
+        response = self.detailview(request)
+        self.assertEqual(response.status_code, 403)
+
+        # `DELTE` requests
+        url = reverse('bingocard-detail', args=[self.cards[0].pk])
+        request = self.factory.delete(url)
+        response = self.detailview(request)
+        self.assertEqual(response.status_code, 403)
