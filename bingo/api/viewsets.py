@@ -12,6 +12,8 @@ from .serializers import (ContactSerializer, BingoCardSerializer,
                           UserProfileSerializer)
 from .permissions import IsOwnerOrReadOnly, IsUserOrReadOnly, IsSelfOrAdmin
 
+import pdb
+
 
 class UserViewset(viewsets.ModelViewSet):
     """
@@ -42,12 +44,13 @@ class BingoCardViewset(viewsets.ModelViewSet):
     Viewset for Bingo Cards.
     """
 
-    queryset = BingoCard.objects.all().order_by('created_date')
+    queryset = BingoCard.objects.all().order_by('-created_date')
     serializer_class = BingoCardSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly)
 
     def perform_create(self, serializer):
+        pdb.set_trace()
         serializer.save(creator=self.request.user)
 
 

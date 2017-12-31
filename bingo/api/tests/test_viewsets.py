@@ -635,7 +635,7 @@ class BingoCardViewsetTests(APITestCase):
         tearDown: Clear test database
         unauthenticated_user_permissions: Unauthenticated users should be
             able to `GET` Bingo cards, but not `POST`, `PUT, or `DELETE` them.
-        authenticated_user_has_permissions: Authenticated users should be able
+        authenticated_user_permissions: Authenticated users should be able
             to view, create, edit, and delete their own cards, but not others.
         staff_has_permissions: Staff should be allowed to view, create, edit,
             and delete all cards.
@@ -674,6 +674,8 @@ class BingoCardViewsetTests(APITestCase):
                 square.save
             card.save()
             self.cards.append(card)
+
+        self.cards = self.cards[::-1]
 
         self.assertEqual(len(self.users), 3)
         self.assertEqual(len(self.cards), 3)
@@ -756,3 +758,45 @@ class BingoCardViewsetTests(APITestCase):
         request = self.factory.delete(url)
         response = self.detailview(request)
         self.assertEqual(response.status_code, 403)
+
+    def test_authenticated_user_permissions(self):
+        """
+        Authenticated users should be able to view, create, edit, and delete
+        their own bingocards, but not others.
+        """
+
+        url = reverse('bingocard-list')
+        data = {
+            'title': 'something',
+            'free_space': 'freedom',
+            'squares': []
+        }
+
+        # add squares to card
+        for i in range(24):
+            data['squares'].append({'text': 'square {}'.format(i)})
+
+        self.assertEqual(len(data['squares']), 24)
+
+        # Authenticated User gets card list
+        request = self.factory.get(url)
+        force_authenticate(request, user=self.users[0])
+        response = self.listview(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('results', response.data)
+        self.assertEqual(len(response.data['results']), len(self.cards))
+
+        # Assert cards are present and sorted correctly
+        for index, result in enumerate(response.data['results']):
+            card = self.cards[index]
+            self.assertEqual(result['title'], card.title)
+
+        # Authenticated User creates new card
+        request = self.factory.post(url, data=data)
+        force_authenticate(request, user=self.users[0])
+        pdb.set_trace()
+        response = self.listview(request)
+        pdb.set_trace()
+        self.assertEqual(response.status_code, 200)
+        for key, value in data.items():
+            self.assertEqual(response.data[key], value)
