@@ -50,7 +50,6 @@ class BingoCardViewset(viewsets.ModelViewSet):
                           IsOwnerOrReadOnly)
 
     def perform_create(self, serializer):
-        pdb.set_trace()
         serializer.save(creator=self.request.user)
 
 

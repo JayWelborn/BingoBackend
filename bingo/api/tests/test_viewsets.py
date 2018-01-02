@@ -637,6 +637,7 @@ class BingoCardViewsetTests(APITestCase):
             able to `GET` Bingo cards, but not `POST`, `PUT, or `DELETE` them.
         authenticated_user_permissions: Authenticated users should be able
             to view, create, edit, and delete their own cards, but not others.
+            Seperate functions exist for `GET`, `POST`, `PUT`, and `DELETE`.
         staff_has_permissions: Staff should be allowed to view, create, edit,
             and delete all cards.
 
@@ -759,7 +760,7 @@ class BingoCardViewsetTests(APITestCase):
         response = self.detailview(request)
         self.assertEqual(response.status_code, 403)
 
-    def test_authenticated_user_permissions(self):
+    def test_authenticated_user_get(self):
         """
         Authenticated users should be able to view, create, edit, and delete
         their own bingocards, but not others.
@@ -791,12 +792,114 @@ class BingoCardViewsetTests(APITestCase):
             card = self.cards[index]
             self.assertEqual(result['title'], card.title)
 
+    def test_authenticated_user_post(self):
+        """
+        Authenticated users should be able to create new card with `POST`
+        """
+
+        url = reverse('bingocard-list')
+        data = {
+            'title': 'something',
+            'free_space': 'freedom',
+            'squares': []
+        }
+        for i in range(24):
+            data['squares'].append({'text': 'square {}'.format(i)})
+
         # Authenticated User creates new card
-        request = self.factory.post(url, data=data)
+        request = self.factory.post(url, data=data, format='json')
         force_authenticate(request, user=self.users[0])
-        pdb.set_trace()
         response = self.listview(request)
-        pdb.set_trace()
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(BingoCard.objects.get(title='something'))
+
+        for key in data:
+            self.assertIn(key, response.data)
+
+            # Squares have to be handled separately because rest_framework
+            # converts dict to collections.OrderedDict
+            if key != 'squares':
+                self.assertEqual(data[key], response.data[key])
+            else:
+                squares = data[key]
+                for index, square in enumerate(squares):
+                    response_square = response.data['squares'][index]
+                    self.assertEqual(square['text'], response_square['text'])
+
+    def test_authenticated_user_put(self):
+        """
+        Authenticated User should be able to update card they created with
+        `PUT`
+        """
+
+        data = {
+            'title': 'something',
+            'free_space': 'freedom',
+            'squares': []
+        }
+        for i in range(24):
+            data['squares'].append({'text': 'square {}'.format(i)})
+
+        creator = self.users[0]
+
+        card = BingoCard.objects.get_or_create(
+            creator=creator, title=data['title']
+        )[0]
+        for square in data['squares']:
+            BingoCardSquare.objects.create(card=card, text=square['text'])
+
+        data['title'] = 'something new'
+
+        # Should be able to update own card
+        request = self.factory.put(
+            reverse('bingocard-detail', args=[card.pk]),
+            data=data,
+            format='json'
+        )
+        force_authenticate(request, user=creator)
+        response = self.detailview(request, pk=card.pk)
         self.assertEqual(response.status_code, 200)
-        for key, value in data.items():
-            self.assertEqual(response.data[key], value)
+        self.assertEqual(response.data['title'], data['title'])
+
+        # Shouldn't be able to update someone else's card
+        card.creator = self.users[1]
+        card.save()
+        data['title'] = 'something else'
+        request = self.factory.put(
+            reverse('bingocard-detail', args=[card.pk]),
+            data=data,
+            format='json'
+        )
+        force_authenticate(request, self.users[0])
+        response = self.detailview(request, pk=card.pk)
+        self.assertEqual(response.status_code, 403)
+
+    def test_authenticated_user_delete(self):
+        """
+        Authenticated user should be allowed to delete own cards, but not
+        others'.
+        """
+
+        # Delete own card should succeed and return empty response
+        card = self.cards[0]
+        creator = card.creator
+        request = self.factory.delete(
+            reverse('bingocard-detail', args=[card.pk])
+        )
+        force_authenticate(request, creator)
+        response = self.detailview(request, pk=card.pk)
+        self.assertEqual(response.status_code, 204)
+
+        # Delete other's card should fail and return 403
+        card = self.cards[1]
+        user = self.users[0]
+        self.assertNotEqual(user, card.creator)
+        request = self.factory.delete(
+            reverse('bingocard-detail', args=[card.pk])
+        )
+        force_authenticate(request, user)
+        response = self.detailview(request, pk=card.pk)
+        self.assertEqual(response.status_code, 403)
+
+    def test_staff_permissions(self):
+        pass
