@@ -25,8 +25,7 @@ class ContactModelTest(TestCase):
                                       github='www.github.com',
                                       linkedin='www.linkedin.com',
                                       twitter='www.twitter.com',
-                                      email='some_email@something.com',
-                                      contact_date=timezone.now())
+                                      email='some_email@something.com')
 
     def test_str_method(self):
         """

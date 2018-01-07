@@ -52,7 +52,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social_django',  # Enable social authentication
     'rest_framework',  # Make REST Api
+    'rest_framework.authtoken',  # Enable Token Authentication
+    'allauth',  # Adds multiple authentication schemes
+    'allauth.account',
+    'rest_auth',
+    'rest_auth.rest-registration',  # Registration through API
     'crispy_forms',  # More clean form handling
+    'api',  # REST API
 ]
 
 MIDDLEWARE = [
@@ -225,3 +231,9 @@ with open(os.path.join(SECRETS, 'facebook-auth.secret'), 'r') as f:
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/profile/settings/'
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/profile/settings/'
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
+
+# Rest API Settings
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
