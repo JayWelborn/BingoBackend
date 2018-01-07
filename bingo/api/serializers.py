@@ -217,7 +217,9 @@ class BingoCardSerializer(serializers.HyperlinkedModelSerializer):
         """
 
         squares = instance.squares.all()
-        new_squares = validated_data['squares']
+        new_squares = []
+        if 'squares' in validated_data:
+            new_squares = validated_data['squares']
 
         # Update fields on instance
         for key, value in validated_data.items():
@@ -229,10 +231,11 @@ class BingoCardSerializer(serializers.HyperlinkedModelSerializer):
                 setattr(instance, key, value)
 
         # Update squares
-        for index, square in enumerate(squares):
-            if square.text != new_squares[index]['text']:
-                square.text = new_squares[index]['text']
-                square.save()
+        if new_squares:
+            for index, square in enumerate(squares):
+                if square.text != new_squares[index]['text']:
+                    square.text = new_squares[index]['text']
+                    square.save()
 
         instance.save()
         return instance

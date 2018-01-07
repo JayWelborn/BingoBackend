@@ -638,8 +638,9 @@ class BingoCardViewsetTests(APITestCase):
         authenticated_user_permissions: Authenticated users should be able
             to view, create, edit, and delete their own cards, but not others.
             Seperate functions exist for `GET`, `POST`, `PUT`, and `DELETE`.
-        staff_has_permissions: Staff should be allowed to view, create, edit,
-            and delete all cards.
+        staff_permissions: Staff should be allowed to edit, and delete all
+            cards.
+            Seperate functions for `PUT` and `DELETE`
 
     """
 
@@ -901,5 +902,39 @@ class BingoCardViewsetTests(APITestCase):
         response = self.detailview(request, pk=card.pk)
         self.assertEqual(response.status_code, 403)
 
-    def test_staff_permissions(self):
-        pass
+    def test_staff_put(self):
+        """
+        Staff should be able to update cards that are not their own.
+        """
+        staff = self.users[0]
+        staff.is_staff = True
+        card = self.cards[0]
+        self.assertNotEqual(card.creator, staff)
+
+        data = {'title': 'new-title'}
+        request = self.factory.put(
+            reverse('bingocard-detail', args=[card.pk]),
+            data=data,
+            format='json'
+        )
+        force_authenticate(request, staff)
+        response = self.detailview(request, pk=card.pk, partial=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['title'], data['title'])
+
+    def test_staff_delete(self):
+        """
+        Staff should be able to delete cards that are not their own.
+        """
+        staff = self.users[0]
+        staff.is_staff = True
+        card = self.cards[0]
+        self.assertNotEqual(card.creator, staff)
+
+        request = self.factory.delete('bingocard-detail', args=[card.pk])
+        force_authenticate(request, staff)
+        response = self.detailview(request, pk=card.pk)
+        self.assertEqual(response.status_code, 204)
+        self.assertRaises(
+            BingoCard.DoesNotExist, BingoCard.objects.get, pk=card.pk
+        )
