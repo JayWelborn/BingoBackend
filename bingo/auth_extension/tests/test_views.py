@@ -44,7 +44,7 @@ class LoginRedirectViewTests(TestCase):
         response = self.client.get(reverse('auth_extension:login_redirect'))
         self.assertRedirects(
             response=response,
-            expected_url=reverse('registration:auth_login'),
+            expected_url=reverse('auth_login'),
             status_code=301
         )
 

@@ -14,8 +14,8 @@
       {% if user.is_authenticated %}
         <a class="call-to-action" href="{% url 'cards:card_create' %}">Create a Bingo Card</a>
       {% else %}
-        <a class="call-to-action" href="{% url 'registration:auth_login' %}">Log In</a>
-        <a class="call-to-action" href="{% url 'registration:registration_register' %}">Sign Up</a>
+        <a class="call-to-action" href="{% url 'auth_login' %}">Log In</a>
+        <a class="call-to-action" href="{% url 'registration_register' %}">Sign Up</a>
       {% endif %}
     </ul>
   </div>

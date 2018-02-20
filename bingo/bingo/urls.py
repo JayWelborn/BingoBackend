@@ -29,8 +29,7 @@ urlpatterns = [
         name='registration_register'),
 
     url(r'^accounts/',
-        include('registration.backends.simple.urls',
-                namespace='registration')
+        include('registration.backends.simple.urls')
         ),
 
     url(r'^profile/', include('auth_extension.urls')),
@@ -44,7 +43,7 @@ urlpatterns = [
     url(r'api-auth/', include('rest_auth.urls', namespace='rest_auth')),
 
     url(r'api-registration/',
-        include('rest_auth.rest-registration.urls',
+        include('rest_auth.rest_registration.urls',
                 namespace='rest_registration')),
 
     url(r'^', include('home.urls')),

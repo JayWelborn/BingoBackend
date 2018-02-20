@@ -40,7 +40,7 @@ class LoginRedirectView(g.RedirectView):
         Send User to profile edit page if authenticated. Else send visitor
         to login page.
         """
-        url = 'registration:auth_login'
+        url = 'auth_login'
         pk = False
         current_user = self.request.user
 

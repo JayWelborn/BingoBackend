@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'allauth',  # Adds multiple authentication schemes
     'allauth.account',
     'rest_auth',
-    'rest_auth.rest-registration',  # Registration through API
+    'rest_auth.rest_registration',  # Registration through API
     'crispy_forms',  # More clean form handling
     'api',  # REST API
 ]
