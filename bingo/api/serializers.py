@@ -164,7 +164,8 @@ class BingoCardSerializer(serializers.HyperlinkedModelSerializer):
     """
 
     squares = BingoCardSquareSerializer(many=True, read_only=False)
-    creator = serializers.ReadOnlyField(source='creator.username')
+    creator = serializers.HyperlinkedRelatedField(
+        many=False, view_name='user-detail', read_only=True)
 
     class Meta:
         model = BingoCard
