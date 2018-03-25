@@ -12,6 +12,8 @@ class UserProfileModelTests(TestCase):
 
     Methods:
         setUp: Creates sample UserProfile object for testing
+        test_creating_user_creates_profile: Ensures creating a User object
+            also creates a related UserProfile object
         test_profile_links_to_user: Ensures User and UserProfile objects are
             linked as expected
         test_slugify_for_user_profile: Ensures username is correctly slugified
@@ -35,7 +37,22 @@ class UserProfileModelTests(TestCase):
                                                  password='password1',
                                                  email='test2@test.com')
 
-        self.test_profile = UserProfile.objects.create(user=self.test_user_one)
+        self.test_profile = UserProfile.objects.get_or_create(
+            user=self.test_user_one)[0]
+
+    def test_creating_user_creates_profile(self):
+        """
+        Test to ensure creating a new user also creates a new UserProfile
+        linked to that user.
+        """
+        new_user = User.objects.create_user(
+            username="modeltest",
+            email="model@te.st",
+            password="passwordmodeltest")
+        new_profile = UserProfile.objects.get(user=new_user)
+
+        self.assertTrue(new_profile)
+        self.assertEqual(new_profile, new_user.profile)
 
     def test_profile_links_to_user(self):
         """

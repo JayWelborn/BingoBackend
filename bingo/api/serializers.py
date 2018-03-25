@@ -6,8 +6,6 @@ from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
 from home.models import Contact
 
-import pdb
-
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer to convert Users to various data types.
@@ -57,7 +55,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             username=validated_data.get('username'),
             email=validated_data.get('email'),
             password=validated_data.get('password'))
-        UserProfile.objects.create(user=user)
+        # UserProfile.objects.create(user=user)
         return user
 
     def update(self, instance, validated_data):

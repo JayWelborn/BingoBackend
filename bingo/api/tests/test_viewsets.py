@@ -11,8 +11,6 @@ from api.viewsets import UserViewset, UserProfileViewset, BingoCardViewset
 from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
 
-import pdb
-
 
 class UserViewsetTests(APITestCase):
     """Tests for User View Set.
@@ -446,7 +444,7 @@ class UserProfileViewsetTests(APITestCase):
 
         self.profiles = []
         for user in User.objects.all():
-            profile = UserProfile.objects.create(user=user)
+            profile = UserProfile.objects.get_or_create(user=user)[0]
             self.profiles.append(profile)
 
         self.assertEqual(len(User.objects.all()), 3)

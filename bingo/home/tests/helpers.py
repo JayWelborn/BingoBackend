@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from auth_extension.models import UserProfile
 from cards.models import BingoCard
 
+import pdb
+
 
 def create_user(username, password, private):
     """Create User object with associated Profile.
@@ -22,14 +24,16 @@ def create_user(username, password, private):
         email='{}@gmail.com'.format(username)
     )[0]
     user.set_password(password)
-    user.save()
 
     # create Profile
     profile = UserProfile.objects.get_or_create(
         user=user,
-        private=private
     )[0]
-    profile.save
+    profile.private = private
+    user.profile = profile
+
+    user.save()
+    profile.save()
 
     return user
 

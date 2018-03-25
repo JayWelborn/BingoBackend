@@ -1,5 +1,8 @@
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils import timezone
@@ -28,7 +31,7 @@ class UserProfile(models.Model):
         verbose_name_plural = 'Profiles'
 
     user = models.OneToOneField(
-        User,
+        settings.AUTH_USER_MODEL,
         related_name='profile',
         # TODO - test on_delete
         on_delete=models.CASCADE,
@@ -76,3 +79,14 @@ class UserProfile(models.Model):
         Return url for viewing a specific profile
         """
         return reverse('auth_extension:profile_view', args=[self.pk])
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()

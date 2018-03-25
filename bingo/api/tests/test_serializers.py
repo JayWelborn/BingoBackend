@@ -57,7 +57,8 @@ class UserSerializerTest(APITestCase):
         self.user.set_password('jimothy')
         self.user.save()
 
-        self.profile = UserProfile.objects.create(user=self.user)
+        self.profile = UserProfile.objects.get_or_create(
+            user=self.user)[0]
 
     def tearDown(self):
         """
@@ -94,7 +95,7 @@ class UserSerializerTest(APITestCase):
             serializer.save()
 
         user = User.objects.get(username=self.data['username'])
-        profile = UserProfile.objects.get(user=user)
+        profile = UserProfile.objects.get_or_create(user=user)[0]
         self.assertTrue(user)
         self.assertTrue(user.profile)
         self.assertEqual(profile.user, user)
@@ -633,15 +634,15 @@ class BingoCardSerializerTests(APITestCase):
         self.invalid_data = self.valid_data.copy()
         self.invalid_data['squares'] = new_squares
 
-        self.card = BingoCard.objects.create(
+        self.card = BingoCard.objects.get_or_create(
             title='self.card',
-            creator=self.user)
+            creator=self.user)[0]
 
         for i in range(24):
-            BingoCardSquare.objects.create(
+            BingoCardSquare.objects.get_or_create(
                 text='self.card.square {}'.format(i),
                 card=self.card
-            )
+            )[0]
 
         self.context = {'request': None}
 
@@ -758,5 +759,9 @@ class BingoCardSerializerTests(APITestCase):
         new_serializer.save()
 
         for key, value in data.items():
-            if key in dir(self.card) and key != 'squares':
+            if key in dir(self.card) and key != 'squares' and key != 'creator':
                 self.assertEqual(str(value), str(getattr(self.card, key)))
+            elif key == 'creator':
+                self.assertEqual(
+                    str(value),
+                    '/api/users/{}/'.format(self.card.id))

@@ -214,11 +214,11 @@ class ProfileEditFormTests(TestCase):
         })
         new_profile = UserProfile.objects.get_or_create(
             user=self.user,
-            picture=None,
-            website='www.youtube.com',
-            private=True,
-            about_me='I don\'t have a bio yet'
         )[0]
+        new_profile.picture = None
+        new_profile.website = 'www.youtube.com'
+        new_profile.private = True
+        new_profile.about_me = 'I don\'t have a bio yet'
         new_profile.save()
 
         self.assertTrue(new_profile)

@@ -155,8 +155,9 @@ class ProfileRedirectViewTests(TestCase):
         private_user.save()
         self.private_profile = UserProfile.objects.get_or_create(
             user=private_user,
-            private=True
         )[0]
+        self.private_profile.private = True
+        self.private_profile.save()
 
         self.assertFalse(self.public_profile.private)
         self.assertTrue(self.private_profile.private)
@@ -461,8 +462,8 @@ class ProfileViewTests(TestCase):
 
         self.profile = UserProfile.objects.get_or_create(
             user=self.user,
-            website='http://www.test-profile-view.com'
         )[0]
+        self.profile.website = 'http://www.test-profile-view.com'
         self.profile.save()
 
         self.viewer = User.objects.get_or_create(
@@ -606,9 +607,10 @@ class ProfileEditViewTests(TestCase):
         # Create Profile for first User
         first_profile = UserProfile.objects.get_or_create(
             user=self.user_with_profile,
-            website='www.example.com',
-            about_me='I had a profile originally'
         )[0]
+        first_profile.website = 'www.example.com'
+        first_profile.about_me = 'I had a profile originally'
+        first_profile.save()
         self.first_profile = first_profile
 
         self.assertTrue(self.first_profile)
@@ -849,12 +851,13 @@ class ProfileListViewTests(TestCase):
                 email='private{}@gmail.com'.format(i)
             )[0]
             private_user.set_password('password{}'.format(i))
-            private_user.save()
             private_profile = UserProfile.objects.get_or_create(
                 user=private_user,
-                private=True
             )[0]
+            private_profile.private = True
             private_profile.save()
+            private_user.profile = private_profile
+            private_user.save()
             self.private_profiles.append(private_profile)
 
             # Add public profile to list

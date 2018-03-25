@@ -89,7 +89,7 @@ class RegistrationForm(CrispyBaseModelForm):
             else:
                 raise forms.ValidationError('Passwords entered do not match.')
 
-            profile = UserProfile.objects.create(user=user)
+            profile = UserProfile.objects.get_or_create(user=user)[0]
             profile.save()
             return self
 

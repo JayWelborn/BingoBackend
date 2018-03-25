@@ -41,8 +41,9 @@ class BaseTemplateTests(TestCase):
 
         self.profile = UserProfile.objects.get_or_create(
             user=self.user,
-            website='www.google.com'
         )[0]
+        self.profile.website = 'www.google.com'
+        self.profile.save()
 
         self.contact = Contact.objects.get_or_create(
             title='title2',
