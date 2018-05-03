@@ -244,6 +244,11 @@ REST_FRAMEWORK = {
     ),
 }
 
+# Serialize User with preferred serializer in rest-auth
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'api.serializers.UserSerializer'
+}
+
 # Allow API requests from the following URLs
 CORS_ORIGIN_WHITELIST = (
     'localhost:3000',
