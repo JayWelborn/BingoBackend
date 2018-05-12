@@ -283,7 +283,7 @@ class UserViewsetTests(APITestCase):
 
     def test_unauthenticated_put(self):
         """
-        `PUT` requests coming from unauthenticated users should return 403
+        `PUT` requests coming from unauthenticated users should return 401
         forbidden.
         """
         user = copy(self.users[0])
@@ -299,7 +299,7 @@ class UserViewsetTests(APITestCase):
 
         response = self.detailview(request, pk=pk, partial=True)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
         data = response.data
         self.assertEqual(
             data['detail'],
@@ -503,7 +503,7 @@ class UserProfileViewsetTests(APITestCase):
 
         request = self.factory.post(list_url, post_data)
         response = self.listview(request)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
         # `PUT` request
         request = self.factory.put(
@@ -511,14 +511,14 @@ class UserProfileViewsetTests(APITestCase):
             instance=user,
             data=post_data)
         response = self.detailview(request, pk=pk, partial=True)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
         # `DELETE` request
         request = self.factory.delete(
             detail_url
         )
         response = self.detailview(request)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
     def test_wrong_user_can_only_get(self):
         """
@@ -738,7 +738,7 @@ class BingoCardViewsetTests(APITestCase):
 
         request = self.factory.post(url, data)
         response = self.listview(request)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
         # `PUT` requests.
         data = {
@@ -751,13 +751,13 @@ class BingoCardViewsetTests(APITestCase):
             partial=True
         )
         response = self.detailview(request)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
         # `DELTE` requests
         url = reverse('bingocard-detail', args=[self.cards[0].pk])
         request = self.factory.delete(url)
         response = self.detailview(request)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
     def test_authenticated_user_get(self):
         """
@@ -889,7 +889,7 @@ class BingoCardViewsetTests(APITestCase):
         response = self.detailview(request, pk=card.pk)
         self.assertEqual(response.status_code, 204)
 
-        # Delete other's card should fail and return 403
+        # Delete other's card should fail and return 401
         card = self.cards[1]
         user = self.users[0]
         self.assertNotEqual(user, card.creator)

@@ -1,6 +1,5 @@
 from collections import OrderedDict
 
-from rest_framework.compat import NoReverseMatch
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.routers import DefaultRouter, APIRootView
@@ -29,17 +28,13 @@ class APIRootView(APIRootView):
         for key, url_name in self.api_root_dict.items():
             if namespace:
                 url_name = namespace + ':' + url_name
-            try:
-                ret[key] = reverse(
-                    url_name,
-                    args=args,
-                    kwargs=kwargs,
-                    request=request,
-                    format=kwargs.get('format', None)
-                )
-            except NoReverseMatch:
-                # Don't bail out if eg. no list routes exist, only detail routes.
-                continue
+            ret[key] = reverse(
+                url_name,
+                args=args,
+                kwargs=kwargs,
+                request=request,
+                format=kwargs.get('format', None)
+            )
 
         for key, url in rest_auth_dict.items():
             try:

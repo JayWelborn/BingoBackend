@@ -200,6 +200,7 @@ REGISTRATION_OPEN = True
 LOGIN_REDIRECT_URL = '/profile/'
 LOGIN_URL = '/accounts/login/'
 LOGOUT_URL = '/accounts/logout/'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 
 # Test Specific Settings
@@ -244,10 +245,12 @@ REST_FRAMEWORK = {
     ),
 }
 
-# Serialize User with preferred serializer in rest-auth
+# Rest Auth Settings
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'api.serializers.UserSerializer'
 }
+OLD_PASSWORD_FIELD_ENABLED = True
+LOGOUT_ON_PASSWORD_CHANGE = False
 
 # Allow API requests from the following URLs
 CORS_ORIGIN_WHITELIST = (

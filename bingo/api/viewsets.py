@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 
-from rest_framework import permissions
-from rest_framework import viewsets
+from rest_framework import permissions, viewsets
 
 from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
@@ -18,6 +17,11 @@ import pdb
 class UserViewset(viewsets.ModelViewSet):
     """
     Read only viewset class for User objects.
+
+    Fields:
+        queryset: list of users ordered by pk
+        serializer_class: serializer used to represent users
+        permission_classes: restrictions on who can access detail view
     """
 
     queryset = User.objects.all().order_by('pk')
