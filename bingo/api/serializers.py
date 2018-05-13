@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.core.mail import EmailMessage
 from django.contrib.auth.models import User
 
 from rest_framework import serializers
@@ -238,3 +240,48 @@ class BingoCardSerializer(serializers.HyperlinkedModelSerializer):
 
         instance.save()
         return instance
+
+
+class EmailFormSerializer(serializers.Serializer):
+    """Serializer to send emails from `Contact` page
+
+    Fields:
+        name: name of user
+        email: email of user sending message
+        subject: subject line of email
+        body: email body
+
+    Methods:
+        send_email: ensure given data is valid, and send email
+
+    """
+
+    name = serializers.CharField()
+    email = serializers.EmailField()
+    subject = serializers.CharField(max_length=80)
+    body = serializers.CharField(min_length=1)
+
+    def send_email(self):
+        """
+        Validates data, and send email
+        """
+        if self.is_valid():
+            name = self.validated_data['name']
+            email = self.validated_data['email']
+            subject = self.validated_data['subject']
+            body = self.validated_data['body']
+
+            contact_email = EmailMessage(
+                from_email=email,
+                to=[settings.EMAIL_HOST_USER],
+                subject=subject,
+                body='Sender Name: {}\nSender Email: {}\n\n {}'.format(
+                    name, email, body),
+            )
+
+            contact_email.send()
+
+            return contact_email
+
+        else:
+            return self.errors

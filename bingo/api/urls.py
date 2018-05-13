@@ -2,7 +2,7 @@ from django.conf.urls import url, include
 
 from .routers import Router
 
-from . import viewsets
+from . import viewsets, views
 
 
 # Wire up the router
@@ -15,5 +15,6 @@ router.register(r'contact', viewsets.ContactViewSet)
 
 urlpatterns = [
     url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^contact', views.EmailFormView.as_view()),
     url(r'^', include(router.urls)),
 ]
