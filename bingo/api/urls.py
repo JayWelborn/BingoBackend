@@ -15,6 +15,6 @@ router.register(r'contact', viewsets.ContactViewSet)
 
 urlpatterns = [
     url(r'^rest-auth/', include('rest_auth.urls')),
-    url(r'^contact', views.EmailFormView.as_view()),
+    url(r'^contact', views.EmailFormView.as_view(), name='contact'),
     url(r'^', include(router.urls)),
 ]

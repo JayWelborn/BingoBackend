@@ -37,18 +37,13 @@ class APIRootView(APIRootView):
             )
 
         for key, url in rest_auth_dict.items():
-            try:
-                ret[key] = reverse(
-                    url,
-                    args=args,
-                    kwargs=kwargs,
-                    request=request,
-                    format=kwargs.get('format', None)
-                )
-            except NoReverseMatch:
-                # Don't bail out if eg. no list routes exist, only detail routes.
-                print(url)
-                continue
+            ret[key] = reverse(
+                url,
+                args=args,
+                kwargs=kwargs,
+                request=request,
+                format=kwargs.get('format', None)
+            )
 
         return Response(ret)
 

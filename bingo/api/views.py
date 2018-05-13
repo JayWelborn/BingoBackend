@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.views import APIView
 
 from .serializers import EmailFormSerializer
@@ -15,7 +16,8 @@ class EmailFormView(APIView):
         post: send email on post request
     """
 
-    allowed_methods = ['post']
+    allowed_methods = ['POST']
+    serializer_class = EmailFormSerializer
 
     def post(self, request):
         """
