@@ -255,5 +255,6 @@ LOGOUT_ON_PASSWORD_CHANGE = False
 # Allow API requests from the following URLs
 CORS_ORIGIN_WHITELIST = (
     'localhost:3000',
-    '127.0.0.1:3000'
+    '127.0.0.1:3000',
+    'bingo-frontend.herokuapp.com/',
 )
