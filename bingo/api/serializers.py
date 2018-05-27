@@ -274,6 +274,7 @@ class EmailFormSerializer(serializers.Serializer):
             contact_email = EmailMessage(
                 from_email=email,
                 to=[settings.EMAIL_HOST_USER],
+                reply_to=(email,),
                 subject=subject,
                 body='Sender Name: {}\nSender Email: {}\n\n {}'.format(
                     name, email, body),

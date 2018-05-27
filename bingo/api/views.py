@@ -25,7 +25,7 @@ class EmailFormView(APIView):
         """
         serializer = EmailFormSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.setnd_email()
+            serializer.send_email()
             return Response(request.data, status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
