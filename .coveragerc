@@ -1,0 +1,26 @@
+[run]
+branch = True
+
+omit =
+    # omit venv
+    */bingoenv/*
+    */virtualenv/*
+
+    # omit pycache directories
+    */__pycache__/*
+
+    # omit migrations
+    */migrations/*
+
+    # omit the tests themselves
+    */test*
+
+    # omit django stuff
+    */manage.py
+    */settings.py
+
+    # init.py
+    */__init__.py
+
+[html]
+directory = coverage/html

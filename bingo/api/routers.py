@@ -5,7 +5,7 @@ from rest_framework.reverse import reverse
 from rest_framework.routers import DefaultRouter, APIRootView
 
 
-class APIRootView(APIRootView):
+class CustomAPIRootView(APIRootView):
     """
     The default basic root view for DefaultRouter
     """
@@ -23,7 +23,7 @@ class APIRootView(APIRootView):
             'verify_email': 'rest_registration:rest_verify_email',
         }
 
-        ret = OrderedDict()
+        ret = {}
         namespace = request.resolver_match.namespace
         for key, url_name in self.api_root_dict.items():
             if namespace:
@@ -57,4 +57,4 @@ class Router(DefaultRouter):
 
     """
 
-    APIRootView = APIRootView
+    APIRootView = CustomAPIRootView

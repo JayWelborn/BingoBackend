@@ -36,9 +36,8 @@ package-lock.json
 secrets/
 
 # coverage stuff
-htmlcov/
+coverage/
 .coverage
-.coveragec
 
 # media files
 media/

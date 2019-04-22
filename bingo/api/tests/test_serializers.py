@@ -4,12 +4,13 @@ from django.contrib.auth.models import User
 
 from rest_framework.test import APITestCase
 
+from api.serializers import (BingoCardSerializer, UserSerializer,
+                             UserProfileSerializer, ContactSerializer,
+                             BingoCardSquareSerializer,
+                             )
 from auth_extension.models import UserProfile
 from cards.models import BingoCard, BingoCardSquare
 from home.models import Contact
-from api.serializers import (BingoCardSerializer, UserSerializer,
-                             UserProfileSerializer, ContactSerializer,
-                             BingoCardSquareSerializer)
 
 
 class UserSerializerTest(APITestCase):

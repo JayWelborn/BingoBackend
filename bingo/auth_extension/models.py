@@ -33,7 +33,6 @@ class UserProfile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         related_name='profile',
-        # TODO - test on_delete
         on_delete=models.CASCADE,
     )
 

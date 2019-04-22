@@ -11,7 +11,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         # Read permissions are allowed to any request,
         # so we'll always allow GET, HEAD or OPTIONS requests.
         if request.method in permissions.SAFE_METHODS or \
-           request.method == 'POST':
+                request.method == 'POST':
             return True
 
         # Write permissions are only allowed to the owner of the object.
@@ -42,4 +42,5 @@ class IsSelfOrAdmin(permissions.BasePermission):
         if request.method in ['DELETE', 'PUT', 'PATCH']:
             return request.user.is_staff or request.user == obj
 
-        return super(IsSelfOrAdmin, self).has_object_permission(request, view, obj)
+        return super(IsSelfOrAdmin, self).has_object_permission(request, view,
+                                                                obj)
