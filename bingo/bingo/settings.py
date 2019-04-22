@@ -90,7 +90,6 @@ ALLOWED_HOSTS = [
 # Application definitions
 INSTALLED_APPS = [
     'django.contrib.sites',
-    'registration',  # Django-registraion-redux
     'django.contrib.auth',
     'home',
     'auth_extension',
@@ -107,7 +106,7 @@ INSTALLED_APPS = [
     'allauth',  # Adds multiple authentication schemes
     'allauth.account',
     'rest_auth',
-    'rest_auth.rest_registration',  # Registration through API
+    'rest_auth.registration',  # Registration through API
     'crispy_forms',  # More clean form handling
     'api',  # REST API
 ]
