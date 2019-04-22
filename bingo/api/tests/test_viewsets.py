@@ -114,7 +114,7 @@ class UserViewsetTests(APITestCase):
         }
         url = reverse('user-list')
         request = self.factory.post(url, post_data)
-        response = self.listview(request)
+        response = self.listview(request).render()
 
         self.assertEqual(response.status_code, 201)
 

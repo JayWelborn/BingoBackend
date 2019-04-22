@@ -1,11 +1,11 @@
-var autoprefixer = require('autoprefixer');
-var browserSync  = require('browser-sync').create();
-var concat       = require('gulp-concat');
-var gulp         = require('gulp');
-var postcss      = require('gulp-postcss');
-var sass         = require('gulp-sass');
-var reload       = browserSync.reload;
-var sourcemaps   = require('gulp-sourcemaps');
+const autoprefixer = require('autoprefixer');
+const browserSync  = require('browser-sync').create();
+const concat       = require('gulp-concat');
+const gulp         = require('gulp');
+const postcss      = require('gulp-postcss');
+const sass         = require('gulp-sass');
+const reload       = browserSync.reload;
+const sourcemaps   = require('gulp-sourcemaps');
 
 // Start Django server
 gulp.task('django', function() {

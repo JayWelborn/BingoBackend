@@ -43,7 +43,7 @@ urlpatterns = [
     url(r'api-auth/', include('rest_auth.urls', namespace='rest_auth')),
 
     url(r'api-registration/',
-        include('rest_auth.rest_registration.urls',
+        include('rest_auth.registration.urls',
                 namespace='rest_registration')),
 
     url(r'^', include('home.urls')),

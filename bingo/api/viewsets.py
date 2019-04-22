@@ -11,8 +11,6 @@ from .serializers import (ContactSerializer, BingoCardSerializer,
                           UserProfileSerializer)
 from .permissions import IsOwnerOrReadOnly, IsUserOrReadOnly, IsSelfOrAdmin
 
-import pdb
-
 
 class UserViewset(viewsets.ModelViewSet):
     """

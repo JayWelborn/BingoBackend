@@ -90,7 +90,6 @@ ALLOWED_HOSTS = [
 # Application definitions
 INSTALLED_APPS = [
     'django.contrib.sites',
-    'registration',  # Django-registraion-redux
     'django.contrib.auth',
     'home',
     'auth_extension',
@@ -101,13 +100,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'social_django',  # Enable social authentication
     'rest_framework',  # Make REST Api
     'rest_framework.authtoken',  # Enable Token Authentication
     'allauth',  # Adds multiple authentication schemes
     'allauth.account',
+    'allauth.socialaccount',
     'rest_auth',
-    'rest_auth.rest_registration',  # Registration through API
+    'rest_auth.registration',  # Registration through API
     'crispy_forms',  # More clean form handling
     'api',  # REST API
 ]

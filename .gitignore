@@ -38,6 +38,7 @@ secrets/
 # coverage stuff
 coverage/
 .coverage
+.coverage.*
 
 # media files
 media/
