@@ -44,3 +44,6 @@ media/
 
 # local bash script
 start-bingo.bash
+
+# IDE stuff
+.idea/

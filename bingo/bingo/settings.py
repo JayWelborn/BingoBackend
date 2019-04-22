@@ -59,6 +59,28 @@ else:
         }
     }
 
+    # Secrets read from file system when not a CI build
+    with open(os.path.join(SECRETS, 'github-auth.id'), 'r') as f:
+        SOCIAL_AUTH_GITHUB_KEY = f.readline().strip()
+
+    with open(os.path.join(SECRETS, 'github-auth.key'), 'r') as f:
+        SOCIAL_AUTH_GITHUB_SECRET = f.readline().strip()
+
+    with open(os.path.join(SECRETS, 'twitter-auth.key'), 'r') as f:
+        SOCIAL_AUTH_TWITTER_KEY = f.readline().strip()
+
+    with open(os.path.join(SECRETS, 'twitter-auth.secret'), 'r') as f:
+        SOCIAL_AUTH_TWITTER_SECRET = f.readline().strip()
+
+    with open(os.path.join(SECRETS, 'facebook-auth.key'), 'r') as f:
+        SOCIAL_AUTH_FACEBOOK_KEY = f.readline().strip()
+
+    with open(os.path.join(SECRETS, 'facebook-auth.secret'), 'r') as f:
+        SOCIAL_AUTH_FACEBOOK_SECRET = f.readline().strip()
+
+    with open(os.path.join(SECRETS, 'email.password'), 'r') as f:
+        EMAIL_HOST_PASSWORD = f.readline().strip()
+
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -203,8 +225,10 @@ EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = 'jesse.welborn@gmail.com'
 EMAIL_HOST_USER = 'jesse.welborn@gmail.com'
 
-with open(os.path.join(SECRETS, 'email.password'), 'r') as f:
-            EMAIL_HOST_PASSWORD = f.readline().strip()
+# Social settings
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/profile/settings/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/profile/settings/'
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
 # Registration Redux Settings
 SITE_ID = 1
@@ -226,28 +250,7 @@ if 'test' in sys.argv:
 
     CACHE_MIDDLEWARE_SECONDS = 0
 
-# Social Auth Settings
-with open(os.path.join(SECRETS, 'github-auth.id'), 'r') as f:
-            SOCIAL_AUTH_GITHUB_KEY = f.readline().strip()
 
-with open(os.path.join(SECRETS, 'github-auth.key'), 'r') as f:
-            SOCIAL_AUTH_GITHUB_SECRET = f.readline().strip()
-
-with open(os.path.join(SECRETS, 'twitter-auth.key'), 'r') as f:
-            SOCIAL_AUTH_TWITTER_KEY = f.readline().strip()
-
-with open(os.path.join(SECRETS, 'twitter-auth.secret'), 'r') as f:
-            SOCIAL_AUTH_TWITTER_SECRET = f.readline().strip()
-
-with open(os.path.join(SECRETS, 'facebook-auth.key'), 'r') as f:
-            SOCIAL_AUTH_FACEBOOK_KEY = f.readline().strip()
-
-with open(os.path.join(SECRETS, 'facebook-auth.secret'), 'r') as f:
-            SOCIAL_AUTH_FACEBOOK_SECRET = f.readline().strip()
-
-SOCIAL_AUTH_LOGIN_ERROR_URL = '/profile/settings/'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/profile/settings/'
-SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
 # Rest API Settings
 REST_FRAMEWORK = {
