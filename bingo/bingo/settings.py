@@ -26,11 +26,39 @@ SECRETS = os.path.join(PROJECT_DIR, 'secrets')
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-with open(os.path.join(SECRETS, 'django-secret.key'), 'r') as f:
-            SECRET_KEY = f.readline().strip()
+if os.getenv('BUILD_ON_TRAVIS', None):
+    SECRET_KEY = os.environ['SECRET_KEY']
+    DEBUG = False
+    TEMPLATE_DEBUG = True
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'travis_db.sqlite3'),
+        }
+    }
+else:
+    with open(os.path.join(SECRETS, 'django-secret.key'), 'r') as f:
+        SECRET_KEY = f.readline().strip()
+
+    DEBUG = True
+
+    # Database
+    # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+    with open(os.path.join(SECRETS, 'database.password'), 'r') as f:
+        DB_PASSWORD = f.readline().strip()
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'bingo',
+            'USER': 'bingo',
+            'PASSWORD': DB_PASSWORD,
+            'HOST': 'localhost',
+            'PORT': '',
+        }
+    }
+
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -101,20 +129,6 @@ WSGI_APPLICATION = 'bingo.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
-with open(os.path.join(SECRETS, 'database.password'), 'r') as f:
-    DB_PASSWORD = f.readline().strip()
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bingo',
-        'USER': 'bingo',
-        'PASSWORD': DB_PASSWORD,
-        'HOST': 'localhost',
-        'PORT': '',
-    }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
