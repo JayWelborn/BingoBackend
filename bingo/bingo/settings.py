@@ -63,7 +63,7 @@ else:
     if 'test' in sys.argv:
         DATABASES['default'] = {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'mydatabase'
+            'NAME': os.path.join(BASE_DIR, 'mydatabase'),
         }
 
         CACHE_MIDDLEWARE_SECONDS = 0
@@ -97,25 +97,25 @@ ALLOWED_HOSTS = [
 
 # Application definitions
 INSTALLED_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
-    'home',
-    'auth_extension',
-    'cards',
-    'corsheaders',
-    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',  # Make REST Api
     'rest_framework.authtoken',  # Enable Token Authentication
-    'allauth',  # Adds multiple authentication schemes
-    'allauth.account',
     'rest_auth',
     'rest_auth.registration',  # Registration through API
     'allauth.socialaccount',
-    'api',  # REST API
+    'allauth',  # Adds multiple authentication schemes
+    'allauth.account',
+    'corsheaders',
+    'api',
+    'auth_extension',
+    'cards',
+    'home',
 ]
 
 MIDDLEWARE = [
@@ -220,7 +220,6 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = 'jesse.welborn@gmail.com'
 EMAIL_HOST_USER = 'jesse.welborn@gmail.com'
-
 
 # Rest API Settings
 REST_FRAMEWORK = {
