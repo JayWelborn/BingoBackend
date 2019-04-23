@@ -88,8 +88,8 @@ ALLOWED_HOSTS = [
 
 # Application definitions
 INSTALLED_APPS = [
-    'django.contrib.sites',
     'django.contrib.auth',
+    'django.contrib.sites',
     'home',
     'auth_extension',
     'cards',

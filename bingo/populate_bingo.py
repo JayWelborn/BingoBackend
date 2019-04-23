@@ -4,8 +4,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'bingo.settings'
 import django
 django.setup()
 
-from django.contrib.auth.models import User
-from django.utils import timezone
+from django.contrib.auth import get_user_model
 
 from home.models import Contact
 from cards.models import BingoCard, BingoCardSquare
@@ -146,7 +145,7 @@ def populate_cards():
     """
 
     cards = []
-    users = User.objects.all()
+    users = get_user_model().objects.all()
 
     for user in users:
         cards.append(add_card(user))
@@ -166,7 +165,7 @@ def add_profile(user, website, private, about):
         about (str): bio for profile.
     """
 
-    new_user = User.objects.get_or_create(
+    new_user = get_user_model().objects.get_or_create(
         username=user['username'],
         email=user['email'])[0]
     new_user.set_password(user['password'])

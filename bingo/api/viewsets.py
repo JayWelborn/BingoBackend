@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from rest_framework import permissions, viewsets
 
@@ -22,7 +22,7 @@ class UserViewset(viewsets.ModelViewSet):
         permission_classes: restrictions on who can access detail view
     """
 
-    queryset = User.objects.all().order_by('pk')
+    queryset = get_user_model().objects.all().order_by('pk')
     serializer_class = UserSerializer
     permission_classes = (IsSelfOrAdmin,)
 
