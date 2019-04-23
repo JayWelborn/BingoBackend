@@ -66,8 +66,6 @@ else:
             'NAME': os.path.join(BASE_DIR, 'mydatabase'),
         }
 
-        CACHE_MIDDLEWARE_SECONDS = 0
-
     # Secrets read from file system when not a CI build
     with open(os.path.join(SECRETS, 'github-auth.id'), 'r') as f:
         SOCIAL_AUTH_GITHUB_KEY = f.readline().strip()
