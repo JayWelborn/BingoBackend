@@ -29,13 +29,13 @@ class UserProfileModelTests(TestCase):
         """
         Create instance(s) for tests
         """
-        self.test_user_one = User.objects.create(username='test one',
-                                                 password='password',
-                                                 email='test@test.com',)
+        self.test_user_one = User.objects.create_user(username='test one',
+                                                      password='password',
+                                                      email='test@test.com', )
 
-        self.test_user_two = User.objects.create(username='test two',
-                                                 password='password1',
-                                                 email='test2@test.com')
+        self.test_user_two = User.objects.create_user(username='test two',
+                                                      password='password1',
+                                                      email='test2@test.com')
 
         self.test_profile = UserProfile.objects.get_or_create(
             user=self.test_user_one)[0]
