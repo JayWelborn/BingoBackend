@@ -17,6 +17,8 @@ install:
 
 # run tests
 script:
+  - python bingo/manage.py makemigrations
+  - python bingo/manage.py migrate
   - make test
 
 # generate coverage report
