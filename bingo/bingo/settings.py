@@ -59,6 +59,15 @@ else:
         }
     }
 
+    # Test Specific Settings
+    if 'test' in sys.argv:
+        DATABASES['default'] = {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'mydatabase'
+        }
+
+        CACHE_MIDDLEWARE_SECONDS = 0
+
     # Secrets read from file system when not a CI build
     with open(os.path.join(SECRETS, 'github-auth.id'), 'r') as f:
         SOCIAL_AUTH_GITHUB_KEY = f.readline().strip()
@@ -212,29 +221,6 @@ EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = 'jesse.welborn@gmail.com'
 EMAIL_HOST_USER = 'jesse.welborn@gmail.com'
 
-# Social settings
-SOCIAL_AUTH_LOGIN_ERROR_URL = '/profile/settings/'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/profile/settings/'
-SOCIAL_AUTH_RAISE_EXCEPTIONS = False
-
-# Registration Redux Settings
-SITE_ID = 1
-ACCOUNT_ACTIVATION_DAYS = 7
-REGISTRATION_AUTO_LOGIN = True
-REGISTRATION_OPEN = True
-LOGIN_REDIRECT_URL = '/profile/'
-LOGIN_URL = '/accounts/login/'
-LOGOUT_URL = '/accounts/logout/'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-
-# Test Specific Settings
-if 'test' in sys.argv:
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'mydatabase'
-    }
-
-    CACHE_MIDDLEWARE_SECONDS = 0
 
 # Rest API Settings
 REST_FRAMEWORK = {
