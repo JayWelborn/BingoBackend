@@ -1,7 +1,6 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.mail import EmailMessage
-from django.contrib.auth.models import User
-
 from rest_framework import serializers
 
 from auth_extension.models import UserProfile
@@ -38,7 +37,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         many=False, view_name='userprofile-detail', read_only=True)
 
     class Meta:
-        model = User
+        model = get_user_model()
         fields = ('url', 'id', 'username', 'bingo_cards',
                   'profile', 'email', 'password')
         read_only_fields = ('is_staff', 'is_superuser',
@@ -53,7 +52,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         with blank fields.
         """
 
-        user = User.objects.create_user(
+        user = get_user_model().objects.create_user(
             username=validated_data.get('username'),
             email=validated_data.get('email'),
             password=validated_data.get('password'))
@@ -224,9 +223,9 @@ class BingoCardSerializer(serializers.HyperlinkedModelSerializer):
         # Update fields on instance
         for key, value in validated_data.items():
             if (
-                key in dir(instance) and
-                validated_data[key] != getattr(instance, key) and
-                key != 'squares'
+                    key in dir(instance) and
+                    validated_data[key] != getattr(instance, key) and
+                    key != 'squares'
             ):
                 setattr(instance, key, value)
 
