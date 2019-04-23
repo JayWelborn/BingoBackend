@@ -22,6 +22,8 @@ omit =
     # omit django stuff
     */manage.py
     */settings.py
+    */wsgi.py
+    */populate_bingo.py
 
     # init.py
     */__init__.py

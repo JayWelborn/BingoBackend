@@ -19,34 +19,17 @@ from django.conf.urls.static import static
 
 from .admin import bingo_admin_site
 
-from auth_extension.views import RegistrationView
-
 urlpatterns = [
     url(r'^admin/', bingo_admin_site.urls),
 
-    url(r'^accounts/register',
-        RegistrationView.as_view(),
-        name='registration_register'),
-
-    url(r'^accounts/',
-        include('registration.backends.simple.urls')
-        ),
-
-    url(r'^profile/', include('auth_extension.urls')),
-
-    url(r'^cards/', include('cards.urls')),
-
-    url(r'^oauth/', include('social_django.urls', namespace='social')),
-
     url(r'api/', include('api.urls')),
 
-    url(r'api-auth/', include('rest_auth.urls', namespace='rest_auth')),
+    url(r'api-auth/',
+        include(('rest_auth.urls', 'rest_auth'), namespace='rest_auth')),
 
     url(r'api-registration/',
-        include('rest_auth.registration.urls',
+        include(('rest_auth.registration.urls', 'rest_auth.registration'),
                 namespace='rest_registration')),
-
-    url(r'^', include('home.urls')),
 ]
 
 if settings.DEBUG:

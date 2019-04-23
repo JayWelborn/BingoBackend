@@ -82,7 +82,7 @@ class BingoCardModelTests(TestCase):
 
         url = self.public_bingo_card.get_absolute_url()
         pk = self.public_bingo_card.pk
-        self.assertEqual(url, reverse('cards:card_detail', args=[pk]))
+        self.assertEqual(url, '/api/cards/{}/'.format(pk))
 
 
 class BingoCardSquareModelTests(TestCase):

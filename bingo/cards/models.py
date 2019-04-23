@@ -77,7 +77,7 @@ class BingoCard(models.Model):
         """
 
         from django.urls import reverse
-        return reverse('cards:card_detail', args=[self.pk])
+        return reverse('bingocard-detail', args=[self.pk])
 
 
 class BingoCardSquare(models.Model):

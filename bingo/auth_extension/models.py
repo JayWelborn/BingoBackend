@@ -77,7 +77,7 @@ class UserProfile(models.Model):
         """
         Return url for viewing a specific profile
         """
-        return reverse('auth_extension:profile_view', args=[self.pk])
+        return reverse('userprofile-detail', args=[self.pk])
 
 
 @receiver(post_save, sender=User)

@@ -81,7 +81,6 @@ else:
     with open(os.path.join(SECRETS, 'email.password'), 'r') as f:
         EMAIL_HOST_PASSWORD = f.readline().strip()
 
-
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -104,10 +103,9 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',  # Enable Token Authentication
     'allauth',  # Adds multiple authentication schemes
     'allauth.account',
-    'allauth.socialaccount',
     'rest_auth',
     'rest_auth.registration',  # Registration through API
-    'crispy_forms',  # More clean form handling
+    'allauth.socialaccount',
     'api',  # REST API
 ]
 
@@ -120,8 +118,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # Social Auth Middleware
-    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'bingo.urls'
@@ -138,15 +134,12 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends',  # For social auth
-                'social_django.context_processors.login_redirect',  # Social
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'bingo.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -160,7 +153,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        'OPTIONS': {'min_length': 8,}
+        'OPTIONS': {'min_length': 8, }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -175,9 +168,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://simpleisbetterthancomplex.com/tutorial/2016/10/24/how-to-add-social-login-to-django.html
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.github.GithubOAuth2',
-    'social_core.backends.twitter.TwitterOAuth',
-    'social_core.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -192,7 +182,6 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
@@ -205,7 +194,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -239,7 +227,6 @@ LOGIN_URL = '/accounts/login/'
 LOGOUT_URL = '/accounts/logout/'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
-
 # Test Specific Settings
 if 'test' in sys.argv:
     DATABASES['default'] = {
@@ -248,8 +235,6 @@ if 'test' in sys.argv:
     }
 
     CACHE_MIDDLEWARE_SECONDS = 0
-
-
 
 # Rest API Settings
 REST_FRAMEWORK = {

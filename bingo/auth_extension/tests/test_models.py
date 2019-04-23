@@ -75,6 +75,6 @@ class UserProfileModelTests(TestCase):
         Absolute url should match the regex pattern from app-level urlconf
         """
         pk = self.test_profile.pk
-        reversed_url = reverse('auth_extension:profile', args=[pk])
-        expected_url = '/profile/{}/'.format(pk)
+        reversed_url = reverse('userprofile-detail', args=[pk])
+        expected_url = '/api/profiles/{}/'.format(pk)
         self.assertEqual(reversed_url, expected_url)
