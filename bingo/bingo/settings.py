@@ -106,9 +106,9 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',  # Enable Token Authentication
     'rest_auth',
     'rest_auth.registration',  # Registration through API
-    'allauth.socialaccount',
     'allauth',  # Adds multiple authentication schemes
     'allauth.account',
+    'allauth.socialaccount',
     'corsheaders',
     'api',
     'auth_extension',
