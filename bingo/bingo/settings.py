@@ -102,13 +102,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'allauth',  # Adds multiple authentication schemes
+    'allauth.account',
+    'allauth.socialaccount',
     'rest_framework',  # Make REST Api
     'rest_framework.authtoken',  # Enable Token Authentication
     'rest_auth',
     'rest_auth.registration',  # Registration through API
-    'allauth',  # Adds multiple authentication schemes
-    'allauth.account',
-    'allauth.socialaccount',
     'corsheaders',
     'api',
     'auth_extension',
