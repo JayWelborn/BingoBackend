@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 test:
-	coverage run bingo/manage.py test bingo/ -v 2
+	coverage run bingo/manage.py test bingo/
 	coverage combine
 	coverage html
 	coverage report --fail-under=95
