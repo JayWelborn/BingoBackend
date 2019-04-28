@@ -1,3 +1,0 @@
-#!/bin/bash
-
-gnome-terminal --window-with-profile=Bingo -e ~/Documents/Projects/Django/Bingo/start-bingo.bash
