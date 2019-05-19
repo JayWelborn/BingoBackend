@@ -26,7 +26,7 @@ if os.getenv('BUILD_ON_TRAVIS', None):
         }
     }
 else:
-    with open(os.path.join(SECRETS, 'django-secret.key'), 'r') as f:
+    with open(os.path.join(SECRETS, 'django_secret.key'), 'r') as f:
         SECRET_KEY = f.readline().strip()
 
     DEBUG = True

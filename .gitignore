@@ -33,6 +33,7 @@ package-lock.json
 
 # secrets
 secrets/
+.env
 
 # coverage stuff
 coverage/
