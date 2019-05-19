@@ -42,8 +42,8 @@ else:
             'NAME': 'bingo',
             'USER': 'bingo',
             'PASSWORD': DB_PASSWORD,
-            'HOST': 'localhost',
-            'PORT': '',
+            'HOST': 'db',
+            'PORT': '3306',
         }
     }
 

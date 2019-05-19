@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    ports:
+      - '8306:3306'
+    environment:
+      MYSQL_DATABASE: 'bingo'
+      MYSQL_USER: 'bingo'
+      MYSQL_PASSWORD: 'Rce#A@7T;xBgWz2S'
+      MYSQL_ROOT_PASSWORD: 'password'
+  web:
+    build: .
+    command: bash -c "cd bingo && python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    container_name: bingo
+    volumes:
+      - .:/bingo
+    ports:
+      - "8000:8000"
