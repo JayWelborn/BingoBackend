@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from django.utils import timezone
 
 
@@ -76,7 +77,6 @@ class BingoCard(models.Model):
         Get url to view card.
         """
 
-        from django.urls import reverse
         return reverse('bingocard-detail', args=[self.pk])
 
 
