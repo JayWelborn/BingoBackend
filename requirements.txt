@@ -17,7 +17,7 @@ django-rest-framework==0.1.0
 djangorestframework==3.12.2
 docopt==0.6.2
 docutils==0.14
-httpie==1.0.2
+httpie==1.0.3
 idna==2.8
 imagesize==1.1.0
 isort==4.3.17
