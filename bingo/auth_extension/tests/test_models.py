@@ -8,7 +8,7 @@ from auth_extension.models import UserProfile
 
 
 class UserProfileModelTests(TestCase):
-    """Tests for Contact Model
+    """Tests for UserProfile Model
 
     Methods:
         setUp: Creates sample UserProfile object for testing
