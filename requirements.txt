@@ -9,7 +9,7 @@ codecov==2.0.15
 colorclass==2.2.0
 coverage==4.5.3
 defusedxml==0.6.0
-Django==2.2.19
+Django==2.2.20
 django-allauth==0.39.1
 django-cors-headers==2.5.2
 django-rest-auth==0.9.5
